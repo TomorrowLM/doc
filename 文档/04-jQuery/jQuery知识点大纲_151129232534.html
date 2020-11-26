@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery知识点大纲.md—D:\webclass\JQuery</title>
+    <style type="text/css">
+    html{font-family: sans-serif;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%}body{margin: 0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display: block}audio,canvas,progress,video{display: inline-block;vertical-align: baseline}audio:not([controls]){display: none;height: 0}[hidden],template{display: none}a{background: transparent}a:active,a:hover{outline: 0}abbr[title]{border-bottom: 1px dotted}b,strong{font-weight: bold}dfn{font-style: italic}h1{font-size: 2em;margin: 0.67em 0}mark{background: #ff0;color: #000}small{font-size: 80%}sub,sup{font-size: 75%;line-height: 0;position: relative;vertical-align: baseline}sup{top: -0.5em}sub{bottom: -0.25em}img{border: 0}svg:not(:root){overflow: hidden}figure{margin: 1em 40px}hr{box-sizing: content-box;height: 0}pre{overflow: auto}code,kbd,pre,samp{font-family: monospace, monospace;font-size: 1em}button,input,optgroup,select,textarea{color: inherit;font: inherit;margin: 0}button{overflow: visible}button,select{text-transform: none}button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance: button;cursor: pointer}button[disabled],html input[disabled]{cursor: default}button::-moz-focus-inner,input::-moz-focus-inner{border: 0;padding: 0}input{line-height: normal}input[type="checkbox"],input[type="radio"]{box-sizing: border-box;padding: 0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height: auto}input[type="search"]{-webkit-appearance: textfield;box-sizing: content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance: none}fieldset{border: 1px solid #c0c0c0;margin: 0 2px;padding: 0.35em 0.625em 0.75em}legend{border: 0;padding: 0}textarea{overflow: auto}optgroup{font-weight: bold}table{border-collapse: collapse;border-spacing: 0}td,th{padding: 0}*{box-sizing: border-box}input,select,textarea,button{font: 13px/1.4 Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"}body{min-width: 1020px;font: 13px/1.4 Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";color: #333;background-color: #fff}a{color: #4183c4;text-decoration: none}a:hover,a:active{text-decoration: underline}hr,.rule{height: 0;margin: 15px 0;overflow: hidden;background: transparent;border: 0;border-bottom: 1px solid #ddd}hr:before,.rule:before{display: table;content: ""}hr:after,.rule:after{display: table;clear: both;content: ""}h1,h2,h3,h4,h5,h6{margin-top: 15px;margin-bottom: 15px;line-height: 1.1}h1{font-size: 30px}h2{font-size: 21px}h3{font-size: 16px}h4{font-size: 14px}h5{font-size: 12px}h6{font-size: 11px}small{font-size: 90%}blockquote{margin: 0}.lead{margin-bottom: 30px;font-size: 20px;font-weight: 300;color: #555}.text-muted{color: #999}.text-danger{color: #bd2c00}.text-emphasized{font-weight: bold;color: #333}ul,ol{padding: 0;margin-top: 0;margin-bottom: 0}ol ol,ul ol{list-style-type: lower-roman}ul ul ol,ul ol ol,ol ul ol,ol ol ol{list-style-type: lower-alpha}dd{margin-left: 0}tt,code{font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;font-size: 12px}pre{margin-top: 0;margin-bottom: 0;font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace}#realtime .status{overflow: visible;position: absolute;top: -5px;left: 0;background: url("/public/images/github-status.png");width: 26px;height: 26px;display: block;margin: 0 5px 0 0}#realtime .up{background-position: 0 0}#realtime .problem{background-position: 0 -53px}#realtime .down{background-position: 0 -26px}.container{max-width: 920px;margin: 0 auto 20px auto}#header{background: #FAFAFA;background: -moz-linear-gradient(#FAFAFA, #EAEAEA);background: -webkit-linear-gradient(#FAFAFA, #EAEAEA);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#eaeaea')";border-bottom: 1px solid #CACACA;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4),0 0 10px rgba(0, 0, 0, 0.1)}#markup{padding: 3px}#markup article{padding-top: 30px}.markdown-body{overflow: hidden;font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;font-size: 16px;line-height: 1.6;word-wrap: break-word}.markdown-body>*:first-child{margin-top: 0 !important}.markdown-body>*:last-child{margin-bottom: 0 !important}.markdown-body .absent{color: #c00}.markdown-body .anchor{position: absolute;top: 0;left: 0;display: block;padding-right: 6px;padding-left: 30px;margin-left: -30px}.markdown-body .anchor:focus{outline: none}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{position: relative;margin-top: 1em;margin-bottom: 16px;font-weight: bold;line-height: 1.4}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{display: none;color: #000;vertical-align: middle}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{padding-left: 8px;margin-left: -30px;text-decoration: none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{display: inline-block}.markdown-body h1 tt,.markdown-body h1 code,.markdown-body h2 tt,.markdown-body h2 code,.markdown-body h3 tt,.markdown-body h3 code,.markdown-body h4 tt,.markdown-body h4 code,.markdown-body h5 tt,.markdown-body h5 code,.markdown-body h6 tt,.markdown-body h6 code{font-size: inherit}.markdown-body h1{padding-bottom: 0.3em;font-size: 2.25em;line-height: 1.2;border-bottom: 1px solid #eee}.markdown-body h1 .anchor{line-height: 1}.markdown-body h2{padding-bottom: 0.3em;font-size: 1.75em;line-height: 1.225;border-bottom: 1px solid #eee}.markdown-body h2 .anchor{line-height: 1}.markdown-body h3{font-size: 1.5em;line-height: 1.43}.markdown-body h3 .anchor{line-height: 1.2}.markdown-body h4{font-size: 1.25em}.markdown-body h4 .anchor{line-height: 1.2}.markdown-body h5{font-size: 1em}.markdown-body h5 .anchor{line-height: 1.1}.markdown-body h6{font-size: 1em;color: #777}.markdown-body h6 .anchor{line-height: 1.1}.markdown-body p,.markdown-body blockquote,.markdown-body ul,.markdown-body ol,.markdown-body dl,.markdown-body table,.markdown-body pre{margin-top: 0;margin-bottom: 16px}.markdown-body hr{height: 4px;padding: 0;margin: 16px 0;background-color: #e7e7e7;border: 0 none}.markdown-body ul,.markdown-body ol{padding-left: 2em}.markdown-body ul.no-list,.markdown-body ol.no-list{padding: 0;list-style-type: none}.markdown-body ul ul,.markdown-body ul ol,.markdown-body ol ol,.markdown-body ol ul{margin-top: 0;margin-bottom: 0}.markdown-body li>p{margin-top: 16px}.markdown-body dl{padding: 0}.markdown-body dl dt{padding: 0;margin-top: 16px;font-size: 1em;font-style: italic;font-weight: bold}.markdown-body dl dd{padding: 0 16px;margin-bottom: 16px}.markdown-body blockquote{padding: 0 15px;color: #777;border-left: 4px solid #ddd}.markdown-body blockquote>:first-child{margin-top: 0}.markdown-body blockquote>:last-child{margin-bottom: 0}.markdown-body table{display: block;width: 100%;overflow: auto;word-break: normal;word-break: keep-all}.markdown-body table th{font-weight: bold}.markdown-body table th,.markdown-body table td{padding: 6px 13px;border: 1px solid #ddd}.markdown-body table tr{background-color: #fff;border-top: 1px solid #ccc}.markdown-body table tr:nth-child(2n){background-color: #f8f8f8}.markdown-body img{max-width: 100%;box-sizing: border-box}.markdown-body span.frame{display: block;overflow: hidden}.markdown-body span.frame>span{display: block;float: left;width: auto;padding: 7px;margin: 13px 0 0;overflow: hidden;border: 1px solid #ddd}.markdown-body span.frame span img{display: block;float: left}.markdown-body span.frame span span{display: block;padding: 5px 0 0;clear: both;color: #333}.markdown-body span.align-center{display: block;overflow: hidden;clear: both}.markdown-body span.align-center>span{display: block;margin: 13px auto 0;overflow: hidden;text-align: center}.markdown-body span.align-center span img{margin: 0 auto;text-align: center}.markdown-body span.align-right{display: block;overflow: hidden;clear: both}.markdown-body span.align-right>span{display: block;margin: 13px 0 0;overflow: hidden;text-align: right}.markdown-body span.align-right span img{margin: 0;text-align: right}.markdown-body span.float-left{display: block;float: left;margin-right: 13px;overflow: hidden}.markdown-body span.float-left span{margin: 13px 0 0}.markdown-body span.float-right{display: block;float: right;margin-left: 13px;overflow: hidden}.markdown-body span.float-right>span{display: block;margin: 13px auto 0;overflow: hidden;text-align: right}.markdown-body code,.markdown-body tt{padding: 0;padding-top: 0.2em;padding-bottom: 0.2em;margin: 0;font-size: 85%;background-color: rgba(0,0,0,0.04);border-radius: 3px}.markdown-body code:before,.markdown-body code:after,.markdown-body tt:before,.markdown-body tt:after{letter-spacing: -0.2em;content: "\00a0"}.markdown-body code br,.markdown-body tt br{display: none}.markdown-body del code{text-decoration: inherit}.markdown-body pre>code{padding: 0;margin: 0;font-size: 100%;word-break: normal;white-space: pre;background: transparent;border: 0}.markdown-body .highlight{margin-bottom: 16px}.markdown-body .highlight pre,.markdown-body pre{padding: 16px;overflow: auto;font-size: 85%;line-height: 1.45;background-color: #f7f7f7;border-radius: 3px}.markdown-body .highlight pre{margin-bottom: 0;word-break: normal}.markdown-body pre{word-wrap: normal}.markdown-body pre code,.markdown-body pre tt{display: inline;max-width: initial;padding: 0;margin: 0;overflow: initial;line-height: inherit;word-wrap: normal;background-color: transparent;border: 0}.markdown-body pre code:before,.markdown-body pre code:after,.markdown-body pre tt:before,.markdown-body pre tt:after{content: normal}.markdown-body kbd{display: inline-block;padding: 3px 5px;font-size: 11px;line-height: 10px;color: #555;vertical-align: middle;background-color: #fcfcfc;border: solid 1px #ccc;border-bottom-color: #bbb;border-radius: 3px;box-shadow: inset 0 -1px 0 #bbb}.codehilite{background: #ffffff}.codehilite .c{color: #999988;font-style: italic}.codehilite .err{color: #a61717;background-color: #e3d2d2}.codehilite .k{color: #000000;font-weight: bold}.codehilite .o{color: #000000;font-weight: bold}.codehilite .cm{color: #999988;font-style: italic}.codehilite .cp{color: #999999;font-weight: bold}.codehilite .c1{color: #999988;font-style: italic}.codehilite .cs{color: #999999;font-weight: bold;font-style: italic}.codehilite .gd{color: #000000;background-color: #ffdddd}.codehilite .gd .x{color: #000000;background-color: #ffaaaa}.codehilite .ge{color: #000000;font-style: italic}.codehilite .gr{color: #aa0000}.codehilite .gh{color: #999999}.codehilite .gi{color: #000000;background-color: #ddffdd}.codehilite .gi .x{color: #000000;background-color: #aaffaa}.codehilite .go{color: #888888}.codehilite .gp{color: #555555}.codehilite .gs{font-weight: bold}.codehilite .gu{color: #aaaaaa}.codehilite .gt{color: #aa0000}.codehilite .kc{color: #000000;font-weight: bold}.codehilite .kd{color: #000000;font-weight: bold}.codehilite .kp{color: #000000;font-weight: bold}.codehilite .kr{color: #000000;font-weight: bold}.codehilite .kt{color: #445588;font-weight: bold}.codehilite .m{color: #009999}.codehilite .s{color: #d14}.codehilite .na{color: #008080}.codehilite .nb{color: #0086B3}.codehilite .nc{color: #445588;font-weight: bold}.codehilite .no{color: #008080}.codehilite .ni{color: #800080}.codehilite .ne{color: #990000;font-weight: bold}.codehilite .nf{color: #990000;font-weight: bold}.codehilite .nn{color: #555555}.codehilite .nt{color: #000080}.codehilite .nv{color: #008080}.codehilite .ow{color: #000000;font-weight: bold}.codehilite .w{color: #bbbbbb}.codehilite .mf{color: #009999}.codehilite .mh{color: #009999}.codehilite .mi{color: #009999}.codehilite .mo{color: #009999}.codehilite .sb{color: #d14}.codehilite .sc{color: #d14}.codehilite .sd{color: #d14}.codehilite .s2{color: #d14}.codehilite .se{color: #d14}.codehilite .sh{color: #d14}.codehilite .si{color: #d14}.codehilite .sx{color: #d14}.codehilite .sr{color: #009926}.codehilite .s1{color: #d14}.codehilite .ss{color: #990073}.codehilite .bp{color: #999999}.codehilite .vc{color: #008080}.codehilite .vg{color: #008080}.codehilite .vi{color: #008080}.codehilite .il{color: #009999}
+    </style>
+    <style type="text/css">
+      .markdown-body hr{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC")}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="markup">
+        <article id="content" class="markdown-body">
+          <h1>jQuery 第三天知识点大纲</h1>
+<h2>一、复习</h2>
+<ul>
+<li>第一天<ul>
+<li>jQuery优点</li>
+<li>jQuery入口函数</li>
+<li>jQuery 选择器</li>
+</ul>
+</li>
+<li>第二天<ul>
+<li>jQuery CSS操作</li>
+<li>jQuery 动画</li>
+<li>jQuery Dom操作</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>二、jQuery的元素操作</h2>
+<h3>2.1 jQuery获取元素的高和宽</h3>
+<ul>
+<li>height ： $(selector).height(); //带参数设置，不带参数获取,参数是number类型</li>
+<li>
+<p>width  ： $(selector).width(200);  //带参数设置，不带参数获取</p>
+</li>
+<li>
+<p>innerHeight  //只能获取：内边距+内容的高度</p>
+</li>
+<li>
+<p>innerWidth   //同上.........宽度</p>
+</li>
+<li>
+<p>outerHeight</p>
+</li>
+<li>outerWidth    //获取：左右内边距+内容+<strong>左右边框</strong>    </li>
+</ul>
+<div class="codehilite"><pre>    案例： 01 元素宽高.html
+</pre></div>
+
+
+<h3>2.2 jQuery元素坐标操作</h3>
+<ul>
+<li>
+<p>offset() 获取或设置元素相对于文档位置的方法</p>
+<ul>
+<li>返回一个object，包含left和top属性，值是相对于document的位置。</li>
+<li>
+<p>如果传入一个参数，则是对元素重新设置相对于document的位置。  </p>
+<ul>
+<li><strong>传入参数必须包括：left和top属性。比如： {left：100，top：150}</strong>    </li>
+</ul>
+<p>例如：$(selector).offset({left:100, top: 150});    </p>
+</li>
+</ul>
+</li>
+<li>
+<p>position() 获取相对于其最近的定位的父元素的位置。</p>
+<ul>
+<li>只能获取，不能设置。</li>
+<li>相对与其最近的<strong>定位</strong>元素</li>
+<li>返回一个object，包含left和top属性    </li>
+</ul>
+<p><code>例如： $(selector).position();</code></p>
+</li>
+<li>
+<p>元素的滚动</p>
+<ul>
+<li>scrollLeft() 获取或者设置元素水平方向滚动的位置</li>
+<li>scrollTop() 获取或者设置窗口垂直方向的滚动的位置   </li>
+<li>
+<p>例如：   <br>
+<code>$(selector).scrollLeft(100);</code></p>
+</li>
+<li>
+<p>scroll() 事件触发或者绑定滚动事件</p>
+<ul>
+<li>scroll(hander) 绑定滚动事件</li>
+<li>scroll() 触发滚动事件
+<code>$(selector).scroll(function(){
+    //当选择的元素发生滚动的时候触发
+});</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre>    案例：    
+    02 元素滚动案例.html
+    03图片滚动跟随案例.html
+    04滚动固定定位案例.html
+</pre></div>
+
+
+<hr>
+<h2>三、jQuery事件绑定机制</h2>
+<h3>3.1 简单事件绑定方法</h3>
+<ul>
+<li>.click(hander)  .click() //绑定事件 或者触发 click事件</li>
+<li>.blur()  //失去焦点事件，同上</li>
+<li>
+<p>.hover(mousein, mouseleave) //鼠标移入，移出</p>
+</li>
+<li>
+<p>mouseout： 当鼠标离开元素及它的子元素的时都会触发。</p>
+</li>
+<li>
+<p>mouseleave: 当鼠标离开自己时才会触发，子元素不触发。</p>
+</li>
+<li>
+<p>.dbclick() 双击</p>
+</li>
+<li>change 改变,比如：文本框发送改变，下来列表发生改变等...</li>
+<li>focus 获得焦点</li>
+<li>keyup, keydown, keypress :  键盘 键被按下。</li>
+<li>
+<p>mousedown, mouseover</p>
+</li>
+<li>
+<p>其他参考：http://www.w3school.com.cn/jquery/jquery_ref_events.asp</p>
+</li>
+</ul>
+<div class="codehilite"><pre>案例：
+    05图片跟随鼠标.html
+</pre></div>
+
+
+<h3>3.2 绑定事件的方式 bind方式（不推荐，1.7以后的jQuery版本被on取代）</h3>
+<ul>
+<li>语法格式：.bind( eventType [, eventData ], handler )   </li>
+<li>参数说明<ul>
+<li>第一个参数：事件类型</li>
+<li>第二个参数：传递给事件响应方法的数据对象，可以省略。</li>
+<li>事件响应方法中获取数据方式： e.data</li>
+<li>第三个参数：事件响应方法</li>
+</ul>
+</li>
+<li><strong>第二个参数可以省略。</strong></li>
+</ul>
+<div class="codehilite"><pre>    例如：    
+    $(&quot;p&quot;).bind(&quot;click&quot;, function(e){
+        //事件响应方法
+    });
+</pre></div>
+
+
+<h3>3.3 delegate方式（推荐，性能高，支持动态创建的元素）</h3>
+<ul>
+<li>语法格式：$(selector).delegate( selector, eventType, handler )</li>
+<li>语法说明：<ul>
+<li>第一个参数:selector， 子选择器</li>
+<li>第二个参数：事件类型</li>
+<li>第三个参数：事件响应方法</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre>    例如：   
+    $(&quot;.parentBox&quot;).delegate(&quot;p&quot;, &quot;click&quot;, function(){
+        //为 .parentBox下面的所有的p标签绑定事件
+    });
+</pre></div>
+
+
+<p><em>优势：效率较高</em></p>
+<h3>3.4 on方式（最现代的方式，兼容zepto，强烈建议使用的方式）</h3>
+<ul>
+<li>jQuery1.7版本后，jQuery用on统一了所有的事件处理的方法</li>
+<li>语法格式：$(selector).on( events [, selector ] [, data ], handler )</li>
+<li>参数介绍：<ul>
+<li>第一个参数：events，事件名</li>
+<li>第二个参数：selector,类似delegate</li>
+<li>第三个参数: 传递给事件响应方法的参数</li>
+<li>第四个参数：handler，事件处理方法</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre>    例如：
+    //绑定一个方法
+    $( &quot;#dataTable tbody tr&quot; ).on( &quot;click&quot;, function() {
+      console.log( $( this ).text() );
+    });
+
+    //给子元素绑定事件
+    $( &quot;#dataTable tbody&quot; ).on( &quot;click&quot;, &quot;tr&quot;, function() {
+      console.log( $( this ).text() );
+    });
+
+    //绑定多个事件的方式
+    $( &quot;div.test&quot; ).on({
+      click: function() {
+        $( this ).toggleClass( &quot;active&quot; );
+      }, mouseenter: function() {
+        $( this ).addClass( &quot;inside&quot; );
+      }, mouseleave: function() {
+        $( this ).removeClass( &quot;inside&quot; );
+      }
+    });
+</pre></div>
+
+
+<h3>3.5 one绑定一次事件的方式</h3>
+<ul>
+<li>.one( events [, data ], handler )</li>
+</ul>
+<div class="codehilite"><pre>    例如：
+    $( &quot;p&quot; ).one( &quot;click&quot;, function() {
+      alert( $( this ).text() );
+    });
+</pre></div>
+
+
+<h3>3.6 解绑事件</h3>
+<ul>
+<li>
+<p>unbind解绑 bind方式绑定的事件( 在jQuery1.7以上被 on和off代替)</p>
+<ul>
+<li>$(selector).unbind();         //解绑所有的事件</li>
+<li>$(selector).unbind("click");  //解绑指定的事件</li>
+</ul>
+</li>
+<li>
+<p>undelegate解绑delegate事件</p>
+<ul>
+<li>$( "p" ).undelegate();            //解绑所有的delegate事件</li>
+<li>$( "p" ).undelegate( "click" );   //解绑所有的click事件</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre>    例如：
+    var foo = function () {
+      // Code to handle some kind of event
+    };
+
+    // ... Now foo will be called when paragraphs are clicked ...
+    $( &quot;body&quot; ).delegate( &quot;p&quot;, &quot;click&quot;, foo );
+
+    // ... foo will no longer be called.
+    $( &quot;body&quot; ).undelegate( &quot;p&quot;, &quot;click&quot;, foo );
+</pre></div>
+
+
+<ul>
+<li>off解绑on方式绑定的事件<ul>
+<li>$( "p" ).off();</li>
+<li>$( "p" ).off( "click", "**" );    // 解绑所有的click事件，两个*表示所有</li>
+<li>$( "body" ).off( "click", "p", foo );</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre>    案例1：
+    var foo = function() {
+      // Code to handle some kind of event
+    };
+
+    // ... Now foo will be called when paragraphs are clicked ...
+    $( &quot;body&quot; ).on( &quot;click&quot;, &quot;p&quot;, foo );
+
+    // ... Foo will no longer be called.
+    $( &quot;body&quot; ).off( &quot;click&quot;, &quot;p&quot;, foo );
+
+    案例2：（了解）解绑命名空间的方式：
+    var validate = function() {
+      // Code to validate form entries
+    };
+
+    // Delegate events under the &quot;.validator&quot; namespace
+    $( &quot;form&quot; ).on( &quot;click.validator&quot;, &quot;button&quot;, validate );
+
+    $( &quot;form&quot; ).on( &quot;keypress.validator&quot;, &quot;input[type=&#39;text&#39;]&quot;, validate );
+
+    // Remove event handlers in the &quot;.validator&quot; namespace
+    $( &quot;form&quot; ).off( &quot;.validator&quot; );
+</pre></div>
+
+
+<h3>3.7 触发事件</h3>
+<ul>
+<li>简单事件触发<ul>
+<li>$(selector).click(); //触发 click事件</li>
+</ul>
+</li>
+<li>trigger方法触发事件<ul>
+<li>$( "#foo" ).trigger( "click" );</li>
+</ul>
+</li>
+<li>triggerHandler触发 事件响应方法，不触发浏览器行为<ul>
+<li>$( "input" ).triggerHandler( "focus" );</li>
+</ul>
+</li>
+</ul>
+<h3>3.8 event对象的简介</h3>
+<ul>
+<li>
+<p>event.data            //传递的额外事件响应方法的额外参数</p>
+</li>
+<li>
+<p>event.currentTarget   //在事件响应方法中等同于this，当前Dom对象</p>
+</li>
+<li>
+<p><strong>event.target </strong>         //事件触发源，不一定===this</p>
+</li>
+<li>
+<p><strong>event.pageX</strong>           //The mouse position relative to the left edge of the document</p>
+</li>
+<li>
+<p><strong>event.pageY</strong></p>
+</li>
+<li>
+<p><strong>event.stopPropagation()</strong>//阻止事件冒泡</p>
+</li>
+<li>
+<p><strong>e.preventDefault();</strong>    //阻止默认行为</p>
+</li>
+<li>
+<p>event.type                 //事件类型：click，dbclick...</p>
+</li>
+<li>event.which                //鼠标的按键类型：左1 中2 右3</li>
+</ul>
+<div class="codehilite"><pre>    案例：07图片跟随案例.html
+</pre></div>
+
+
+<h3>jQuery其他补充</h3>
+<ul>
+<li>
+<p>链式编程： end()补充</p>
+<ul>
+<li>补充五角星 评论案例</li>
+<li>第一步：鼠标移入，当前五角星和前面的五角星变实体。后面的变空心五角星</li>
+<li>第二步：鼠标点击的时候，为当前元素添加clicked类，其他的移除clicked类</li>
+<li>第三步：当鼠标移开整个评分控件的时候，把clicked的之前的五角星显示实心</li>
+</ul>
+</li>
+<li>
+<p>隐式迭代</p>
+</li>
+<li>
+<p>map函数</p>
+<ul>
+<li>$.map(arry,function(object,index){}) 返回一个新的数组</li>
+<li>$("li").map(function(index, element){}) <em>注意参数的顺序是反的</em></li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre>        var newArr = $.map($(&quot;li&quot;), function(i, e) {
+            return $(e).text() + i;//每一项返回的结果组成新数组
+        });
+
+        var newArr = $(&quot;li&quot;).map(function(elem, index){
+            console.log(&quot;elem:&quot; + elem);
+            console.log(&quot;index:&quot; + index);
+            retrun index;
+        });
+</pre></div>
+
+
+<ul>
+<li>each函数<ul>
+<li>$.each(array, function(index, object){})</li>
+<li>$("li").each(index, element )</li>
+<li>参数的顺序是一致的。</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre>    例如：
+    $( &quot;li&quot; ).each(function() {
+      $( this ).addClass( &quot;foo&quot; );
+    });
+
+    $( &quot;li&quot; ).each(function( index ) {
+      console.log( index + &quot;: &quot; + $( this ).text() );
+    });
+
+    $( &quot;div&quot; ).each(function( index, element ) {});
+</pre></div>
+
+
+<p>+noConflict 全局对象污染冲突</p>
+        </article>
+      </div>
+    </div>
+  </body>
+</html>

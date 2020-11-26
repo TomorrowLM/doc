@@ -1,0 +1,31 @@
+{
+  "normalStoreUrl": "https://sylvia-apptest-store.mybigcommerce.com/",
+  "port": 3000,
+  "customLayouts": {
+    "brand": {},
+    "category": {},
+    "page": {
+          "": "/trade-professional-application/",
+          "": "/dashboard/",
+          "": "/shopping-lists/",
+          "": "/shopping-list/",
+          "": "/user-management/",
+          "": "/orderdetail/",
+          "": "/quick-order-pad/",
+          "": "/address-book/",
+          "": "/create-quote/",
+          "": "/quote-list/",
+          "": "/quote-detail/",
+          "": "/quote-edit/",
+          "": "/buy-again/"
+        },
+    "product": {}
+  },
+  "clientId": "npjs1ubfnbxqqhmjxazbfy0cosfq4s4",
+  "accessToken": "4styh7u835bcum9mt797qws9wh062i"
+}
+
+
+
+
+
