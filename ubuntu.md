@@ -136,6 +136,8 @@ unproxy
 
 # 命令
 
+
+
 ## **删除缓存**
 
 **1.非常有用的清理命令：                                                                                                                                      **sudo apt-get autoclean        清理旧版本的软件缓存
@@ -163,6 +165,8 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 
 ## **软件**
 
+### 安装
+
 输入`dpkg --list` ,按下Enter键，终端输出以下内容，显示的是你电脑上安装的所有软件。 
 
 ```
@@ -177,7 +181,7 @@ sudo dpkg -r linuxqq
 sudo apt-get dist-upgrade 
 ```
 
-### 1.截图软件flameshot
+#### 1.截图软件flameshot
 
 ```
 sudo apt-get install flameshot
@@ -191,7 +195,7 @@ sudo apt-get install flameshot
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20190710114019202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmd5dWFua2wxMjM=,size_16,color_FFFFFF,t_70)
 
-### 2.zsh（终端）
+#### 2.zsh（终端）
 
 1.安装zsh
 2.在根目录下的.zshrc文件中可以添加插件
@@ -219,10 +223,19 @@ git clone https://github.com/paulirish/git-open.git $ZSH_CUSTOM/plugins/git-open
 
 ```
 
-//切换终端
+//切换zsh终端
 chsh -s /bin/zsh
 
 echo $SHELL
+```
+
+```
+//安装zsh后nvm、npm失效
+安装zsh后原来安装的nvm及npm都失效了
+查看原来的配置nvm的信息还在
+
+解决方法：
+在 ~/.zshrc 中再次添加原nvm在 ~/.bashrc 中的配置(搜索export可找到nvm配置)，并 source ~/.zshrc 即可
 ```
 
 3.将命令行翻墙脚本放在.zshrc文件中
@@ -231,6 +244,25 @@ echo $SHELL
 alias proxy="export all_proxy=socks5://127.0.0.1:1089"
 alias unproxy="unset all_proxy"
 ```
+
+### ubuntu环境下软件出错问题
+
+#### 1.vscode
+
+```
+1.Visual Studio Code无法监视此大工作空间中的文件更改
+查看当前限制：
+cat /proc/sys/fs/inotify/max_user_watches
+可以通过编辑/etc/sysctl.conf,并将此行添加到文件末尾来将限制增加到最大。
+
+fs.inotify.max_user_watches=524288
+然后可以通过运行加载新值sudo sysctl -p。
+
+524,288是可以查看的最大文件数，但是，如果您的环境特别受内存限制，则可能希望减少文件数。每个文件监视占用1080个字节，因此假设所有524,288个监视都被消耗，则导致大约540 MiB的上限。
+
+```
+
+
 
 ## **ps进程指令**
 
@@ -303,10 +335,35 @@ dpkg --get-selections|grep linux
 sudo apt-get remove linux-image-2.6.32-22-generic
 ```
 
-##  查看文件信息
+##  文件
+
+``` 
+创建目录mkdir
+创建文件touch
+查询绝对路径pwd
+将文件1复制到文件2或者某个路径中       cp 文件1 	文件2/路径 
+移动文件  mv 
+重命名   mv 文件1	文件2
+```
 
 ```
-ls     ll(文件详细信息)
+ls     
+ll(文件详细信息)
+```
+
+## vim
+
+```
+vim 文件
+插入模式：i
+
+正常模式:esc
+复制一行/N行			yy /Nyy
+粘贴			p
+剪切一行/N行			dd/Ndd
+撤销		u
+
+命令模式：shift+：
 ```
 
 
@@ -558,7 +615,11 @@ update core_config_data set value = 'http://infinix.local/pub/media/' where path
 
 - 做完以上操作后，通过浏览器访问该项目
 
+### 创建admin账号
 
+```
+php bin/magento admin:user:create --admin-firstname=li --admin-lastname=ming --admin-email=tom.li@example.com --admin-user=tom.li --admin-password=123456tom
+```
 
 
 
