@@ -28,11 +28,33 @@ git config --list
 git config --global --unset user.name
 ```
 
-
-
 ```
 $ git config --global --unset user.name “username”
 $ git config --global --unset user.email "email"
+```
+
+查看当前用户（global）配置
+
+```
+git config --global  --list
+```
+
+查看当前仓库配置信息
+
+```
+git config --local  --list
+```
+
+查看user.name
+
+```
+git config user.name
+```
+
+查看user.email
+
+```
+git config user.email
 ```
 
 1. 配置用户信息	
