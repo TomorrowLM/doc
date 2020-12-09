@@ -138,7 +138,7 @@ unproxy
 
 
 
-## **删除缓存**
+## **删除**
 
 **1.非常有用的清理命令：                                                                                                                                      **sudo apt-get autoclean        清理旧版本的软件缓存
 sudo apt-get clean          清理所有软件缓存
@@ -170,15 +170,22 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 输入`dpkg --list` ,按下Enter键，终端输出以下内容，显示的是你电脑上安装的所有软件。 
 
 ```
-//安装
+//安装软件包
 sudo dpkg -i  
+//安装软件
+ sudo apt-get install
 //安装出错，修复依赖
 sudo apt-get install -f
 //卸载
 sudo dpkg -r linuxqq 
+sudo apt-get remove  linuxqq 
 
-//更新
+//更新软件信息数据库
+sudo apt-get update
 sudo apt-get dist-upgrade 
+
+//进行系统升级
+sudo  apt-get upgrade, sudo apt-get distupgrade
 ```
 
 #### 1.截图软件flameshot
@@ -244,6 +251,57 @@ echo $SHELL
 alias proxy="export all_proxy=socks5://127.0.0.1:1089"
 alias unproxy="unset all_proxy"
 ```
+
+#### 3.dingding
+
+- https://github.com/nashaofu/dingtalk
+
+#### 压缩和解压
+
+**rar**
+
+压缩功能
+
+```shell
+sudo apt-get install rar
+```
+
+解压功能
+
+```shell
+sudo apt-get install unrar
+```
+
+使用
+
+1. 可以直接在UI界面使用了
+2. `rar x test.rar`
+
+**.tar**
+
+解包：tar xvf FileName.tar
+
+打包：tar cvf FileName.tar DirName
+
+**.gz**
+
+解压1：gunzip FileName.gz
+
+解压2：gzip -d FileName.gz
+
+压缩：gzip FileName
+
+**.tar.gz 和 .tgz**
+
+解压：tar zxvf FileName.tar.gz
+
+压缩：tar zcvf FileName.tar.gz DirName
+
+**.zip**
+
+解压：unzip FileName.zip
+
+压缩：zip FileName.zip DirName
 
 ### ubuntu环境下软件出错问题
 
@@ -418,6 +476,8 @@ docker安装教程：菜鸟教程
 
 # magento
 
+注意：项目运行时，不开VPN
+
 ## docker加载环境
 
 1. git拉取alpine-dnmp到本地
@@ -539,19 +599,25 @@ nginx -s reload
 ```
 // TODO:
 docker-compose exec mysql bash
-//
+
+//查询需要修改所有的 url
 select * from core_config_data
 select * from core_config_data where path like '%url%';
 
-
 //执行命令，将域名修改为我们本地创建的虚拟域名
-
 update core_config_data set value = 'http://infinix.local/' where path = 'web/unsecure/base_url';
 update core_config_data set value = 'http://infinix.local/' where path = 'web/secure/base_url';
 update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/unsecure/base_media_url';
 update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/secure/base_media_url';
 update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/unsecure/base_media_url';
 update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/secure/base_media_url';
+
+
+//查询需要修改所有的base url
+select * from core_config_data where value LIKE '%http://infinixng.mez100.cn:8035/%';
+
+update core_config_data set value = 'http://infinixng.mez100.cn/' where value = 'http://infinixng.mez100.cn:8035/';
+update core_config_data set value = 'http://infinixng.mez100.cn/static/' where value = 'http://infinixng.mez100.cn:8035/static/';
 ```
 
 - - 注意查看导入过程有无报错，如果无报错那说明数据库导入成功
@@ -598,12 +664,12 @@ update core_config_data set value = 'http://infinix.local/pub/media/' where path
   docker环境下，要进入docker的php容器中才能执行下面的命令
 
   ```
-  //在php7.2中执行
-  docker exec -it php72 sh
+  //在php7.1中执行(可在core/conf/nginx/conf/conf.d/global.conf中选择php版本)
+  docker exec -it php71 sh
   ```
 
   ```
-  // 1.编译模块文件
+  // 1.编译模块文件(可能会报缺失文件，可以在其他项目中拷贝)
   php bin/magento setup:upgrade && php bin/magento setup:di:compile
   
   // 2.编译静态资源文件
@@ -623,9 +689,130 @@ php bin/magento admin:user:create --admin-firstname=li --admin-lastname=ming --a
 
 
 
+## 恢复项目问题解决
 
+### 1.如何查看问题
 
+项目目录下的/var/log/system.log中查看
 
+### 2遇到的问题
 
+- `docker-compose ps`查看是否环境都已经启动
 
+  ```
+  docker-compose start 容器名
+  ```
+
+- 权限问题
+
+  ```
+  sudo chmod -R 777  项目文件目录
+  ```
+
+- 普遍上，删除在项目根目录下的
+
+  ```
+generated下的文件
+  pub/static/frontend下的文件
+var下的文件
+  ```
+
+  执行命令
+
+  ```
+  // 1.编译模块文件(可能会报缺失文件，可以在其他项目中拷贝)
+  php bin/magento setup:upgrade && php bin/magento setup:di:compile
+  
+  // 2.编译静态资源文件
+  php bin/magento setup:static-content:deploy -f
+  
+  // 3.清楚缓存
+  php bin/magento c:c
+  ```
+
+- Notice: Undefined index: redis
+
+  项目根目录app/etc/env.php中的db下添加
+
+  ```
+   'redis' =>
+      array (
+          'connection' =>
+              array (
+                  'default' =>
+                      array (
+                          'host' => 'redis',
+                          'port' => 6379,
+                          'username' => 'root',
+                          'password' => '',
+                          'timeout' => '',
+                          'persistent' => '',
+                          'key_prefix' => 'ng_coupon_active_'
+                      ),
+              ),
+      ),
+  ```
+
+  
+  
+
+## 项目运行和提交流程
+
+### 项目运行
+
+- 检测docker环境是否开启（一般是开启的）
+
+- 进入php71环境，检测是否安装全局下的gulp-cli
+
+  ```
+  npm list -g --depth 0
+  ```
+
+- 进入指定的项目路径，`npm i`下载node_modules包
+
+- 修改文件
+
+  - login:
+
+    - 将项目根目录下的bbs/config/config_ucenter.php文件中
+
+      ```
+      define('UC_APPID', '23'); 改为
+      define('UC_APPID', '17');
+      
+      账号xptest07@xparksilk.com
+      密码12345678
+      ```
+
+- 执行`gulp`命令，查看gulp相关命令信息
+
+- 编译 infinix_new_en
+
+  ```
+  gulp serve -t infinix_new_en
+  ```
+
+### 提交流程
+
+- git status -s
+
+  发现有很多不需要的map文件
+
+- sudo rm -rf app/design/frontend
+
+- git status -s
+
+  出现我们修改的内容，注意config.php不能add
+
+  ![image-20201204152240365](/home/silk/.config/Typora/typora-user-images/image-20201204152240365.png)
+
+- 提交修改的文件
+
+  ![image-20201204152354244](/home/silk/.config/Typora/typora-user-images/image-20201204152354244.png)
+
+- 提交编译后的文件
+
+  ![image-20201204152422949](/home/silk/.config/Typora/typora-user-images/image-20201204152422949.png)
+
+- git push到指定的分支
 
