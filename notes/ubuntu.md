@@ -132,15 +132,21 @@ proxy
 unproxy
 ```
 
-   
+
+
+# ubuntu的swap虚拟内存大小修改
+
+https://linuxhandbook.com/increase-swap-ubuntu/   
+
+
 
 # 命令
 
-
-
 ## **删除**
 
-**1.非常有用的清理命令：                                                                                                                                      **sudo apt-get autoclean        清理旧版本的软件缓存
+**1.非常有用的清理命令：                                                                                                                                      **
+
+sudo apt-get autoclean        清理旧版本的软件缓存
 sudo apt-get clean          清理所有软件缓存
 sudo apt-get autoremove       删除系统不再使用的孤立软件
 这三个命令主要清理升级缓存以及无用包的。
@@ -155,6 +161,8 @@ ls ~/.mozilla/firefox/*.default/Cache
 sudo rm -rf  + 要删除的文件   进行删除
 -r 表示向下递归
 -f 表示强制删除，不作任何提示
+
+rm -rf generated/*
 ```
 
 ## **权限**
@@ -402,6 +410,8 @@ sudo apt-get remove linux-image-2.6.32-22-generic
 将文件1复制到文件2或者某个路径中       cp 文件1 	文件2/路径 
 移动文件  mv 
 重命名   mv 文件1	文件2
+
+删除 rm -rf generated/*
 ```
 
 ```
@@ -576,25 +586,28 @@ nginx -s reload
 
 - 先将备份的数据库文件先恢复到本地数据库中
 
-- - 登录到mysql
+- 登录到mysql
 
-- - - mysql -uroot -p
+  - mysql -uroot -p
 
-- - 创建数据库
+  - 创建数据库
 
-- - - create database 数据库名 character set utf8;
+  - create database 数据库名 character set utf8;
 
-- - 打开数据库
+  - 打开数据库
 
-- - - use 数据库名
+  - use 数据库名
 
-- - 导入数据库
+  - 导入数据库
 
-- - - source 数据库文件绝对路径
+    source 数据库文件绝对路径
 
-      docker环境下，一般是将文件放在/alpine-dnmp/share-files中，导入的绝对路径是/ var/www/share-files/sql
+    docker环境下，一般是将文件放在/alpine-dnmp/share-files中，导入的绝对路径是/ var/www/share-files/sql
 
-- - 修改字段内容
+  - 修改字段内容
+
+  - ga,pk,kny
+
 
 ```
 // TODO:
@@ -605,33 +618,27 @@ select * from core_config_data
 select * from core_config_data where path like '%url%';
 
 //执行命令，将域名修改为我们本地创建的虚拟域名
-update core_config_data set value = 'http://infinix.local/' where path = 'web/unsecure/base_url';
-update core_config_data set value = 'http://infinix.local/' where path = 'web/secure/base_url';
-update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/unsecure/base_media_url';
-update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/secure/base_media_url';
-update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/unsecure/base_media_url';
-update core_config_data set value = 'http://infinix.local/pub/media/' where path = 'web/secure/base_media_url';
+update core_config_data set value = 'http://infinixmo.mez100.cn/' where path = 'web/unsecure/base_url';
+update core_config_data set value = 'http://infinixmo.mez100.cn/' where path = 'web/secure/base_url';
+update core_config_data set value = 'http://infinixmo.local/pub/media/' where path = 'web/unsecure/base_media_url';
+update core_config_data set value = 'http://infinixmo.local/pub/media/' where path = 'web/secure/base_media_url';
+update core_config_data set value = 'http://infinixmo.local/pub/media/' where path = 'web/unsecure/base_media_url';
+update core_config_data set value = 'http://infinixmo.local/pub/media/' where path = 'web/secure/base_media_url';
 
 
 //查询需要修改所有的base url
-select * from core_config_data where value LIKE '%http://infinixng.mez100.cn:8035/%';
+select * from core_config_data where value LIKE '%http://infinixmo.mez100.cn:8035/%';
 
-update core_config_data set value = 'http://infinixng.mez100.cn/' where value = 'http://infinixng.mez100.cn:8035/';
-update core_config_data set value = 'http://infinixng.mez100.cn/static/' where value = 'http://infinixng.mez100.cn:8035/static/';
+update core_config_data set value = 'http://infinixpk.mez100.cn/' where value = 'http://infinixpk.mez100.cn:8035/';
+update core_config_data set value = 'http://infinixpk.mez100.cn/static/' where value = 'http://infinixpk.mez100.cn:8035/static/';
 ```
 
-- - 注意查看导入过程有无报错，如果无报错那说明数据库导入成功
+- 注意查看导入过程有无报错，如果无报错那说明数据库导入成功
 
 - 将源码通过git克隆到本地
 
-  - 给文件权限
-
-    ```
-    sudo chmod -R 777  项目文件目录
-    ```
-
 - - 先通过nginx或apache建立虚拟主机
-  - 配置系统hosts
+  - 配置系统hosts(注意修改了docker中的文件，都要重启一下docker环境)
   - 修改源代码配置文件，路径项目根目录app/etc/env.php（没有可以从其他magento项目中可拷贝），在文件中找到以下有备注的部分做修改
 
 ```
@@ -657,6 +664,23 @@ update core_config_data set value = 'http://infinixng.mez100.cn/static/' where v
             ]
         ]
     ],
+    
+    'redis' =>
+    array (
+        'connection' =>
+            array (
+                'default' =>
+                    array (
+                        'host' => 'redis',
+                        'port' => 6379,
+                        'username' => 'root',
+                        'password' => '',
+                        'timeout' => '',
+                        'persistent' => '',
+                        'key_prefix' => 'ng_coupon_active_'
+                    ),
+            ),
+    ),
 ```
 
 - 在项目根目录下做一些，模块编译命令操作
@@ -679,6 +703,12 @@ update core_config_data set value = 'http://infinixng.mez100.cn/static/' where v
   php bin/magento c:c
   ```
 
+- 给文件权限
+
+  ```
+  sudo chmod -R 777  项目文件目录
+  ```
+
 - 做完以上操作后，通过浏览器访问该项目
 
 ### 创建admin账号
@@ -693,7 +723,13 @@ php bin/magento admin:user:create --admin-firstname=li --admin-lastname=ming --a
 
 ### 1.如何查看问题
 
-项目目录下的/var/log/system.log中查看
+- 项目目录下的/var/log/system.log中查看
+
+- 配置问题
+
+  项目根目录下的/pub/index.php,浏览器显示123，则配置是正确的
+
+  ![](/home/silk/.config/Typora/typora-user-images/image-20201210151856495.png)
 
 ### 2遇到的问题
 
@@ -753,8 +789,6 @@ var下的文件
       ),
   ```
 
-  
-  
 
 ## 项目运行和提交流程
 
@@ -772,7 +806,7 @@ var下的文件
 
 - 修改文件
 
-  - login:
+  - login登陆时:
 
     - 将项目根目录下的bbs/config/config_ucenter.php文件中
 
@@ -805,6 +839,10 @@ var下的文件
   出现我们修改的内容，注意config.php不能add
 
   ![image-20201204152240365](/home/silk/.config/Typora/typora-user-images/image-20201204152240365.png)
+
+- git checkout -- app/design/frontend/
+
+- 编译生产环境gulp -t infinix_en_mb -p和gulp -t infinix_new_en  -p
 
 - 提交修改的文件
 

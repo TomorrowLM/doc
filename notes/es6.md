@@ -740,7 +740,53 @@ iterator.next() // { value: 1, done: false }
 
 ### async
 
-  Generator 函数的语法糖 , 使得异步操作变得更加方便。 
+Generator 函数的语法糖 , 使得异步操作变得更加方便。 
+
+**异步**
+
+所谓"异步"，简单说就是一个任务分成两段，先执行第一段，然后转而执行其他任务，等做好了准备，再回过头执行第二段。
+
+**回调函数**
+
+JavaScript语言对异步编程的实现，就是回调函数。所谓回调函数，就是把任务的第二段单独写在一个函数里面，等到重新执行这个任务的时候，就直接调用这个函数。它的英语名字callback，直译过来就是"重新调用"。
+
+读取文件进行处理，是这样写的。
+
+```javascript
+fs.readFile('/etc/passwd', function (err, data) {
+  if (err) throw err;
+  console.log(data);
+});
+```
+
+上面代码中，readFile函数的第二个参数，就是回调函数，也就是任务的第二段。等到操作系统返回了`/etc/passwd`这个文件以后，回调函数才会执行。
+
+**Promise**
+
+回调函数本身并没有问题，它的问题出现在多个回调函数嵌套。假定读取A文件之后，再读取B文件，代码如下。
+
+```javascript
+fs.readFile(fileA, function (err, data) {
+  fs.readFile(fileB, function (err, data) {
+    // ...
+  });
+});
+```
+
+代码不是纵向发展，而是横向发展，很快就会乱成一团，无法管理。这种情况就称为"回调函数地狱"（callback hell）
+
+
+
+ES6诞生以前，异步编程的方法，大概有下面四种。
+
+- 回调函数
+- 事件监听
+- 发布/订阅
+- Promise 对象
+
+
+
+
 
  `async`函数对 Generator 函数的改进，体现在以下四点。 
 
@@ -879,4 +925,4 @@ let foo = await fooPromise;
 let bar = await barPromise;
 ```
 
-### Class和Class的继承---  
+### Class和Class的继承

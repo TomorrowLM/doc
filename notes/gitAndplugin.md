@@ -169,8 +169,10 @@ cut 文件名										 获取文件内容
 
 ```
 远程仓库的移除与重命名
-$ git remote rm paul
-$ git remote rename pb paul       pb 重命名为 paul
+ git remote rm paul				
+ git push origin --delete main
+ git remote rename pb paul       pb 重命名为 paul
+
 
 git push --set-upstream origin wangxiao
 将本地的分支推送远程上

@@ -48,9 +48,13 @@ JavaScript 程序可以采用事件驱动（event-driven）和非阻塞式（non
 
 #### 1.语句
 
- 语句以分号结尾，一个分号就表示一个语句结束。多个语句可以写在一行内。 
+ 表达式是由运算符构成，并运算产生结果的语法结构。每个表达式都会产生一个值,它可以放在任何需要一个值的地方,比如,作为一个函数调用的参数：
+
+ 语句则是由“；（分号）”分隔的句子或命令。如果在表达式后面加上一个“；”分隔符，这就被称为“表达式语句”
 
 #### 2.变量
+
+
 
 ```
 var a = 1;
@@ -81,7 +85,7 @@ if (布尔值) {语句;}
 
 |                                                              |                                                              |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| function_1()<br/>{<br/>if(a==b)<br/>{<br/>代码段1;<br/>}<br/>else<br/>{<br/>代码段2;<br/>}<br/>} | function_2()<br/>{<br/>if(a!=b)<br/>{<br/>代码段2;<br/>return ...;<br/>}<br/>代码段1;<br/>} |
+| function_1()<br/>{<br/>if(a==b)<br/>{<br/>代码段1;<br/>}<br/>else<br/>{<br/>代码段2;<br/>}<br/> | function_2()<br/>{<br/>if(a!=b)<br/>{<br/>代码段2;<br/>return ...;<br/>}<br/>代码段1;<br/>} |
 
 return返回null，起到中断方法执行的效果，只要不return false事件处理函数将会继续执行，表单将提交
 
@@ -127,19 +131,28 @@ while(i < 100) {
 ## 数据类型概述
 
 - 数值（number）：整数和小数（比如`1`和`3.14`）
+
 - 字符串（string）：文本（比如`Hello World`）。
+
 - 布尔值（boolean）：表示真伪的两个特殊值，即`true`（真）和`false`（假）
+
 - `undefined`：表示一个声明了没有赋值的变量，变量只声明的时候值默认是undefined。
+
 - `null`：表示空值，即此处的值为空。
+
 - 对象（object）：各种值组成的集合。（typeof Array/null -->object）
+
+  可以分成三个子类型。
+
+  - 狭义的对象（object）
+  - 数组（array）
+  - 函数（function）
 
 **JavaScript 有三种方法，可以确定一个值到底是什么类型。**
 
 - `typeof`运算符
 - `instanceof`运算符
 - `Object.prototype.toString`方法
-
-<img src="X:\Users\silk\Desktop\web\知识点\pic\image_2020_10_16T02_03_52_165Z.png" alt="image_2020_10_16T02_03_52_165Z" style="zoom: 80%;" />
 
 ```
 typeof null // "object"
@@ -154,7 +167,7 @@ Number(undefined) // NaN
 
  **`null`是一个表示“空”的对象，转为数值时为`0`**；`undefined`是一个表示"此处无定义"的原始值，转为数值时为`NaN`。 
 
-##### **布尔类型的隐式转换**：
+**布尔类型的隐式转换**：
 
 转换为true  	 非空字符串  非0数字  true 任何对象
 转换成false  	空字符串  0  false  null  undefined NaN
@@ -651,7 +664,17 @@ a.forEach(function (x, i) {
 
 ## 运算符
 
-##### 算术运算符
+优先级从高到底
+
+1. ()  优先级最高
+2. 一元运算符  ++   --   !
+3. 算数运算符  先*  /  %   后 +   -
+4. 关系运算符  >   >=   <   <=
+5. 相等运算符   ==   !=    ===    !==
+6. 逻辑运算符 先&&   后||
+7. 赋值运算符
+
+### 算术运算符
 
 - **加法运算符**：`x + y`
 - **减法运算符**： `x - y`
@@ -664,7 +687,7 @@ a.forEach(function (x, i) {
 - **数值运算符**： `+x`
 - **负数值运算符**：`-x`
 
-###### 加法
+#### 加法
 
 JavaScript 允许非数值的相加。
 
@@ -676,7 +699,7 @@ true + true // 2
 false + 'a' // "falsea"
 ```
 
-###### 指数运算符
+#### 指数运算符
 
 指数运算符（`**`）完成指数运算，前一个运算子是底数，后一个运算子是指数。
 
@@ -684,7 +707,7 @@ false + 'a' // "falsea"
 2 ** 4 // 16
 ```
 
-##### 比较运算符
+### 比较运算符
 
 ###### 非相等运算符：字符串的比较
 
@@ -808,62 +831,215 @@ null === null // true
   [2] == true // false
   ```
 
-  
+## 错误处理机制
 
-## 
+JavaScript 解析或运行时，一旦发生错误，引擎就会抛出一个错误对象。JavaScript 原生提供`Error`构造函数，所有抛出的错误都是这个构造函数的实例。
 
-### 重流和重绘
+```
+var err = new Error('出错了');
+err.message // "出错了"
+```
 
- 渲染树转换为网页布局，称为“布局流”（flow）；布局显示到页面的这个过程，称为“绘制”（paint）。它们都具有阻塞效应，并且会耗费很多时间和计算资源。 
+- **message**：错误提示信息
+- **name**：错误名称（非标准属性）
+- **stack**：错误的堆栈（非标准属性）
 
- 重流和重绘并不一定一起发生，重流必然导致重绘，重绘不一定需要重流。比如改变元素颜色，只会导致重绘，而不会导致重流；改变元素的布局，则会导致重绘和重流。 
+### SyntaxError 对象
 
+`SyntaxError`对象是解析代码时发生的语法错误。
 
+```
+// 变量名错误
+var 1a;
+// Uncaught SyntaxError: Invalid or unexpected token
 
+// 缺少括号
+console.log 'hello');
+// Uncaught SyntaxError: Unexpected string
+```
 
+### ReferenceError 对象
 
+`ReferenceError`对象是引用一个不存在的变量时发生的错误。
 
+### RangeError 对象
 
+`RangeError`对象是一个值超出有效范围时发生的错误。
 
+### TypeError 对象
 
+`TypeError`对象是变量或参数不是预期类型时发生的错误。比如，对字符串、布尔值、数值等原始类型的值使用`new`命令，就会抛出这种错误，因为`new`命令的参数应该是一个构造函数。
 
+```
+new 123
+// Uncaught TypeError: number is not a func
 
+var obj = {};
+obj.unknownMethod()
+// Uncaught TypeError: obj.unknownMethod is not a function
+```
 
+上面代码的第二种情况，调用对象不存在的方法，也会抛出`TypeError`错误，因为`obj.unknownMethod`的值是`undefined`，而不是一个函数。
 
-优先级从高到底
+### URIError 对象
 
-	1. ()  优先级最高
-	2. 一元运算符  ++   --   !
-	3. 算数运算符  先*  /  %   后 +   -
-	4. 关系运算符  >   >=   <   <=
-	5. 相等运算符   ==   !=    ===    !==
-	6. 逻辑运算符 先&&   后||
-	7. 赋值运算符
+`URIError`对象是 URI 相关函数的参数不正确时抛出的错误，主要涉及`encodeURI()`、`decodeURI()`、`encodeURIComponent()`、`decodeURIComponent()`、`escape()`和`unescape()`这六个函数。
 
+### 自定义错误
 
-​		
-arguments对象中存储了传递的所有的实参
-自调用函数
-​    (function () {
-alert(123);
-})();
-JavaScript的对象是无序属性的集合。其属性可以包含基本值、对象或函数。
-​    对象创建方式：1.对象字面量
+```
+function UserError(message) {
+  this.message = message || '默认信息';
+  this.name = 'UserError';
+}
+
+UserError.prototype = new Error();
+UserError.prototype.constructor = UserError;
+```
+
+### throw 语句
+
+```
+if (x <= 0) {
+  throw new Error('x 必须为正数');
+}
+// Uncaught ReferenceError: x is not defined
+```
+
+上面代码中，`throw`抛出的是一个`UserError`实例。
+
+`throw`也可以抛出自定义错误。
+
+```
+function UserError(message) {
+  this.message = message || '默认信息';
+  this.name = 'UserError';
+}
+
+throw new UserError('出错了！');
+// Uncaught UserError {message: "出错了！", name: "UserError"}
+```
+
+上面代码中，`throw`抛出的是一个`UserError`实例。
+
+`throw`可以抛出任何类型的值
+
+```
+// 抛出一个字符串
+throw 'Error！';
+// Uncaught Error！
+
+// 抛出一个数值
+throw 42;
+// Uncaught 42
+
+// 抛出一个布尔值
+throw true;
+// Uncaught true
+```
+
+### try...catch 结构
+
+一旦发生错误，程序就中止执行了。JavaScript 提供了`try...catch`结构，允许对错误进行处理，选择是否往下执行。
+
+```
+try {
+  throw new Error('出错了!');
+} catch (e) {
+  console.log(e.name + ": " + e.message);
+  console.log(e.stack);
+}
+```
+
+`try`代码块抛出错误（上例用的是`throw`语句），JavaScript 引擎就立即把代码的执行，转到`catch`代码块，或者说错误被`catch`代码块捕获了。
+
+### finally 代码块
+
+`try...catch`结构允许在最后添加一个`finally`代码块，表示不管是否出现错误，都必需在最后运行的语句。
+
+## 异步操作
+
+### 单线程模型
+
+单线程模型指的是，JavaScript 只在一个线程上运行。也就是说，JavaScript 同时只能执行一个任务，其他任务都必须在后面排队等待。JavaScript 只在一个线程上运行，不代表 JavaScript 引擎只有一个线程。事实上，JavaScript 引擎有多个线程，单个脚本只能在一个线程上运行（称为主线程），其他线程都是在后台配合。
+
+JavaScript 之所以采用单线程，而不是多线程，跟历史有关系。JavaScript 从诞生起就是单线程，原因是不想让浏览器变得太复杂，因为多线程需要共享资源、且有可能修改彼此的运行结果，对于一种网页脚本语言来说，这就太复杂了。如果 JavaScript 同时有两个线程，一个线程在网页 DOM 节点上添加内容，另一个线程删除了这个节点，这时浏览器应该以哪个线程为准？
+
+这种模式的好处是实现起来比较简单，执行环境相对单纯；坏处是只要有一个任务耗时很长，后面的任务都必须排队等着，会拖延整个程序的执行。常见的浏览器无响应（假死），往往就是因为某一段 JavaScript 代码长时间运行（比如死循环），导致整个页面卡在这个地方，其他任务无法执行。JavaScript 语言本身并不慢，慢的是读写外部数据，比如等待 Ajax 请求返回结果。这个时候，如果对方服务器迟迟没有响应，或者网络不通畅，就会导致脚本的长时间停滞。
+
+如果排队是因为计算量大，CPU 忙不过来，倒也算了，但是很多时候 CPU 是闲着的，因为 IO 操作（输入输出）很慢（比如 Ajax 操作从网络读取数据），不得不等着结果出来，再往下执行。JavaScript 语言的设计者意识到，这时 CPU 完全可以不管 IO 操作，挂起处于等待中的任务，先运行排在后面的任务。等到 IO 操作返回了结果，再回过头，把挂起的任务继续执行下去。这种机制就是 JavaScript 内部采用的“**事件循环**”机制（Event Loop）。
+
+为了利用多核 CPU 的计算能力，HTML5 提出 Web Worker 标准，允许 JavaScript 脚本创建多个线程，但是子线程完全受主线程控制，且不得操作 DOM。所以，这个新标准并没有改变 JavaScript 单线程的本质。
+
+#### 同步任务和异步任务
+
+程序里面所有的任务，可以分成两类：同步任务（synchronous）和异步任务（asynchronous）。
+
+同步任务是那些没有被引擎挂起、在主线程上排队执行的任务。只有前一个任务执行完毕，才能执行后一个任务。
+
+异步任务是那些被引擎放在一边，不进入主线程、而进入任务队列的任务。只有引擎认为某个异步任务可以执行了（比如 Ajax 操作从服务器得到了结果），该任务（采用回调函数的形式）才会进入主线程执行。排在异步任务后面的代码，不用等待异步任务结束会马上运行，也就是说，异步任务不具有“堵塞”效应。
+
+举例来说，Ajax 操作可以当作同步任务处理，也可以当作异步任务处理，由开发者决定。如果是同步任务，主线程就等着 Ajax 操作返回结果，再往下执行；如果是异步任务，主线程在发出 Ajax 请求以后，就直接往下执行，等到 Ajax 操作有了结果，主线程再执行对应的回调函数。
+
+#### 任务队列和事件循环
+
+JavaScript 运行时，除了一个正在运行的主线程，引擎还提供一个任务队列（task queue），里面是各种需要当前程序处理的异步任务。
+
+首先，主线程会去执行所有的同步任务。等到同步任务全部执行完，就会去看任务队列里面的异步任务。如果满足条件，那么异步任务就重新进入主线程开始执行，这时它就变成同步任务了。等到执行完，下一个异步任务再进入主线程开始执行。一旦任务队列清空，程序就结束执行。
+
+异步任务的写法通常是回调函数。一旦异步任务重新进入主线程，就会执行对应的回调函数。如果一个异步任务没有回调函数，就不会进入任务队列，也就是说，不会重新进入主线程，因为没有用回调函数指定下一步的操作。
+
+### 事件监听
+
+另一种思路是采用事件驱动模式。异步任务的执行不取决于代码的顺序，而取决于某个事件是否发生。
+
+### 发布/订阅
+
+事件完全可以理解成“信号”，如果存在一个“信号中心”，某个任务执行完成，就向信号中心“发布”（publish）一个信号，其他任务可以向信号中心“订阅”（subscribe）这个信号，从而知道什么时候自己可以开始执行。这就叫做”[发布/订阅模式](https://en.wikipedia.org/wiki/Publish-subscribe_pattern)”（publish-subscribe pattern），又称“[观察者模式](https://en.wikipedia.org/wiki/Observer_pattern)”（observer pattern）。
+
+首先，`f2`向信号中心`jQuery`订阅`done`信号。
+
+```
+jQuery.subscribe('done', f2);
+```
+
+然后，`f1`进行如下改写。
+
+```
+function f1() {
+  setTimeout(function () {
+    // ...
+    jQuery.publish('done');
+  }, 1000);
+}
+```
+
+上面代码中，`jQuery.publish('done')`的意思是，`f1`执行完成后，向信号中心`jQuery`发布`done`信号，从而引发`f2`的执行。
+
+`f2`完成执行后，可以取消订阅（unsubscribe）。
+
+```
+jQuery.unsubscribe('done', f2);	
+```
+
+## 构造函数
+
+1.对象字面量
 var o = {
 name: 'zs',
 age: 18,
 sex: true,
-​    sayHi: function () {
-console.log(this.name);
-}
+sayHi: function () {
+	console.log(this.name);
+	}
 };   
 2.new Object()创建对象
-​    var person = new Object();
-​    person.name = 'lisi';
-​    person.age = 35;
-​    person.job = 'actor';
-​    person.sayHi = function() {
-​    console.log('Hello,everyBody');
+    var person = new Object();
+    person.name = 'lisi';
+    person.age = 35;
+    person.job = 'actor';
+    person.sayHi = function() {
+    console.log('Hello,everyBody');
 }
 3.工厂函数创建对象
 function createPerson(name, age, job) {
@@ -871,32 +1047,37 @@ var person = new Object();
 person.name = name;
 person.age = age;
 person.job = job;
-​    person.sayHi = function(){
+person.sayHi = function(){
 console.log('Hello,everyBody');
-}
+	}
 return person;
-​    }
-​    var p1 = createPerson('张三', 22, 'actor');
-​    4.自定义构造函数，构造函数用于创建一类对象，**首字母要大写**。delete obj.name;删除对象的属性
-​    function Person(name, age, job){
-​    this.name = name;
-​    this.age = age;
-​    this.job = job;
-​    this.sayHi = function(){
-  	 	console.log('Hello,everyBody');
 }
+var p1 = createPerson('张三', 22, 'actor');
+ 4.自定义构造函数，构造函数用于创建一类对象，**首字母要大写**。delete obj.name;删除对象的属性
+    function Person(name, age, job){
+    this.name = name;
+    this.age = age;
+    this.job = job;
+    this.sayHi = function(){
+  	 	console.log('Hello,everyBody');
+	}
 }
 var p1 = new Person('张三', 22, 'actor');
-​    内置对象
-​    		Math.PI						// 圆周率
-​    		Math.random()				// 生成随机数
-​    		Math.floor()/Math.ceil()	 // 向下取整/向上取整
-​      		Math.round()				// 取整，四舍五入
-​    		Math.abs()					// 绝对值
-​		Math.max()/Math.min()		 // 求最大和最小值
 
-Math.sin()/Math.cos()		 // 正弦/余弦
+## 标准库
+
+### Math
+
+Math.PI						// 圆周率
+Math.random()				// 生成随机数
+Math.floor()/Math.ceil()	 // 向下取整/向上取整
+Math.round()				// 取整，四舍五入
+Math.abs()					// 绝对值
+Math.max()/Math.min()		 // 求最大和最小值                                                                                        Math.sin()/Math.cos()		 // 正弦/余弦
 Math.power()/Math.sqrt()	 // 求指数次幂/求平方根
+
+### Array
+
 创建数组对象的两种方式
 
 - 字面量方式
@@ -906,51 +1087,49 @@ Math.power()/Math.sqrt()	 // 求指数次幂/求平方根
 
 - instanceof
 
-// 1 栈操作(先进后出)
+1 栈操作(先进后出)
 push()
 pop() 		//取出数组中的最后一项，修改length属性
-// 2 队列操作(先进先出)
+2 队列操作(先进先出)
 shift()		//取出数组中的第一个元素，修改length属性
 unshift() 	//在数组最前面插入项，返回数组的长度
-// 3 排序方法
+ 3 排序方法
 reverse()	//翻转数组
 sort(); 	//即使是数组sort也是根据字符，从小到大排序
 
 arr.sort(function(a,b){
 			return a-b;
 		})
-// 4 操作方法
+ 4 操作方法
 concat()  	//把参数拼接到当前数组
-slice() 	//从当前数组中截取一个新的数组，不影响原来的数组，参数start从0开始,end从1开始	
-
-substr() 方法返回一个字符串中从指定位置开始到指定字符数的字符。
+slice() 	//从当前数组中截取一个新的数组，不影响原来的数组，参数start从0开始,end从1开始	substr() 方法返回一个字符串中从指定位置开始到指定字符数的字符。
 splice()	//删除或替换当前数组的某些项目，参数start, deleteCount, options(要替换的项目)
-// 5 位置方法
+ 5 位置方法
 indexOf()、lastIndexOf()   //如果没找到返回-1
-// 6 迭代方法 不会修改原数组(可选)  html5
+ 6 迭代方法 不会修改原数组(可选)  html5
 every()、filter()、forEach()、map()、some()
-// 7 方法将数组的所有元素连接到一个字符串中。
+7 方法将数组的所有元素连接到一个字符串中。
 join()
 
-字符串
+### 字符串
 
 charAt()    	//获取指定位置处字符
 charCodeAt()  	//获取指定位置处字符的ASCII码
 str[0]   		//HTML5，IE8+支持 和charAt()等效
-// 2 字符串操作方法
+ 2 字符串操作方法
 concat()   		//拼接字符串，等效于+，+更常用
 slice()    		//从start位置开始，截取到end位置，end取不到
 substring() 	//从start位置开始，截取到end位置，  end取不到
 substr()   		//从start位置开始，截取length个字符
-// 3 位置方法
+ 3 位置方法
 indexOf()   	//返回指定内容在元字符串中的位置，若没有则返回-1是，indexOf('a',2);从位置2开始找到a的位置
 )lastIndexOf() 	//从后往前找，只找第一个匹配的
-// 4 去除空白   
+ 4 去除空白   
 trim()  		//只能去除字符串前后的空白，字符之间的空格不能去掉
-// 5 大小写转换方法
+ 5 大小写转换方法
 to(Locale)UpperCase() 	//转换大写
 to(Locale)LowerCase() 	//转换小写
-// 6 其它
+6 其它
 search() 
 replace(替换，被替换)	替换可为正则表达式
 split()字符转换为数组
@@ -962,127 +1141,149 @@ arr.join('');
 
 字符串具有不可变，重新给变量赋值，原来的值仍在内存中，要获得新的值要重新定义变量
 
------------------------------------API------------------------------------
-每个元素都是对象，对象都有属性，eg:herf,title,id,className,src
+## DOM和BOM
+
 this的几种情况
-    // 1 普通函数中的this  ->  window
-    // 2 构造函数中的this  ->  是当前构造函数创建的对象
-    // 3 方法中的this      ->  方法所属的对象
-    // 4 事件处理函数中的this   ->  事件源，谁调用的该事件this就指向谁
+
+```
+1 普通函数中的this  ->  window
+2 构造函数中的this  ->  是当前构造函数创建的对象
+3 方法中的this      ->  方法所属的对象
+4 事件处理函数中的this   ->  事件源，谁调用的该事件this就指向谁
+```
+
+```
 console.log(box.innerHTML);获取内容的时候，如果内容中有标签，会把标签页获取到,原封不动把内容获取到
 console.log(box.innerText);获取内容的时候，如果内容中有标签，会把标签过滤掉,innerText 会把前后的换行和空白都去掉
 console.log(box.textContent);如果内容中有标签，会把标签过滤掉,不会把前后的换行和空白都去掉
-query  查询	Selector  选择器	根据选择器来查找元素	document.querySelector();eg document.querySelector('#main');
-var array = [];
-      for (var i = 0; i < inputs.length; i++) {
-        var input = inputs[i];
-        // 判断是否是文本框
-        if (input.type === 'text') {
-	//给array添加数组元素
-           array.push(input.value);
-        }
-      }
-	//每个元素添加|并连接
-      console.log(array.join('|'));
-    }
-获取焦点的事件  focus	失去焦点的事件  blur
-my$('er').className.replace('hide', 'show')
-判断当前的子节点是否是元素节点	if (node.nodeType === 1)
-mv.parentNode	父元素		mv.childNodes  所有子节点	mv.children    所有的子元素
-box.firstChild   获取第一个子节点	 box.firstElementChild    获取第一个子元素， 有兼容性问题，从IE9以后支持
-box.lastChild    获取最后一个子节点	box.lastElementChild     获取最后一个子元素， 有兼容性问题，从IE9以后支持
-nextSibling  下一个兄弟节点		nextElementSibling   下一个兄弟元素
-previousSibling   上一个兄弟节点	 previousElementSibling    上一个兄弟元素
- 当点击按钮的时候使用document.write()输出内容，会把之前的整个页面覆盖掉
-弹出提示，让用户输入内容var userName = prompt('请输入姓名', '张三');	  var isSure = confirm('是否要删除数据？');
-setTimeout()定时炸弹隔一段时间执行，并且只会执行一次	setInterval()闹钟隔一段时间执行，并且会重复执行  取消定时器的执行clearTimeout(timerId);  
-offsetleft/top 外边距 offsetwidth/height 内容+内边距padding+边框border  有定位是相对于定位的位置计算，没有定位以body为相对定位
-clientleft/top外边距 clientwidth/height 内容+内边距 
-scrollleft/top 滚动出去的距离 scrollwidth/height 总的宽/高（显示和隐藏的）
-addEventListener，attachEvent给同一个对象的同一个事件注册多个事件处理函数
- e 事件参数（事件对象）	e.target 是真正触发事件的对象  e.target.style.backgroundColor = 'red';
-e.type点击对象的事件类型
-浏览器的可视区域的坐标e.clientX/Y 鼠标在当前页面的位置e.pageX/Y
---------------------------高级--------------------------
-判断复杂类型	eg1.判断是否是数组 console.log(arr instanceof Array);2.判断某个对象是否是某个构造函数的实例console.log(hero instanceof Hero);
+```
 
-typeof判断类型
+## 重流和重绘
 
--------------------function专题-----------------------
+ 渲染树转换为网页布局，称为“布局流”（flow）；布局显示到页面的这个过程，称为“绘制”（paint）。它们都具有阻塞效应，并且会耗费很多时间和计算资源。 
 
-	<script>
-		//function 函数名(参数列表){}
-		//js代码运行分两个阶段：
-		//1.预解析：变量和函数名定义提前，调用和赋值滞后
-		//2.执行：从上到下执行(setTimeout,setInterval,ajax中的回调函数，事件中的函数需要触发执行)
-		function fn1(){
-			
-		}
-		fn1();//fn1可以先调用，后定义
-			
-		var fn2 = function(){
-			
-		}
-		fn2();
+ 重流和重绘并不一定一起发生，重流必然导致重绘，重绘不一定需要重流。比如改变元素颜色，只会导致重绘，而不会导致重流；改变元素的布局，则会导致重绘和重流。 
 
-​		fn3();//fn1可以先调用，后定义
-​			console.log(123);
-​		//setTimeout放在队列中，最后执行
-​		setTimeout(function(){
-​			console.log(456);
-​		})
-​			console.log(789);	
-​		function fn3(){
-​			console.log(111);	
-​		}
-​	
-​		var obj = {
-​			name:"zs",
-​			say:function(){
-​				console.log('hello');
-​			}
-​		}
-​		obj.say();
-​		
-​		var cb = function(){
-​			console.log(222);
-​		}
-​		function fn4(callback){
-​			callback();
-​		}
-​		fn4(cb);//一个函数可以作为另一个函数的参数，并在另一个函数中调用
-​
-​		
+## 浏览器模型
 
-		var data = [];
-		for(var i = 0;i<3;i++){
-			data[i] = (function(k){
-				return function(){
-					console.log(k);
-				}
-			})(i);
-		}
-		data[0]();
-		data[1]();
-		data[2]();
-		
-		//构造函数
-		//
-		function juicemachine(friut){
-			this.fruit = friut;
-			this.produce = function(){
-				console.log(this.fruit+'果汁');
-			}
-		}
-		juicemachine.brand = '九阳';
-		juicemachine.open = function(){
-			console.log('open');
-		}
-		juicemachine.open();//juicemachine有两重身份1.对象2.构造函数
-		var apple = new juicemachine('苹果');
-		apple.produce();
-		apple.open();
-	
-	</script>
+### Web Worker
 
+Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。在主线程运行的同时，Worker 线程在后台运行，两者互不干扰。等到 Worker 线程完成计算任务，再把结果返回给主线程。
 
+Worker 线程一旦新建成功，就会始终运行，不会被主线程上的活动（比如用户点击按钮、提交表单）打断。这样有利于随时响应主线程的通信。但是，这也造成了 Worker 比较耗费资源，不应该过度使用，而且一旦使用完毕，就应该关闭。
+
+**Web Worker 有以下几个使用注意点。**
+
+（1）**同源限制**
+
+分配给 Worker 线程运行的脚本文件，必须与主线程的脚本文件同源。
+
+（2）**DOM 限制**
+
+Worker 线程所在的全局对象，与主线程不一样，无法读取主线程所在网页的 DOM 对象，也无法使用`document`、`window`、`parent`这些对象。但是，Worker 线程可以使用`navigator`对象和`location`对象。
+
+（3）**全局对象限制**
+
+Worker 的全局对象`WorkerGlobalScope`，不同于网页的全局对象`Window`，很多接口拿不到。比如，理论上 Worker 线程不能使用`console.log`，因为标准里面没有提到 Worker 的全局对象存在`console`接口，只定义了`Navigator`接口和`Location`接口。不过，浏览器实际上支持 Worker 线程使用`console.log`，保险的做法还是不使用这个方法。
+
+（4）**通信联系**
+
+Worker 线程和主线程不在同一个上下文环境，它们不能直接通信，必须通过消息完成。
+
+（5）**脚本限制**
+
+Worker 线程不能执行`alert()`方法和`confirm()`方法，但可以使用 XMLHttpRequest 对象发出 AJAX 请求。
+
+（6）**文件限制**
+
+Worker 线程无法读取本地文件，即不能打开本机的文件系统（`file://`），它所加载的脚本，必须来自网络。		
+
+### 表单FormDate对象
+
+每一个控件都会生成一个键值对，所有的键值对都会提交到服务器。提交的数据格式跟`<form>`元素的`method`属性有关。只要键值不是 URL 的合法字符（比如汉字“张三”和“提交”），浏览器会自动对其进行编码。
+
+点击`submit`控件，就可以提交表单。
+
+```
+<form>
+  <input type="submit" value="提交">
+</form>
+```
+
+表单里面的`<button>`元素如果没有用`type`属性指定类型，那么默认就是`submit`控件。
+
+```
+<form>
+  <button>提交</button>
+</form>
+```
+
+除了点击`submit`控件提交表单，还可以用表单元素的`submit()`方法，通过脚本提交表单。
+
+```
+formElement.submit();
+```
+
+**表单数据以键值对的形式向服务器发送，这个过程是浏览器自动完成的。但是有时候，我们希望通过脚本完成过程**
+
+FormData 首先是一个构造函数，用来生成实例。
+
+```
+var formdata = new FormData(form);
+
+// 获取某个控件的值
+formData.get('username') // ""
+
+// 设置某个控件的值
+formData.set('username', '张三');
+
+formData.get('username') // "张三"
+```
+
+#### FormData 提供以下实例方法
+
+- `FormData.get(key)`：获取指定键名对应的键值，参数为键名。如果有多个同名的键值对，则返回第一个键值对的键值。
+- `FormData.getAll(key)`：返回一个数组，表示指定键名对应的所有键值。如果有多个同名的键值对，数组会包含所有的键值。
+- `FormData.set(key, value)`：设置指定键名的键值，参数为键名。如果键名不存在，会添加这个键值对，否则会更新指定键名的键值。如果第二个参数是文件，还可以使用第三个参数，表示文件名。
+- `FormData.delete(key)`：删除一个键值对，参数为键名。
+- `FormData.append(key, value)`：添加一个键值对。如果键名重复，则会生成两个相同键名的键值对。如果第二个参数是文件，还可以使用第三个参数，表示文件名。
+- `FormData.has(key)`：返回一个布尔值，表示是否具有该键名的键值对。
+- `FormData.keys()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键名。
+- `FormData.values()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键值。
+- `FormData.entries()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键值对。如果直接用`for...of`循环遍历 FormData 实例，默认就会调用这个方法。
+
+#### 自动校验
+
+表单提交的时候，浏览器允许开发者指定一些条件，它会自动验证各个表单控件的值是否符合条件。
+
+```
+<!-- 必填 -->
+<input required>
+
+<!-- 必须符合正则表达式 -->
+<input pattern="banana|cherry">
+
+<!-- 字符串长度必须为6个字符 -->
+<input minlength="6" maxlength="6">
+
+<!-- 数值必须在1到10之间 -->
+<input type="number" min="1" max="10">
+
+<!-- 必须填入 Email 地址 -->
+<input type="email">
+
+<!-- 必须填入 URL -->
+<input type="URL">
+```
+
+如果一个控件通过验证，它就会匹配`:valid`的 CSS 伪类，浏览器会继续进行表单提交的流程。如果没有通过验证，该控件就会匹配`:invalid`的 CSS 伪类，浏览器会终止表单提交，并显示一个错误信息。
+
+```
+input:invalid {
+  border-color: red;
+}
+input,
+input:valid {
+  border-color: #ccc;
+}
+```
