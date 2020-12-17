@@ -244,6 +244,10 @@ git stash apply stash@{}
 
 - git忽略文件权限的改变
   git config core.filemode false
+  
+- 本次提交被远程仓库拒绝了，因为当前分支无法与远程仓库对应起来。远程仓库对应分支默认有个指针指向最新提交到仓库的 commit ，而所有的本地仓库的分支都可以看做是从这个 commit 分散开来的。也就是本地分支的最后一次 push 到仓库的 commit 一定与仓库对应分支的最新一次 commit 是相同的，否则就无法对接。也就是会出现上面的错误提示。如果是正常 push 到仓库，正确的完成 commit 更新，那么这次更新就是一个 `fast-forward` 更新,而如果不理会错误警告用本地更新强制覆盖仓库，就是一次 `no-fast-forward` 更新，很明显，**`no-fast-forward` 更新会导致记录丢失**。
+  
+  ![image-20201217103256376](/home/silk/.config/Typora/typora-user-images/image-20201217103256376.png)
 
 
 

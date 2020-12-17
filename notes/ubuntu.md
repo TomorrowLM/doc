@@ -842,7 +842,7 @@ var下的文件
 
 - git checkout -- app/design/frontend/
 
-- 编译生产环境gulp -t infinix_en_mb -p和gulp -t infinix_new_en  -p
+- 编译生产环境gulp -t infinix_new_en  -p和gulp -t infinix_en_mb -p
 
 - 提交修改的文件
 
