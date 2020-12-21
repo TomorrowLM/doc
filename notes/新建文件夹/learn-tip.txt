@@ -35,7 +35,7 @@ stencil start -v "theme"
 
 配置vscode
 git config --global core.autocrlf false
-ctrl+shift+p    eol格式，prettier(格式化)，alt+.补充标签，quokka
+ctrl+shift+p    eol格式，prettier(格式化)，alt+.补充标签，quokka，history
 
 
 查看任务进程
@@ -47,5 +47,4 @@ netstat -ano | find "3306"查看3306端口的任务进程
 
 
 
-响应式：
-外层盒子使用flex进行布局使用vm，内层盒子使用rem或者%布局
+

@@ -17,3 +17,10 @@ bruce leo kity stanton  Howell Aton Wesley Kim Luke
 
 
 
+
+http://infinixng.mez100.cn/rest/V1/xmapi/cityList?version=pc&form_key=84Qz7vAMqfw0bD4j
+http://infinixng.mez100.cn/sales/order/view/order_id/rest/V1/xmapi/canRepay?version=pc&form_key=84Qz7vAMqfw0bD4j&orderId=93
+
+
+
+ <a :href="repay.repay_url" v-text="i18n.payNow"></a>
