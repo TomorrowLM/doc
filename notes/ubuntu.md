@@ -57,7 +57,7 @@ netstat -apn | grep v2ray
 
 ss -ntlp | grep v2ray 命令可以查看v2ray是否正在运行
 
-service v2ray status
+cc
 ```
 
 
@@ -182,18 +182,27 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 sudo dpkg -i  
 //安装软件
  sudo apt-get install
+ //安装源码包
+ ./configure
+make
+sudo make install
 //安装出错，修复依赖
 sudo apt-get install -f
+
 //卸载
 sudo dpkg -r linuxqq 
 sudo apt-get remove  linuxqq 
+1）移除式卸载：apt-get remove softname1 softname2 …;（移除软件包，当包尾部有+时，意为安装）
+2）清除式卸载 ：apt-get –purge remove softname1 softname2…;(同时清除配置)
 
 //更新软件信息数据库
-sudo apt-get update
+sudo apt-get update——更新源
 sudo apt-get dist-upgrade 
-
+apt-get upgrade ——更新已安装的包
 //进行系统升级
-sudo  apt-get upgrade, sudo apt-get distupgrade
+apt-get dist-upgrade # ———升级系统
+
+apt-get check #——-检查是否有损坏的依赖
 ```
 
 #### 1.截图软件flameshot
@@ -264,7 +273,7 @@ alias unproxy="unset all_proxy"
 
 - https://github.com/nashaofu/dingtalk
 
-#### 压缩和解压
+#### 4.压缩和解压
 
 **rar**
 
@@ -310,6 +319,18 @@ sudo apt-get install unrar
 解压：unzip FileName.zip
 
 压缩：zip FileName.zip DirName
+
+#### 5.snap
+
+https://snapcraft.io/install/qv2ray/ubuntu#install
+
+#### 6.Synaptic Package Manager 
+
+是基于APT的图形化包管理工具，它不仅能列出ubuntu系统中所有已经安装的程序，还可以用于安装、卸载、升级软件。系统默认没有此工具，因此需要先通过命令行来安装它。
+1、运行命令行
+2、sudo apt update
+3、sudo apt install synaptic
+4、运行Synaptic
 
 ### ubuntu环境下软件出错问题
 
