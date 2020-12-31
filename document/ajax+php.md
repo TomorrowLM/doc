@@ -1,127 +1,33 @@
-## php
+## http通识
 
-```
-json_decode( )    ---- json 转 php对象/数组
-当第二个参数为true返回 array ,默认是false返回object。
-json_encode( )    ---- 对象/数组 转 json
-成功返回 json 编码的 string ,失败返回 false 。
+计算机---计算机通信：
 
-```
+交流方式：http、ftp、smtp/pop
 
+计算机上的应用程序如何找到另一台计算机上的相同的应用程序？
 
+IP地址：唯一确定网络的一台电脑
 
+端口：**确定电脑上的具体哪个应用程序**
 
-```
-JSON.stringify() 和 JSON.parse() 的区别
-JSON.stringify() 从一个对象中解析出字符串
-JSON.stringify({"a":"1","b":"2"})
-结果是："{"a":"1","b":"2"}"
-JSON.parse()从一个字符串中解析出JSON对象
-JSON.parse('{"a":"1","b":"2"}');
-```
+域名：由于IP地址不方便记忆，所以给IP地址起了个别名---域名，也就是通过域名可以找到对应的IP地址
 
-##### json和xml
-
-JSON协议事实上已经作为一种前端与服务器端的数据交换格式，是一种国际标准。他不是语言，他只是一个规范，按照这种规范写法就能实现数据传递。
-
-Xml只是描述数据的一种结构，比如大家常用的html就是采用这种结构描述	
-
-xml json区别  
-
-•相同点：
-
-–都是一种通用协议
-
-–都可以用来描述数据
-
-•不同点：
-
-–JSON相对于XML来讲，数据的体积小，传递的速度更快些。
-
-–xml专用带宽大，json占用带宽小
-
-–json没有xml这么通用
-
-–json可以和js对象互相转换，和js是天生的一对，因此广泛用于前端开发
+DNS：domain name system 域名系统，保存了域名和IP地址的对应关系
 
 
 
-1)	php变量命名规则：不可以以数字开头，对大小写敏感
-
-php的字符串拼接用.
-
-echo  ''单引号对于其中的变量当作普通的字符串来处理
-
-echo ""双引号对于其中的变量会把变量解析为变量值
-
-echo作用是向页面中输出字符串
-
-2)	js中处理字符串单引号与双引号作用相同，只有json格式的数据必须使用双引号
-
-var json = '{"username":"zhangsan","age":"12"}';	json是字符串
-
-var obj = JSON.parse(json);	php转换成json对象
-
-3)	php数组
-
-$arr = array("hello","hi");
-
-print_r($arr);	页面输出    Array([0]=>hello  [1]=>hi.....)
-
-echo $arr[0];
-
-
-
-$arr1 = array("username"=>"zhangsan","age"=>"12");
-
-print_r($arr);	页面输出  Array([**username**]=>zhangsan  [**age**]=>12.....)	数组索引值转换成字符串  eg：arr[0]---arr[username]
-
-echo $arr[username];
-
-二维数组
-
-$arr = array();
-
-$arr[0] = array(1,2,3);
-
-$arr[1] = array(4,5,6);
-
-$arr[2] = array(7,8,9); 
-
-4)json_encode将数组转化成JSON形式的字符串
-
-$arr = array("a"=>"111","b"=>"222","c"=>"333");
-
-$ ret = json_encode($arr);
-
-echo $ret;  页面显示  {"a":"111",.....}
-
-
-
-$arr3 = array("123",456,789);
-
-echo json_encode($arr3);页面显示   ["123",456,789] 
-
-5）php中的函数名字不区分大小写
-
-6）	//url地址：127.0.0.1:8080/1.php?flag=1
-		$f = $_GET['flag'];//这里得到的url地址传递的参数flag的值
-
-​		$f = $_GET['username'];//获取name属性中的参数
-
-​		echo "<span>$f</span>";    页面显示flag的值  1
-
+Ajax表示Asynchronous JavaScript and XML(异步JavaScript和XML)，使我们可以获取和显示新的内容而不必载入一个新的Web页面
 
 
 ## 原生Ajax
 
-##### 1)	创建XMLHttpRequest	
+**1)	创建XMLHttpRequest**	
 
 var xhr = new XMLHttpRequest()；标准浏览器
 
 var xhr = new ActiveXObject('Microsoft.XMLHTTP')；IE老版本
 
-##### 2)	准备发送	xhr.open('get',url,true) 
+**2)	准备发送	xhr.open('get',url,true)** 
 
 参数1，请求方式，get获取数据，post提交数据
 
@@ -137,7 +43,7 @@ encodeURI（）用来对中文参数进行编码，防止中文乱码
 
 post请求，url只需要地址,不需要参数,参数在send中传递
 
-##### 3)	执行发送动作   
+**3)	执行发送动作**   
 
 get请求 xhr.send(null)；
 
@@ -149,7 +55,7 @@ var param='username'+username+'password'+password;
 
 xhr.send(param);这里不需要encodeURI编码
 
-##### 4.指定回调函数	浏览器调用
+**4.指定回调函数	浏览器调用**
 
 ```
 xhr.onreadystatechange = function(){
@@ -165,7 +71,7 @@ if(xhr.readystate == 4)是否接收到数据{
 }
 ```
 
-4）单线程+事件队列
+**4）单线程+事件队列**
 
 事件队列中的任务执行条件：1主线程已经空闲 2定时函数（延时时间达到），事件函数（特定时间被触发），ajax的回调函数（服务器端有数据响应）
 
@@ -369,3 +275,120 @@ HTTP最常见的请求头如下：
   Connection: close(1.0)/(1.1)Keep-Alive(维护客户端和服务端的连接关系)                                                        Date: Tue, 11 Jul 2000 18:23:51 GMT(服务端响应客户端的时间)
 
 **在服务器响应客户端的时候，带上Access-Control-Allow-Origin头信息，是解决跨域的一种方法。**
+
+
+
+
+
+## php
+
+```
+json_decode( )    ---- json 转 php对象/数组
+当第二个参数为true返回 array ,默认是false返回object。
+json_encode( )    ---- 对象/数组 转 json
+成功返回 json 编码的 string ,失败返回 false 。
+
+```
+
+
+
+
+```
+JSON.stringify() 和 JSON.parse() 的区别
+JSON.stringify() 从一个对象中解析出字符串
+JSON.stringify({"a":"1","b":"2"})
+结果是："{"a":"1","b":"2"}"
+JSON.parse()从一个字符串中解析出JSON对象
+JSON.parse('{"a":"1","b":"2"}');
+```
+
+##### json和xml
+
+JSON协议事实上已经作为一种前端与服务器端的数据交换格式，是一种国际标准。他不是语言，他只是一个规范，按照这种规范写法就能实现数据传递。
+
+Xml只是描述数据的一种结构，比如大家常用的html就是采用这种结构描述	
+
+xml json区别  
+
+•相同点：
+
+–都是一种通用协议
+
+–都可以用来描述数据
+
+•不同点：
+
+–JSON相对于XML来讲，数据的体积小，传递的速度更快些。
+
+–xml专用带宽大，json占用带宽小
+
+–json没有xml这么通用
+
+–json可以和js对象互相转换，和js是天生的一对，因此广泛用于前端开发
+
+
+
+1)	php变量命名规则：不可以以数字开头，对大小写敏感
+
+php的字符串拼接用.
+
+echo  ''单引号对于其中的变量当作普通的字符串来处理
+
+echo ""双引号对于其中的变量会把变量解析为变量值
+
+echo作用是向页面中输出字符串
+
+2)	js中处理字符串单引号与双引号作用相同，只有json格式的数据必须使用双引号
+
+var json = '{"username":"zhangsan","age":"12"}';	json是字符串
+
+var obj = JSON.parse(json);	php转换成json对象
+
+3)	php数组
+
+$arr = array("hello","hi");
+
+print_r($arr);	页面输出    Array([0]=>hello  [1]=>hi.....)
+
+echo $arr[0];
+
+
+
+$arr1 = array("username"=>"zhangsan","age"=>"12");
+
+print_r($arr);	页面输出  Array([**username**]=>zhangsan  [**age**]=>12.....)	数组索引值转换成字符串  eg：arr[0]---arr[username]
+
+echo $arr[username];
+
+二维数组
+
+$arr = array();
+
+$arr[0] = array(1,2,3);
+
+$arr[1] = array(4,5,6);
+
+$arr[2] = array(7,8,9); 
+
+4)json_encode将数组转化成JSON形式的字符串
+
+$arr = array("a"=>"111","b"=>"222","c"=>"333");
+
+$ ret = json_encode($arr);
+
+echo $ret;  页面显示  {"a":"111",.....}
+
+
+
+$arr3 = array("123",456,789);
+
+echo json_encode($arr3);页面显示   ["123",456,789] 
+
+5）php中的函数名字不区分大小写
+
+6）	//url地址：127.0.0.1:8080/1.php?flag=1
+		$f = $_GET['flag'];//这里得到的url地址传递的参数flag的值
+
+		$f = $_GET['username'];//获取name属性中的参数
+	
+		echo "<span>$f</span>";    页面显示flag的值  1

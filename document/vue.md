@@ -50,6 +50,7 @@ var vm=new Vue({
        <li v-for="(k,v) in json">{{k}}   {{v}}  </li>
        track-by="$index"
   //vue2.0	v-for="(val,index) in array"
+  每次更改数组数据，全部的数据都会重新渲染，添加key值，从而只渲染更改的数据
   :key="index"如果数据项的顺序被改变，Vue 将不会移动 DOM 元素来匹配数据项的顺序，而是就地更新每个元素，并且确保它们在每个索引位置正确渲染。为了给 Vue 一个提示，以便它能跟踪每个节点的身份，从而重用和重新排序现有元素，你需要为每项提供一个唯一 key attribute：
   ```
 

@@ -23,4 +23,4 @@ http://infinixng.mez100.cn/sales/order/view/order_id/rest/V1/xmapi/canRepay?vers
 
 
 
- <a :href="repay.repay_url" v-text="i18n.payNow"></a>
+hmuat/go4uat
