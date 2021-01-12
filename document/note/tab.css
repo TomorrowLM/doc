@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+SC|Space+Mono');
+
+.clock-bg {
+color: #6effc4;
+background-color: #a61b29;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction:column-reverse;
+}
+
+.countdown {
+  display: flex;
+  flex-direction: row;
+  margin-top:88px;
+}
+
+.countdown-bg {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-family:'Playfair Display';
+}
+
+.countdown-bg .title {
+    text-align: center;
+    font-size: 7vh;
+    font-weight: bold;
+}
+
+.countdown .group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+#year, #month, #week, #day {
+  position: relative;
+  margin: 20px;
+  width: 200px;
+  height: 200px;
+}
+
+
+
+
+@import url('https://fonts.googleapis.com/css?family=Unica+One');
+
+
+.clock4 {
+  font-family: 'Unica One', cursive!important;
+  height: 20vh;
+  color: white;
+  font-size: 22vh;
+  font-family: sans-serif;
+  line-height: 20.4vh;
+  display: flex;
+  position: relative;
+  /*background: green;*/
+  overflow: hidden;
+}
+
+.clock4::before, .clock4::after {
+  content: '';
+  width: 7ch;
+  height: 3vh;
+  position: absolute;
+  z-index: 2;
+}
+
+.clock4::after {
+  bottom: 0;
+}
+
+.clock4 > div {
+  display: flex;
+}
+
+.tick {
+  line-height: 17vh;
+}
+
+.tick-hidden {
+  opacity: 0;
+}
+
+.move {
+  /*animation: move linear 1s infinite;*/
+}
+
+@keyframes move {
+  from {
+    transform: translateY(0vh);
+  }
+  to {
+    transform: translateY(-20vh);
+  }
+}
