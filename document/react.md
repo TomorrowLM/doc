@@ -31,14 +31,16 @@ React用 三大策略 将O(n^3)复杂度 转化为 O(n)复杂度
 - 策略一（tree diff）：新旧DOM树，逐层对比的方式
   DOM节点跨层级的移动操作特别少，可以忽略不计。
 
-  <img src="https://images2018.cnblogs.com/blog/1455367/201808/1455367-20180808083547179-1944470540.jpg" alt="img" style="zoom:50%;" />
+  ![img](https://images2018.cnblogs.com/blog/1455367/201808/1455367-20180808083547179-1944470540.jpg)
+
+  https://images2018.cnblogs.com/blog/1455367/201808/1455367-20180808083547179-1944470540.jpg
 
   只会对相同颜色方框内的 DOM 节点进行比较，即同一个父节点下的所有子节点。
 
   当发现节点已经不存在，则该节点及其子节点会被完全删除掉，不会用于进一步的比较。
 
   这样只需要对树进行一次遍历，便能完成整个 DOM 树的比较。
-
+  
 - 策略二（component diff）：
   拥有相同类的两个组件生成相似的树形结构， 拥有不同类的两个组件 生成不同的树形结构。
 
@@ -143,7 +145,9 @@ ReactDOM.render(<div>
 
 
 
-### 用class关键字创建出来的组件：“有状态组件”
+### class
+
+用class关键字创建出来的组件：“有状态组件”
 
 ```js
 // 使用 class 创建的类，通过 extends 关键字，继承了 React.Component 之后，这个类，就是一个组件的模板了
@@ -267,7 +271,9 @@ class Chinese extends Person {
 }
 ```
 
-### 用构造函数创建出来的组件：无状态组件”
+### 函数
+
+用构造函数创建出来的组件：无状态组件”
 
 ```js
 
@@ -283,26 +289,219 @@ function Hello(props) {
 
 ## 路由
 
+https://juejin.cn/post/6864126627643817997#heading-6
+
+https://reactrouter.com/web/api/Hooks/usehistory
+
+### React Routers三类组件
+
+#### 路由器
+
+`<BrowserRouter>`和`<HashRouter>`
+
+两者之间的主要区别是它们存储URL和与Web服务器通信的方式。
+
+- `<BrowserRouter>`使用常规的URL路径。这些通常是外观最好的URL，但是它们要求正确配置服务器。具体来说，您的Web服务器需要在所有由React Router客户端管理的URL上提供相同的页面。Create React App在开发中即开即用地支持此功能，并[附带](https://create-react-app.dev/docs/deployment#serving-apps-with-client-side-routing)有关如何配置生产服务器的说明。	
+
+  - BrowserRouter提供了如下属性
+    - `basename (string)` 当前位置的基准 URL
+    - `forceRefresh (boolean)`，在导航的过程中整个页面是否刷新
+    - `getUserConfirmation (func)`，当导航需要确认时执行的函数。默认是：window.confirm
+    - `keyLength (number)`  location.key 的长度。默认是 6
+    - `children (node)` 要渲染的子节点
+
+  > HashRouter 不支持 location.key 和 location.state ，所以在浏览器中建议使用 BrowserRouter。
+
+- `<HashRouter>`将当前位置存储在[URL](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHyperlinkElementUtils/hash)[的`hash`一部分中](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHyperlinkElementUtils/hash)，因此URL看起来像`http://example.com/#/your/page`。由于哈希从不发送到服务器，因此这意味着不需要特殊的服务器配置(**刷新不会找不到网址**)。
+
+#### 路线匹配器，
+
+`<Route>`和`<Switch>`
+
 ```js
-//使用antD组件，侧边菜单栏
-<Menu.Item key="home">
-              <Link to="/home">首页</Link>
-            </Menu.Item>
-            <Menu.Item key="movie">
-              <Link to="/movie/in_theaters/1">电影</Link>
-            </Menu.Item>
-            <Menu.Item key="about">
-              <Link to="/about">关于</Link>
- </Menu.Item>
-//内容区域
-  <Content style={{ backgroundColor: '#fff', flex: 1 }}>
-          <Route path="/home" component={HomeContainer}></Route>
-          <Route path="/movie" component={MovieContainer}></Route>
-          <Route path="/about" component={AboutContainer}></Route>
-  </Content>
+ <Switch>
+        <Route path="/about">
+          <About />
+        </Route>
+		
+		//  会把没有匹配的路径直接重定向到 /login
+		<Redirect to="/login" />
+ </Switch>
 ```
 
+- Route
 
+   当 location 与 Route 的 path 匹配时渲染 Route 中的 Component
+
+  - Route 接受三种渲染方式
+
+    - `<Route component>`
+
+    - ```
+      <Route render>
+      ```
+
+      - `render` function 类型，Route 会渲染这个 function 的返回值，可以在函数中附加一些额外的逻辑，所以你可以在render中添加一些逻辑判断，再返回一个要渲染的 component
+
+    - `<Route children>`
+
+    - `children` function 类型，比 `render` 多了 `match参数`，可以根据 match参数来决定匹配的时候渲染什么，不匹配的时候渲染什么
+
+  - Route 经常用的是 exact、path 以及 component 属性
+
+  - `exact` 是否进行精确匹配，路由 `/a` 可以和 `/a/、/a` 匹配
+  - `strict` 是否进行严格匹配，指明路径只匹配以斜线结尾的路径，路由`/a`可以和`/a`匹配，不能和`/a/`匹配，相比 `exact` 会更严格些
+  - `path (string)` 标识路由的路径，没有 path 属性的 Route 总是会匹配
+  - `component` 表示路径对应显示的组件
+  - `location (object)` 除了通过 path 传递路由路径，也可以通过传递 location 对象可以匹配
+  - `sensitive (boolean)` 匹配路径时，是否区分大小写
+
+  - Route  组件都接收 
+
+    ```
+    location、history、match
+    ```
+
+    - 三个 props 比较常用的是 match，通过 match.params 可以取到动态参数的值
+
+| 所属     | 属性                   | 类型     | 含义                                              |
+| -------- | ---------------------- | -------- | ------------------------------------------------- |
+| history  | length                 | number   | 表示history堆栈的数量                             |
+|          | action                 | string   | 表示当前的动作。比如pop、replace或push            |
+|          | location               | object   | 表示当前的位置                                    |
+|          | push(path, [state])    | function | 在history堆栈顶加入一个新的条目                   |
+|          | replace(path, [state]) | function | 替换在history堆栈中的当前条目                     |
+|          | go(n)                  | function | 将history堆栈中的指针向前移动                     |
+|          | goBack()               | function | 等同于go(-1)                                      |
+|          | goForward()            | function | 等同于go(1)                                       |
+|          | block(promt)           | function | 阻止跳转                                          |
+|          |                        |          |                                                   |
+| match    | params                 | object   | 表示路径参数，通过解析URL中动态的部分获得的键值对 |
+|          | isExact                | boolean  | 为true时，表示精确匹配                            |
+|          | path                   | string   | 用来做匹配的路径格式                              |
+|          | url                    | string   | URL匹配的部分                                     |
+|          |                        |          |                                                   |
+| location | pathname               | string   | URL路径                                           |
+|          | search                 | string   | URl中查询字符串                                   |
+|          | hash                   | string   | URL的hash分段                                     |
+|          | state                  | string   | 表示location中的状态                              |
+
+- `Swtich` 就近匹配路由，仅渲染一个路由，路由的默认行为是匹配了就直接渲染，大部分场景下这个逻辑是没有问题的，但考虑下面的场景
+
+```
+/// 假设你访问的URL为 /dog
+<Route path='/dog' component={Dog}></Route> // 虽然这里匹配了，但不会停止查找
+<Route path="/:dog" component={Husky}></Route> // 这个路由依然会被匹配，这样两个组件都会被渲染
+...
+<Switch>
+  <Route path='/dog' component={Dog}></Route> // Switch 匹配一个路由后就不会再去查找下一个路由，那么下面的路由就不会被匹配
+  <Route path="/:dog" component={Husky}></Route>
+</Switch>
+```
+
+#### 导航
+
+`<Link>`，`<NavLink>`
+
+```js
+//无论您在何处呈现<Link>，<a>都会在HTML文档中呈现锚点（）。
+<Link to="/">Home</Link>
+// <a href="/">Home</a>
+
+//该<NavLink>是一种特殊类型的<Link>，当它是可以的风格自己是“主动”to的道具当前位置相匹配。
+<NavLink to="/react" activeClassName="hurray">
+  React
+</NavLink>
+// When the URL is /react, this renders:
+// <a href="/react" className="hurray">React</a>
+```
+
+`Link` 声明路由要跳转的地方
+
+- ```
+  to（string | object | function）
+  ```
+
+   需要跳转到的路径(pathname) 或地址（location）
+
+  - 为 string 时 就是一个明确的路径地址
+  - 为 object 时有如下属性（就是一个location对象）
+    - pathname：URL路径。
+    - search：URl中查询字符串。
+    - hash：URL的hash分段，例如#a-hash。
+    - state：表示location中的状态
+  - 为 function 时，就是一个函数接收当前 location 为参数，然后以字符串或对象的形式返回位置形式
+
+- `replace (boolean)` 为 true 是替换历史记录，false 是新增历史记录
+
+
+
+- 其他还有 `<MemoryRouter>  内存路由组件`、`<NativeRouter>  Native的路由组件`、`<StaticRouter> 静态路由组件`这些路由组件，其中 MemoryRouter 主要用在 ReactNative 这种非浏览器的环境中，因此直接将 URL 的 history 保存在了内容中。StaticRouter 主要用于服务器端渲染
+
+
+  
+
+### API
+
+- useHistory
+  - 用以获取history对象，进行编程式的导航
+
+```js
+const Husky = props => {
+  console.log(useHistory()); // 与 props.history 结果一致
+  console.log(props.history);
+  return <div>哈士奇</div>;
+};
+...
+/// 使用 useHistory 的好处是，引入组件会更自由些
+<Route path="/dog" component={Dog}></Route> // 必须这么写，props 才能拿到相关值
+...
+<Route path="/husky">
+	<Husky />
+</Route> // 这样写的话 useHistory 可以正常取值，但是 props 不行
+复制代码
+```
+
+- useLocation
+  - 用以获取location对象，可以查看当前路由信息
+
+```js
+const Husky = props => {
+  console.log(useLocation()); // 与 props.location 结果一致
+  console.log(props.location);
+  return <div>哈士奇</div>;
+};
+复制代码
+```
+
+- useParams
+  - 可以用来获取 match.params
+
+```js
+const Husky = props => {
+    console.log(useParams()) // 与 props.match.params 结果一致，但明显更简洁
+    console.log(props.match.params)
+    const {eat} = props.match.params;
+    return (
+    	<div>哈士奇 吃 {eat}</div>
+    );
+}
+复制代码
+```
+
+- useRouteMatch
+  - 可以接受一个 path 字符串作为参数。当参数的path与当前的路径相匹配时，useRouteMatch会返回 match 对象，否则返回 null。
+
+```js
+// 接收一个字符串作为参数
+const Husky = props => {
+		const match = useParams('/husky'); // 假定当前匹配路由就是 /husky，如果访问的路径不是 /husky ，那么 match 就为 null
+    const {eat} = match ? match.params : '';
+    return (
+    	<div>哈士奇 吃 {eat}</div>
+    );
+}
+```
 
 # 组件的生命周期
 
@@ -325,8 +524,11 @@ function Hello(props) {
 	componentWillReceiveProps(nextProps){    console.log(this.props.pmsg + ' ---- ' + nextProps.pmsg);}
 	
 	shouldComponentUpdate: 组件是否需要被更新，此时，组件尚未被更新，但是，state 和 props 肯定是最新的
+	
 	componentWillUpdate: 组件将要被更新，此时，尚未开始更新，内存中的虚拟DOM树还是旧的，页面上的 DOM 元素 也是旧的
+	
 	render: 此时，又要重新根据最新的 state 和 props 重新渲染一棵内存中的 虚拟DOM树，当 render 调用完毕，内存中的旧DOM树，已经被新DOM树替换了！此时页面还是旧的
+	
 	componentDidUpdate: 此时，页面又被重新渲染了，state 和 虚拟DOM 和 页面已经完全保持同步
 	```
 	
@@ -342,13 +544,9 @@ function Hello(props) {
 
 - React 事件的命名采用小驼峰式（camelCase），而不是纯小写。
 
-- 无论是函数组件还是类组件，return 的 React 元素的语法必须是由一个标签包裹起来的所有虚拟 DOM 内容
-
-  一种是使用一个 div 标签将其包裹起来，另外一种方式就是使用 React 提供的 `<React.Fragment>` 将其包裹起来，但是其渲染到页面时是不会有 `<React.Fragment>`的
-
 - 使用 JSX 语法时你需要传入一个函数作为事件处理函数，而不是一个字符串。
 
-  ```
+  ```js
   传统的 HTML：
   <button onclick="activateLasers()">
     Activate Lasers
@@ -400,6 +598,50 @@ function Hello(props) {
    return null;
   ```
 
+## Fragment
+
+无论是函数组件还是类组件，return 的 React 元素的语法必须是由一个标签包裹起来的所有虚拟 DOM 内容
+
+一种是使用一个 div 标签将其包裹起来，另外一种方式就是使用 React 提供的 `<React.Fragment>` 将其包裹起来，但是其渲染到页面时是不会有 `<React.Fragment>`的
+
+```js
+class Table extends React.Component {
+  render() {
+    return (
+      <table>
+        <tr>
+          <Columns />
+        </tr>
+      </table>
+    );
+  }
+}
+//Columns子组件
+class Columns extends React.Component {
+  render() {
+    return (
+      <div>
+        <td>Hello</td>
+        <td>World</td>
+      </div>
+    );
+  }
+}
+//得到
+<table>
+  <tr>
+    <div>
+      <td>Hello</td>
+      <td>World</td>
+    </div>
+  </tr>
+</table>
+//出现包裹的元素div
+//使用Fragment，则不会出现
+```
+
+
+
 ## 列表 & Key
 
   ```js
@@ -426,7 +668,7 @@ function Hello(props) {
 
   **key 只是在兄弟节点之间必须唯一**
 
-  数组元素中使用的 key 在其兄弟节点之间应该是独一无二的。然而，它们不需要是全局唯一的。当我们生成两个不同的数组时，我们可以使用相同的 key 值：
+  数组元素中使用的 key 在其兄弟节点之间应该是独一无二的。然而，它们不需要是全局唯一的。当我们生成两个不同的数组时，我们可以使用相        同的 key 值：
 
   ```js
   const numbers = [1, 2, 3, 4, 5];
@@ -484,8 +726,595 @@ function Hello(props) {
 
 ## refs
 
-## PropTypes
+**背景**
 
+在React单向数据流中，props是父子组件交互的唯一方式。要修改一个子组件，需要通过新的props来重新渲染。但是，有些场景需要获取某一个真实的DOM元素来交互，比如文本框的聚焦、触发强制动画等。
 
+**什么是Refs**
+
+> Refs 提供了一种方式，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素。
+> Ref转发是一项将ref自动通过组件传递到子组件的技巧。 通常用来获取DOM节点或者React元素实例的工具。在React中Refs提供了一种方式，允许用户访问dom节点或者在render方法中创建的React元素。
+
+**使用场景**
+
+- 对Dom元素的焦点控制、内容选择、控制
+- 对Dom元素的内容设置及媒体播放
+- 对Dom元素的操作和对组件实例的操作
+- 集成第三方 DOM 库
+
+ **`refs` 使用方式**
+
+- [React.createRef()](https://reactjs.org/docs/refs-and-the-dom.html)
+- 回调引用 (Callback refs)
+- String refs（已过时）
+- 转发 `refs` (Forwarding refs)
+
+**访问 Refs**
+
+通过ref挂载在dom节点或组件上，该ref的current属性将能拿到dom节点或组件的实例
+
+```js
+const node = this.myRef.current;
+```
+
+ref 的值根据节点的类型而有所不同：
+
+- 当 ref 属性用于 HTML 元素时，构造函数中使用 React.createRef() 创建的 ref 接收底层 DOM 元素作为其 current 属性。
+- 当 ref 属性用于自定义 class 组件时，ref 对象接收组件的挂载实例作为其 current 属性。
+- **不能再函数组件上使用Ref属性，因为函数组件没有实例。**
+
+```js
+class CustomTextInput extends React.Component {
+ constructor(props) {
+   super(props);
+   // 创建一个 ref 来存储 textInput 的 DOM 元素
+   this.textInput = React.createRef();
+   this.focusTextInput = this.focusTextInput.bind(this);
+ }
+
+ focusTextInput() {
+   // 直接使用原生 API 使 text 输入框获得焦点
+   // 注意：我们通过 "current" 来访问 DOM 节点
+   this.textInput.current.focus();
+     //ref在class组件上
+     this.textInput.current.focusTextInput();
+ }
+
+ render() {
+   // 告诉 React 我们想把 <input> ref 关联到
+   // 构造器里创建的 `textInput` 上
+   return (
+     <div>
+       <input
+         type="text"
+         ref={this.textInput} />
+       <input
+         type="button"
+         value="Focus the text input"
+         onClick={this.focusTextInput}
+       />
+     </div>
+   );
+ }
+}
+```
+
+### 转发 Refs (Forwarding Refs)
+
+**forwardRef.**
+
+- 因为函数组件没有实例，所以函数组件无法像类组件一样可以接收 ref 属性
+
+- forwardRef 可以在父组件中操作子组件的 ref 对象
+
+- forwardRef 可以将父组件中的 ref 对象转发到子组件中的 dom 元素上
+
+- 子组件接受 props 和 ref 作为参数
+
+  ```js
+  //子组件（通过forwardRef方法创建）
+  const Child=React.forwardRef((props,ref)=>(
+    <input ref={ref} />
+  ));
+  
+  //父组件
+  class Father extends React.Component{
+    constructor(props){
+      super(props);
+      this.myRef=React.createRef();
+    }
+    componentDidMount(){
+      console.log(this.myRef.current);
+    }
+    render(){
+      return <Child ref={this.myRef}/>
+    }
+  }
+  ```
+
+  **总结Refs转发到DOM组件过程**：
+
+  - 我们通过调用 `React.createRef` 创建了一个 [React ref](https://react.docschina.org/docs/refs-and-the-dom.html) 并将其赋值给 `ref` 变量。
+  - 我们通过指定 `ref` 为 JSX 属性，将其向下传递给 `<FancyButton ref={ref}>`。
+  - React 传递 `ref` 给 `forwardRef` 内函数 `(props, ref) => ...`，作为其第二个参数。
+  - 我们向下转发该 `ref` 参数到 `<button ref={ref}>`，将其指定为 JSX 属性。
+  - 当 ref 挂载完成，`ref.current` 将指向 `<button>` DOM 节点。
+
+## ReactDOM的三个基本方法
+
+react的核心思想是虚拟DOM，react包含了生成虚拟DOM的函数react.createElement，及Component类。当我们自己封装组件时，就需要继承Component类，才能使用生命周期函数等。而react-dom包的核心功能就是把这些虚拟DOM渲染到文档中变成实际DOM。
+
+react-dom主要包含三个API：findDOMNode、unmountComponentAtNode 和 render。
+
+### findDOMNode
+
+findDOMNode用于获取真正的DOM元素，以便对DOM节点进行操作。
+
+在React中，虚拟DOM真正被添加到HTML中转变为真实DOM是在组件挂载（render()）后，故而我们可以在componentDidMount和componentDidUpdate这两个方法中获取,不能在render方法中使用getDOMNode()方法来拿到原生的DOM元素。示例如下：
+
+## PropTypes类型检查
+
+```js
+import PropTypes from 'prop-types';
+
+class Greeting extends React.Component {
+  render() {
+    return (
+      <h1>Hello, {this.props.name}</h1>
+    );
+  }
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string
+};
+```
+
+```js
+import PropTypes from 'prop-types';
+MyComponent.propTypes = {
+  // 你可以将属性声明为 JS 原生类型，默认情况下
+  // 这些属性都是可选的。
+  optionalArray: PropTypes.array,
+  optionalBool: PropTypes.bool,
+  optionalFunc: PropTypes.func,
+  optionalNumber: PropTypes.number,
+  optionalObject: PropTypes.object,
+  optionalString: PropTypes.string,
+  optionalSymbol: PropTypes.symbol,
+
+  // 任何可被渲染的元素（包括数字、字符串、元素或数组）
+  // (或 Fragment) 也包含这些类型。
+  optionalNode: PropTypes.node,
+
+  // 一个 React 元素。
+  optionalElement: PropTypes.element,
+
+  // 一个 React 元素类型（即，MyComponent）。
+  optionalElementType: PropTypes.elementType,
+
+  // 你也可以声明 prop 为类的实例，这里使用
+  // JS 的 instanceof 操作符。
+  optionalMessage: PropTypes.instanceOf(Message),
+
+  // 你可以让你的 prop 只能是特定的值，指定它为
+  // 枚举类型。
+  optionalEnum: PropTypes.oneOf(['News', 'Photos']),
+
+  // 一个对象可以是几种类型中的任意一个类型
+  optionalUnion: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.instanceOf(Message)
+  ]),
+
+  // 可以指定一个数组由某一类型的元素组成
+  optionalArrayOf: PropTypes.arrayOf(PropTypes.number),
+
+  // 可以指定一个对象由某一类型的值组成
+  optionalObjectOf: PropTypes.objectOf(PropTypes.number),
+
+  // 可以指定一个对象由特定的类型值组成
+  optionalObjectWithShape: PropTypes.shape({
+    color: PropTypes.string,
+    fontSize: PropTypes.number
+  }),
+  
+  // An object with warnings on extra properties
+  optionalObjectWithStrictShape: PropTypes.exact({
+    name: PropTypes.string,
+    quantity: PropTypes.number
+  }),   
+
+  // 你可以在任何 PropTypes 属性后面加上 `isRequired` ，确保
+  // 这个 prop 没有被提供时，会打印警告信息。
+  requiredFunc: PropTypes.func.isRequired,
+
+  // 任意类型的数据
+  requiredAny: PropTypes.any.isRequired,
+
+  // 你可以指定一个自定义验证器。它在验证失败时应返回一个 Error 对象。
+  // 请不要使用 `console.warn` 或抛出异常，因为这在 `onOfType` 中不会起作用。
+  customProp: function(props, propName, componentName) {
+    if (!/matchme/.test(props[propName])) {
+      return new Error(
+        'Invalid prop `' + propName + '` supplied to' +
+        ' `' + componentName + '`. Validation failed.'
+      );
+    }
+  },
+
+  // 你也可以提供一个自定义的 `arrayOf` 或 `objectOf` 验证器。
+  // 它应该在验证失败时返回一个 Error 对象。
+  // 验证器将验证数组或对象中的每个值。验证器的前两个参数
+  // 第一个是数组或对象本身
+  // 第二个是他们当前的键。
+  customArrayProp: PropTypes.arrayOf(function(propValue, key, componentName, location, propFullName) {
+    if (!/matchme/.test(propValue[key])) {
+      return new Error(
+        'Invalid prop `' + propFullName + '` supplied to' +
+        ' `' + componentName + '`. Validation failed.'
+      );
+    }
+  })
+};
+
+```
+
+### 默认 Prop 值
+
+您可以通过配置特定的 `defaultProps` 属性来定义 `props` 的默认值：
+
+```js
+class Greeting extends React.Component {
+  render() {
+    return (
+      <h1>Hello, {this.props.name}</h1>
+    );
+  }
+}
+
+// 指定 props 的默认值：
+Greeting.defaultProps = {
+  name: 'Stranger'
+};
+
+// 渲染出 "Hello, Stranger"：
+ReactDOM.render(
+  <Greeting />,
+  document.getElementById('example')
+);
+```
 
 # Hooks函数
+
+http://www.ruanyifeng.com/blog/2019/09/react-hooks.html
+
+- 纯函数组件**没有状态**
+- 纯函数组件**没有生命周期**
+- 纯函数组件没有`this`
+- 只能是纯函数
+
+这就注定，我们所推崇的函数组件，只能做UI展示的功能，涉及到状态的管理与切换，我们不得不用类组件或者redux，但我们知道类组件的也是有缺点的，比如，遇到简单的页面，你的代码会显得很重，并且每创建一个类组件，都要去继承一个React实例，至于Redux,更不用多说，很久之前Redux的作者就说过，“能用React解决的问题就不用Redux”,等等一系列的话。关于**React类组件r**edux的作者又有话说
+
+> - 大型组件很难拆分和重构，也很难测试。
+> - 业务逻辑分散在组件的各个方法之中，导致重复逻辑或关联逻辑。
+> - 组件类引入了复杂的编程模式，比如 render props 和高阶组件。
+
+'Hooks'的单词意思为“钩子”。
+**React Hooks 的意思是，组件尽量写成纯函数，如果需要外部功能和副作用，就用钩子把外部代码"钩"进来。**而React Hooks 就是我们所说的“钩子”。
+
+## userState():状态钩子
+
+用于为函数组件引入状态（state）。纯函数不能有状态，所以把状态放在钩子里面。
+
+```js
+import React, { useState } from "react";
+
+export default function Button() {
+  const [buttonText, setButtonText] = useState("Click me, please");
+  let a = "1";
+  function handleClick() {
+    a='2';
+    return setButtonText("Thanks, been clicked!");
+  }
+
+  return <div>
+    <button onClick={handleClick}>{buttonText}</button>
+    <button onClick={handleClick}>{a}</button>
+  </div>;
+}
+```
+
+点击了第一个button后，文字改变。而第二个则不会改变（不会重新渲染数据）,
+
+## useContext():共享状态钩子
+
+如果需要在组件之间共享状态，可以使用`useContext()`。
+
+现在有两个组件 Navbar 和 Messages，我们希望它们之间共享状态。
+
+第一步就是使用 React Context API，在组件外部建立一个 Context。
+
+> ```javascript
+> const AppContext = React.createContext({});
+> ```
+
+组件封装代码如下。
+
+> ```js
+> <AppContext.Provider value={{
+>   username: 'superawesome'
+> }}>
+>   <div className="App">
+>     <Navbar/>
+>     <Messages/>
+>   </div>
+> </AppContext.Provider>
+> ```
+
+上面代码中，`AppContext.Provider`提供了一个 Context 对象，这个对象可以被子组件共享。
+
+Navbar 组件的代码如下。
+
+> ```javascript
+> const Navbar = () => {
+>   const { username } = useContext(AppContext);
+>   return (
+>     <div className="navbar">
+>       <p>AwesomeSite</p>
+>       <p>{username}</p>
+>     </div>
+>   );
+> }
+> ```
+
+## useReducer()：action 钩子
+
+React 本身不提供状态管理功能，通常需要使用外部库。这方面最常用的库是 Redux。
+
+Redux 的核心概念是，组件发出 action 与状态管理器通信。状态管理器收到 action 以后，使用 Reducer 函数算出新的状态，Reducer 函数的形式是`(state, action) => newState`。
+
+`useReducers()`钩子用来引入 Reducer 功能。
+
+> ```javascript
+> const [state, dispatch] = useReducer(reducer, initialState);
+> ```
+
+上面是`useReducer()`的基本用法，它接受 Reducer 函数和状态的初始值作为参数，返回一个数组。数组的第一个成员是状态的当前值，第二个成员是发送 action 的`dispatch`函数。
+
+```js
+import React, { useReducer } from "react";
+import ReactDOM from "react-dom";
+import "./styles.css";
+
+const myReducer = (state, action) => {
+  switch(action.type) {
+    case('countUp'):
+      return {
+        ...state,
+        count: state.count + 1
+      }
+    default:
+      return state
+  }
+}
+
+function App() {
+  const [state, dispatch] = useReducer(myReducer, { count: 0 })
+
+  return (
+    <div className="App">
+      <button onClick={() => dispatch({ type: 'countUp' })}>
+        +1
+      </button>
+      <p>Count: {state.count}</p>
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+
+```
+
+## useEffect()：副作用钩子
+
+**副作用**
+
+纯函数只能进行数据计算，那些不涉及计算的操作（比如生成日志、储存数据、改变应用状态等等）应该写在哪里呢？
+
+函数式编程将那些跟数据计算无关的操作，都称为 "副效应" **（side effect）** 。
+
+`useEffect()`用来引入具有副作用的操作，最常见的就是向服务器请求数据。以前，放在`componentDidMount`,`componentDidUpdate`里面的代码，现在可以放在`useEffect()`。
+
+`useEffect()`的用法如下。
+
+> ```javascript
+> useEffect(()  =>  {
+>   	// Async Action
+>     //return 则是在页面被卸载时调用.
+>     return fn;
+> }, [dependencies])
+> ```
+
+上面用法中，`useEffect()`接受两个参数。第一个参数是一个函数，异步操作的代码放在里面。第二个参数是一个数组，用于给出 Effect 的依赖项，只要这个数组发生变化，`useEffect()`就会执行。第二个参数可以省略，这时每次组件渲染时，就会执行`useEffect()`。
+
+只要是副效应，都可以使用`useEffect()`引入。它的常见用途有下面几种。
+
+- 获取数据（data fetching）
+- 事件监听或订阅（setting up a subscription）
+- 改变 DOM（changing the DOM）
+- 输出日志（logging）
+
+tips
+
+- 使用`useEffect()`时，有一点需要注意。如果有多个副效应，应该调用多个`useEffect()`，而不应该合并写在一起。
+
+- 在useEffect中，不仅会请求后端的数据，还会通过调用setData来更新本地的状态，这样会触发view的更新。
+
+  但是，运行这个程序的时候，会出现无限循环的情况。useEffect在组件**mount**时执行，但也会在组件**更新**时执行。因为我们在每次请求数据之后都会设置本地的状态，所以组件会更新，因此useEffect会再次执行，因此出现了无限循环的情况。**我们只想在组件mount时请求数据。**我们可以传递一个空数组作为useEffect的第二个参数，这样就能避免在组件更新执行useEffect，只会在组件mount时执行。
+
+  ```js
+  import React, { useState, useEffect } from 'react';
+  import axios from 'axios';
+  
+  function App() {
+    const [data, setData] = useState({ hits: [] });
+  
+    useEffect(async () => {
+      const result = await axios(
+        'http://localhost/api/v1/search?query=redux',
+      );
+  
+      setData(result.data);
+    }, []);
+  
+    return (
+      <ul>
+        {data.hits.map(item => (
+          <li key={item.objectID}>
+            <a href={item.url}>{item.title}</a>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  
+  export default App;
+  ```
+
+  升级加载loading 
+
+  ```js
+  import React, { Fragment, useState, useEffect } from 'react';
+  import axios from 'axios';
+  
+  function App() {
+    const [data, setData] = useState({ hits: [] });
+    const [query, setQuery] = useState('redux');
+    const [url, setUrl] = useState(
+      'http://hn.algolia.com/api/v1/search?query=redux',
+    );
+    const [isLoading, setIsLoading] = useState(false);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        setIsLoading(true);
+  
+        const result = await axios(url);
+  
+        setData(result.data);
+        setIsLoading(false);
+      };
+  
+      fetchData();
+    }, [url]);
+    return (
+      <Fragment>
+        <input
+          type="text"
+          value={query}
+          onChange={event => setQuery(event.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() =>
+            setUrl(`http://localhost/api/v1/search?query=${query}`)
+          }
+        >
+          Search
+        </button>
+  
+        {isLoading ? (
+          <div>Loading ...</div>
+        ) : (
+          <ul>
+            {data.hits.map(item => (
+              <li key={item.objectID}>
+                <a href={item.url}>{item.title}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Fragment>
+    );
+  }
+  
+  export default App;
+  ```
+
+## useCallback和useMemo
+
+https://www.xiaye0.com/?p=113
+
+都会在组件第一次渲染的时候执行，之后会在其依赖的变量发生改变时再次执行；并且这两个hooks都返回缓存的值，useMemo返回缓存的变量，useCallback返回缓存的函数。
+
+### memo
+
+这个hook是针对组件的,减少组件的不必要更新.
+
+```js
+const TextCell = memo(function(props:any) {
+  console.log('我重新渲染了')
+  return (
+    <p onClick={props.click}>ffff</p>
+  )
+})
+
+父组件
+const fatherComponent = () => {
+const [number,setNumber] = useState(0);
+ return(
+    <div>
+      模块{number}
+      <TextCell/>
+
+      <Button onClick={()=>setNumber(number => number + 1)}>加加加</Button>
+    </div>
+  )
+}
+```
+
+在这里如果没有用到memo 每次父组件重新setNumber,**子组件都会重新渲染一次**,加上了后**只会在初始化的时候渲染(useMemo会在页面初始化的时候执行一次,并把执行的结果缓存一份)**,减少了子组件渲染的次数,这个在之前老的class方法,要减少子组件的渲染,可以使用pureComponent,或者在生命周期 componentWillReciveProps方法里返回false即可.
+
+### useCallback
+
+这个hook主要是针对函数的
+
+```js
+const TextCell = memo(function(props:any) {
+  console.log('我重新渲染了')
+  return (
+    <p onClick={props.click}>ffff</p>
+  )
+})
+
+父组件
+const fatherComponent = () => {
+const [number,setNumber] = useState(0);
+
+const handleClick = useCallback(()=>{
+   console.log(33)
+},[])
+ return(
+    <div>
+      模块{number}
+      <TextCell click={handleClick}/>
+
+      <Button onClick={()=>setNumber(number => number + 1)}>加加加</Button>
+    </div>
+  )
+}
+```
+
+这里如果不使用useCallback,哪怕子组件用memo包裹了 也还是会更新子组件,因为子组件的绑定的函数click在父组件更新的时候也会更新引用地址,导致子组件的更新,但是这个其实是没必要的更新,绑定的函数并不需要子组件更新,useCallback就是阻止这类没必要的更新而存在的. 如果是用class的方法的话,需要在constructor里绑定函数,会比较麻烦,不易阅读.
+
+这里需要注意的是 如果是有参数需要传递,则需要这样写
+
+```js
+<TextCell click={useCallback(()=>handleClick(‘传递的参数’),[])}/>
+```
+
+# 父子组件通信
+

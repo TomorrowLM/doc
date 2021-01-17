@@ -1,4 +1,4 @@
-# 认识MySQL
+# MySQL
 
 MySQL的层次结构
 
@@ -63,7 +63,9 @@ Fields	数据表中的一列
 
   ​		engine		存储引擎
 
-  ![image-20201127102147103](/home/silk/.config/Typora/typora-user-images/image-20201127102147103.png)
+  [![sNtUht.png](https://s3.ax1x.com/2021/01/13/sNtUht.png)](https://imgchr.com/i/sNtUht)
+
+  [![sNNtrF.png](https://s3.ax1x.com/2021/01/13/sNNtrF.png)](https://imgchr.com/i/sNNtrF)
 
 - 查看表结构（只能查看字段信息）
 
@@ -76,7 +78,7 @@ Fields	数据表中的一列
 
 - 删除表
 
-​	   drop table 表名;
+​	      drop table 表名;
 
 - 增加数据
 
@@ -92,7 +94,7 @@ Fields	数据表中的一列
   字段列表也可以省略，如果省略那表示全部字段插入数据。值列表中值的顺序要与表中的字段的顺序一致。
   ```
 
-  
+  [![sNUgS0.png](https://s3.ax1x.com/2021/01/13/sNUgS0.png)](https://imgchr.com/i/sNUgS0)
 
 - 查看数据
 
@@ -117,8 +119,8 @@ Fields	数据表中的一列
   is null					         	  专用于判断null值的运算符
   like						       		用于模糊查询，必须与两个占位符进匹配使用
   			占位符：%、_
-  			%			代表当前位置及其后0个或多个字符
-  			_			代表当前位置的1个字符
+  			 %			代表当前位置及其后0个或多个字符
+  			 _			代表当前位置的1个字符
   
   列子：select * from 	表名 	where	字段列表	like	' value%'
   ```
@@ -154,3 +156,106 @@ Fields	数据表中的一列
   alter table 表名 rename to 新名
 
 ## 视图
+
+# Docker
+
+## 安装
+
+https://www.runoob.com/docker/windows-docker-install.html
+
+## 容器使用
+
+- docker查看Docker 客户端的所有命令选项。
+
+  ![img](https://www.runoob.com/wp-content/uploads/2016/05/docker27.png)
+
+- 命令 **docker command --help** 更深入的了解指定的 Docker 命令使用方法
+
+  - ```
+    docker stats --help
+    ```
+
+    ![img](https://www.runoob.com/wp-content/uploads/2016/05/docker28.png)
+
+- 获取镜像
+
+  如果我们本地没有 ubuntu 镜像，我们可以使用 docker pull 命令来载入 ubuntu 镜像：
+
+  ```
+  $ docker pull ubuntu
+  $ docker pull ubuntu:13.10
+  ```
+
+- 启动容器
+
+  以下命令使用 ubuntu 镜像启动一个容器，参数为以命令行模式进入该容器：
+
+  ```
+  $ docker run -it ubuntu /bin/bash
+  $ docker run -t -i ubuntu:15.10 /bin/bash 
+  ```
+
+- 查看所有的容器命令如下：
+
+  ```
+  $ docker ps -a
+  ```
+
+- 查看我们正在运行的容器
+
+  ```
+  docker ps 
+  ```
+
+- 使用 docker start 启动一个已停止的容器：
+
+  ```
+  $ docker start id
+  ```
+
+- 进入容器
+
+  在使用 **-d** 参数时，容器启动后会进入后台。此时想要进入容器，可以通过以下指令进入：
+
+  - **docker attach**
+
+  - **docker exec**：推荐大家使用 docker exec 命令，因为此退出容器终端，不会导致容器的停止。
+
+    ```
+    docker exec -it id /bin/bash
+    ```
+
+    - **-i**: 交互式操作。
+    - **-t**: 终端。
+
+- 删除容器
+
+  删除容器使用 **docker rm** 命令：
+
+  ```
+  $ docker rm -f id
+  ```
+
+## 镜像使用
+
+- 列出镜像列表
+
+  ```
+  docker images
+  ```
+
+- 查找镜像
+
+  - 我们可以从 Docker Hub 网站来搜索镜像，Docker Hub 网址为： https://hub.docker.com/
+
+  - ```
+     docker search httpd
+    ```
+
+- 删除镜像
+
+  镜像删除使用 **docker rmi** 命令，比如我们删除 hello-world 镜像：
+
+  ```
+  $ docker rmi hello-world
+  ```

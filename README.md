@@ -36,7 +36,6 @@
     + [微信](document/document/微信/微信.md)
     + [微信小程序基本组件总结](document/document/微信/微信小程序基本组件总结.md)
   + [object](document/document/object.md)
-  + [正则表达式的组成](document/document/正则表达式的组成.md)
 ## es6
   + **1**
     + **数据类型**
@@ -176,6 +175,7 @@
 + [ajax+php](document/ajax+php.md)
 + [es6](document/es6.md)
 + [git+plugin](document/git+plugin.md)
++ [http](document/http.md)
 + [js](document/js.md)
 + [mysql](document/mysql.md)
 + [react](document/react.md)
@@ -183,4 +183,5 @@
 + [vue](document/vue.md)
 + [webpack+gulp](document/webpack+gulp.md)
 + [总结](document/总结.md)
++ [正则表达式的组成](document/正则表达式的组成.md)
 + [面经](document/面经.md)

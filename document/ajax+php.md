@@ -1,25 +1,22 @@
-## http通识
+# http通识
 
-计算机---计算机通信：
-
-交流方式：http、ftp、smtp/pop
-
-计算机上的应用程序如何找到另一台计算机上的相同的应用程序？
-
-IP地址：唯一确定网络的一台电脑
-
-端口：**确定电脑上的具体哪个应用程序**
-
-域名：由于IP地址不方便记忆，所以给IP地址起了个别名---域名，也就是通过域名可以找到对应的IP地址
-
-DNS：domain name system 域名系统，保存了域名和IP地址的对应关系
+- 应用层协议：http、ftp、smtp/pop
 
 
+- 计算机上的应用程序如何找到另一台计算机上的相同的应用程序？
 
-Ajax表示Asynchronous JavaScript and XML(异步JavaScript和XML)，使我们可以获取和显示新的内容而不必载入一个新的Web页面
+  IP地址：唯一确定网络的一台电脑
+
+  端口：**确定电脑上的具体哪个应用程序**
+
+  域名：由于IP地址不方便记忆，所以给IP地址起了个别名---域名，也就是通过域名可以找到对应的IP地址
+
+  DNS：domain name system 域名系统，保存了域名和IP地址的对应关系
 
 
-## 原生Ajax
+# 原生Ajax
+
+**Ajax**表示Asynchronous JavaScript and XML(异步JavaScript和XML)，使我们可以获取数据并显示新的内容而不必载入一个新的Web页面
 
 **1)	创建XMLHttpRequest**	
 
@@ -27,37 +24,49 @@ var xhr = new XMLHttpRequest()；标准浏览器
 
 var xhr = new ActiveXObject('Microsoft.XMLHTTP')；IE老版本
 
-**2)	准备发送	xhr.open('get',url,true)** 
+**2)	准备发送	xhr.open(1，2，3)** 
 
+```
 参数1，请求方式，get获取数据，post提交数据
-
-参数2，请求地址
-
+参数2，请求地址url
 参数3，同步异步标志位，true是异步
+```
 
-get请求，url要加参数，这样php才能接受到参数
+- get请求，url要加参数，这样php才能接受到参数
 
-eg:  '../01.php?username'+username+'&password'+password
+  ```
+  '/01.php?username'+username+'&password'+password
+  ```
 
-encodeURI（）用来对中文参数进行编码，防止中文乱码
+  `encodeURI（）`用来对中文参数进行编码，防止中文乱码
 
-post请求，url只需要地址,不需要参数,参数在send中传递
+- post请求，url只需要地址,不需要参数,参数在send中传递
+
 
 **3)	执行发送动作**   
 
-get请求 xhr.send(null)；
+- get请求 xhr.send(null)；
 
-post请求 
 
-xhr.setRequestHeader("content-Type","application/x-www-form-urlencoded")//必须要请求头信息
+- post请求 
 
-var param='username'+username+'password'+password;
+  xhr.setRequestHeader("content-Type","application/x-www-form-urlencoded")**//必须要请求头信息**
 
-xhr.send(param);这里不需要encodeURI编码
+  ​	在Form元素的语法中，EncType表明提交数据的格式
 
-**4.指定回调函数	浏览器调用**
+  ​	用 Enctype 属性指定将数据回发到服务器时浏览器使用的编码类型。
 
-```
+  - application/x-www-form-urlencoded ： 窗体数据被编码为名称/值对。这是标准的编码格式。（默认）
+  - multipart/form-data ： 窗体数据被编码为一条消息，页上的每个控件对应消息中的一个部分。(type=file使用)
+  - text/plain ： 窗体数据以纯文本形式进行编码，其中不含任何控件或格式字符。
+
+  var param='username'+username+'password'+password;
+
+  xhr.send(param);这里不需要encodeURI编码
+
+**4）指定回调函数	浏览器调用**
+
+```js
 xhr.onreadystatechange = function(){
 
 if(xhr.readystate == 4)是否接收到数据{
@@ -65,45 +74,48 @@ if(xhr.readystate == 4)是否接收到数据{
 ​	if(xhr.status == 200)数据是否正常{
 
 ​			var data = xhr.responseXML;
-
 }
 
 }
 ```
 
-**4）单线程+事件队列**
+# 跨域
 
-事件队列中的任务执行条件：1主线程已经空闲 2定时函数（延时时间达到），事件函数（特定时间被触发），ajax的回调函数（服务器端有数据响应）
+## 原生
 
-## 跨域
+**jsonp的原理**：html中通过动态创建一个script标签，通过它的src属性发送跨域请求，从服务器端响应的**数据格式是一个函数的调用**,函数名要一致。eg:$callback.'(username='.$uname.')'
 
-1）jsonp的原理：html中通过动态创建一个script标签，通过它的src属性发送跨域请求，从服务器端响应的**数据格式是一个函数的调用**,函数名要一致。eg:$callback.'(username='.$uname.')'
+- html中的函数就是回调函数
 
-html中的函数就是回调函数
+  ```js
+  var script = document.createElement('script');
+  
+  var head = document.getElementByTagName('head')[0];
+  
+  script.src='http::/1.html/1.php?callback=hello&username=123';
+  
+  head.appendChild(script);
+  
+  function hello(data){
+  
+  console.log(data);
+  
+  }
+  ```
 
-var script = document.createElement('script');
+  
 
-var head = document.getElementByTagName('head')[0];
+- php
 
-script.src='http::/1.html/1.php?callback=hello&username=123';
+  ```php
+  $cb = $_Get[$callback];
+  
+  $uname = $_Get[$username];
+  
+  echo $cb.'('.'{"username":"'$uname'"}'.')';
+  ```
 
-head.appendChild(script);
-
-function hello(data){
-
-console.log(data);
-
-}
-
-php
-
-$cb = $_Get[$callback];
-
-$uname = $_Get[$username];
-
-echo $cb.'('.'{"username":"'$uname'"}'.')';
-
-2)	jquery中的跨域
+## jquery中的跨域
 
 ```
 $.ajax({
@@ -125,7 +137,214 @@ jQuery1102016820125747472048_1450147653563(["zhangsan", "lisi", "wangwu"]);//php
 
 ```
 
-## artTemplate
+# 表单FormDate对象
+
+每一个控件都会生成一个键值对，所有的键值对都会提交到服务器。提交的数据格式跟`<form>`元素的`method`属性有关。只要键值不是 URL 的合法字符（比如汉字“张三”和“提交”），浏览器会自动对其进行编码。
+
+点击`submit`控件，就可以提交表单。
+
+```
+<form>
+  <input type="submit" value="提交">
+</form>
+```
+
+表单里面的`<button>`元素如果没有用`type`属性指定类型，那么默认就是`submit`控件。
+
+```
+<form>
+  <button>提交</button>
+</form>
+```
+
+除了点击`submit`控件提交表单，还可以用表单元素的`submit()`方法，通过脚本提交表单。
+
+```
+formElement.submit();
+```
+
+**表单数据以键值对的形式向服务器发送，这个过程是浏览器自动完成的。但是有时候，我们希望通过脚本完成过程**
+
+FormData 首先是一个构造函数，用来生成实例。
+
+```
+var formdata = new FormData(form);
+
+// 获取某个控件的值
+formData.get('username') // ""
+
+// 设置某个控件的值
+formData.set('username', '张三');
+
+formData.get('username') // "张三"
+```
+
+#### FormData 提供以下实例方法
+
+- `FormData.get(key)`：获取指定键名对应的键值，参数为键名。如果有多个同名的键值对，则返回第一个键值对的键值。
+- `FormData.getAll(key)`：返回一个数组，表示指定键名对应的所有键值。如果有多个同名的键值对，数组会包含所有的键值。
+- `FormData.set(key, value)`：设置指定键名的键值，参数为键名。如果键名不存在，会添加这个键值对，否则会更新指定键名的键值。如果第二个参数是文件，还可以使用第三个参数，表示文件名。
+- `FormData.delete(key)`：删除一个键值对，参数为键名。
+- `FormData.append(key, value)`：添加一个键值对。如果键名重复，则会生成两个相同键名的键值对。如果第二个参数是文件，还可以使用第三个参数，表示文件名。
+- `FormData.has(key)`：返回一个布尔值，表示是否具有该键名的键值对。
+- `FormData.keys()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键名。
+- `FormData.values()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键值。
+- `FormData.entries()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键值对。如果直接用`for...of`循环遍历 FormData 实例，默认就会调用这个方法。
+
+#### 自动校验
+
+表单提交的时候，浏览器允许开发者指定一些条件，它会自动验证各个表单控件的值是否符合条件。
+
+```
+<!-- 必填 -->
+<input required>
+
+<!-- 必须符合正则表达式 -->
+<input pattern="banana|cherry">
+
+<!-- 字符串长度必须为6个字符 -->
+<input minlength="6" maxlength="6">
+
+<!-- 数值必须在1到10之间 -->
+<input type="number" min="1" max="10">
+
+<!-- 必须填入 Email 地址 -->
+<input type="email">
+
+<!-- 必须填入 URL -->
+<input type="URL">
+```
+
+如果一个控件通过验证，它就会匹配`:valid`的 CSS 伪类，浏览器会继续进行表单提交的流程。如果没有通过验证，该控件就会匹配`:invalid`的 CSS 伪类，浏览器会终止表单提交，并显示一个错误信息。
+
+# XMLHttpRequest
+
+headers:一般头部放置验证参数等，例如cookie、token等
+
+2、Query Params:常用是get方式请求，用于校验请求参数
+
+3、Body Params：常用是post方式请求，用于校验请求参数
+
+header("Content-Type:text/plain(html); charset=utf-8")//设置服务器响应的文件类型plain是纯文本则echo中的标签当作是文本显示
+
+**XMLHttpRequest**
+
+ XMLHttpRequest(XHR) 对象用于与服务器交互。通过 XMLHttpRequest 可以在不刷新页面的情况下请求特定 URL，获取数据。这允许网页在不影响用户操作的情况下，更新页面的局部内容。 
+
+ `XMLHttpRequest` 可以用于获取任何类型的数据，而不仅仅是 XML。它甚至支持 [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) 以外的协议（包括 file:// 和 FTP），尽管可能受到更多出于安全等原因的限制。 
+
+​	 **1.  属性**
+
+- **XMLHttpRequest.responseType**  表示服务器返回数据的类型，这个属性是可写的，在 open 之后，send 之前，告诉服务器返回指定类型的数据。如果 responseType 设为空字符串，就等同于默认值 text 表示服务器返回文本数据； 
+
+- **XMLHttpRequest.onreadystatechange**当 `readyState` 属性发生变化时，调用的 [`EventHandler`](https://developer.mozilla.org/zh-CN/docs/Web/API/EventHandler)。
+
+- **readyState** HTTP 请求的状态，当一个 XMLHttpRequest 初次创建时，这个属性的值从 0 开始，直到接收到完整的 HTTP 响应，这个值增加到 4。 
+
+- **status**   由服务器返回的 HTTP 状态代码，如 200 表示成功，而 404 表示 “Not Found” 错误。当 readyState 小于 3 的时候读取这一属性会导致一个异常。 
+
+- **response**   该属性只读表示服务器返回的数据体，可能是任意的数据类型，比如字符串，对象，二进制对象等，具体类型由responseType 属性决定。如果本次请求没有成功或者数据不完整，该属性等于 null 
+
+  **2.方法**
+
+| abort()                 | 取消当前响应，关闭连接并且结束任何未决的网络活动             |
+| ----------------------- | ------------------------------------------------------------ |
+| getAllResponseHeaders() | 把 HTTP 响应头部作为未解析的字符串返回                       |
+| getResponseHeader()     | 返回指定的 HTTP 响应头部的值                                 |
+| open()                  | 初始化 HTTP 请求参数，例如 URL 和 HTTP 方法，但是并不发送请求 |
+| send()                  | 发送 HTTP 请求，使用传递给 open() 方法的参数，以及传递给该方法的可选请求体 |
+| setRequestHeader()      | 向一个打开但未发送的请求设置或添加一个 HTTP 请求             |
+
+
+
+# Request Header和Response Header
+
+
+
+![img](https://img2018.cnblogs.com/blog/1301998/201906/1301998-20190621104932351-2057147169.png)
+
+## Request Header
+
+**HTTP协议使用TCP协议进行传输，在应用层协议发起交互之前，首先是TCP的三次握手。完成了TCP三次握手后，客户端会向服务器发出一个请求报文**
+
+**HTTP最常见的请求头如下：**
+
+**Accept**：浏览器可接受的MIME类型 (客户端能接收的资源类型)  ；
+
+Accept-Charset：浏览器可接受的字符集；
+
+Accept-Encoding: gzip, deflate(客户端能接收的压缩数据的类型)  
+
+Accept-Language：浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到；
+
+Authorization：授权信息,用于表示HTTP协议中需要认证资源的认证信息 ,通常出现在对服务器发送的WWW-Authenticate头的应答中；
+
+Cache-Control:用来指定当前的请求/回复中的，是否使用缓存机制。
+
+Connection：表示是否需要持久连接。如果Servlet看到这里的值为“Keep-Alive”，或者看到请求使用的是HTTP 1.1（HTTP 1.1默认进行持久连接），它就可以利用持久连接的优点，当页面包含多个元素时（例如Applet，图片），显著地减少下载所需要的时间。要实现这一点，Servlet需要在应答中发送一个Content-Length头，最简单的实现方法是：先把内容写入ByteArrayOutputStream，然后在正式写出内容之前计算它的大小；
+
+Content-Length：表示请求消息正文的长度；
+
+Cookie：这是最重要的请求头信息之一；
+
+From：请求发送者的email地址，由一些特殊的Web客户程序使用，浏览器不会用到它；
+
+Host：初始URL中的主机和端口；
+
+If-Modified-Since：只有当所请求的内容在指定的日期之后又经过修改才返回它，否则返回304“Not Modified”应答；
+
+Origin：发起一个针对跨域资源共享的请求（该请求要求服务器在响应中加入一个Access-Control-Allow-Origin的消息头，表示访问控制所允许的来源）。
+
+Pragma：指定“no-cache”值表示服务器必须返回一个刷新后的文档，即使它是代理服务器而且已经有了页面的本地拷贝；
+
+Referer：包含一个URL，用户从该URL代表的页面出发访问当前请求的页面。
+
+User-Agent：浏览器类型，如果Servlet返回的内容与浏览器类型有关则该值非常有用；
+
+UA-Pixels，UA-Color，UA-OS，UA-CPU：由某些版本的IE浏览器所发送的非标准的请求头，表示屏幕大小、颜色深度、操作系统和CPU类型。
+
+## Response Header
+
+**响应报文**：**当收到get或post等方法发来的请求后，服务器就要对报文进行响应。**
+  HTTP/1.1(响应采用的协议和版本号) 200(状态码) OK(描述信息)
+  Location: http://www.baidu.com(服务端需要客户端访问的页面路径) 
+  Server:apache tomcat(服务端的Web服务端名)
+  Content-Encoding: gzip(服务端能够发送压缩编码类型) 
+  Content-Length: 80(服务端发送的压缩数据的长度) 
+  Content-Language: zh-cn(服务端发送的语言类型) 
+  Content-Type: text/html; charset=GB2312(服务端发送的类型及采用的编码方式)
+  Last-Modified: Tue, 11 Jul 2000 18:23:51 GMT(服务端对该资源最后修改的时间)
+  Refresh: 1;url=http://www.it315.org(服务端要求客户端1秒钟后，刷新，然后访问指定的页面	路径)
+  Content-Disposition: attachment; filename=aaa.zip(服务端要求客户端以下载文件的方式打    开该文件) 
+  Transfer-Encoding: chunked(分块传递数据到客户端）  
+  Set-Cookie:SS=Q0=5Lb_nQ; path=/search(服务端发送到客户端的暂存数据)
+  Expires: -1//3种(服务端禁止客户端缓存页面数据)
+  Cache-Control: no-cache(服务端禁止客户端缓存页面数据)  
+  Pragma: no-cache(服务端禁止客户端缓存页面数据)  
+  Connection: close(1.0)/(1.1)Keep-Alive(维护客户端和服务端的连接关系)                                                        
+
+  Date: Tue, 11 Jul 2000 18:23:51 GMT(服务端响应客户端的时间)
+
+**在服务器响应客户端的时候，带上Access-Control-Allow-Origin头信息，是解决跨域的一种方法。**
+
+# manifest
+
+使用 HTML5，通过创建 cache manifest 文件，可以轻松地创建 web 应用的离线版本。 
+
+```
+ <!DOCTYPE HTML>
+<html manifest="demo.appcache">
+...
+</html> 
+```
+
+manifest 文件可分为三个部分：
+
+- *CACHE MANIFEST* - 在此标题下列出的文件将在首次下载后进行缓存
+- *NETWORK* - 在此标题下列出的文件需要与服务器的连接，且不会被缓存
+- *FALLBACK* - 在此标题下列出的文件规定当页面无法访问时的回退页面（比如 404 页面）
+
+# artTemplate
 
  动态网页是指前端页面当中的数据内容来源于后台数据库，前端的`html`代码会随着后台数据的变化而变化，是动态生成的。制作动态网页有两种方式，一种方式是在后台拿到前端的`html`模板，利用后台模板引擎（如`ejs`等）在后台完成数据与`html`模板的拼接，最后把拼接完成的完整`html`代码返回给前端。但是这种工作模式会逐步走向过时，因为它不符合前后端分离的趋势。而第二种方式则更加符合我们所提倡的前后端分离的概念，即后台只提供`json`数据，不做模板拼接的工作，前端通过`ajax`来向后台请求`json`数据，然后在前台利用前台模板引擎（如`artTemplate`等）完成数据与模板的拼接工作，从而生成完整的`html`代码。 
 
@@ -153,48 +372,44 @@ var dictionary = {
 
 **答：**为了实现动态加载，因为有时候不想刷新整个页面，只在局部增加内容，则需要使用 artTemplate 模板 与 ajax 配合了
 
-## XMLHttpRequest
+# Web Worker
 
-headers:一般头部放置验证参数等，例如cookie、token等
+Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。在主线程运行的同时，Worker 线程在后台运行，两者互不干扰。等到 Worker 线程完成计算任务，再把结果返回给主线程。
 
-2、Query Params:常用是get方式请求，用于校验请求参数
+Worker 线程一旦新建成功，就会始终运行，不会被主线程上的活动（比如用户点击按钮、提交表单）打断。这样有利于随时响应主线程的通信。但是，这也造成了 Worker 比较耗费资源，不应该过度使用，而且一旦使用完毕，就应该关闭。
 
-3、Body Params：常用是post方式请求，用于校验请求参数
+**Web Worker 有以下几个使用注意点。**
 
-header("Content-Type:text/plain(html); charset=utf-8")//设置服务器响应的文件类型plain是纯文本则echo中的标签当作是文本显示
+（1）**同源限制**
 
-**XMLHttpRequest**
+分配给 Worker 线程运行的脚本文件，必须与主线程的脚本文件同源。
 
- XMLHttpRequest(XHR) 对象用于与服务器交互。通过 XMLHttpRequest 可以在不刷新页面的情况下请求特定 URL，获取数据。这允许网页在不影响用户操作的情况下，更新页面的局部内容。 
+（2）**DOM 限制**
 
- `XMLHttpRequest` 可以用于获取任何类型的数据，而不仅仅是 XML。它甚至支持 [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) 以外的协议（包括 file:// 和 FTP），尽管可能受到更多出于安全等原因的限制。 
+Worker 线程所在的全局对象，与主线程不一样，无法读取主线程所在网页的 DOM 对象，也无法使用`document`、`window`、`parent`这些对象。但是，Worker 线程可以使用`navigator`对象和`location`对象。
 
-​	 **1.  属性**
+（3）**全局对象限制**
 
-- **XMLHttpRequest.responseType**  表示服务器返回数据的类型，这个属性是可写的，在 open 之后，send 之前，告诉服务器返回指定类型的数据。如果 responseType 设为空字符串，就等同于默认值 text 表示服务器返回文本数据； 
+Worker 的全局对象`WorkerGlobalScope`，不同于网页的全局对象`Window`，很多接口拿不到。比如，理论上 Worker 线程不能使用`console.log`，因为标准里面没有提到 Worker 的全局对象存在`console`接口，只定义了`Navigator`接口和`Location`接口。不过，浏览器实际上支持 Worker 线程使用`console.log`，保险的做法还是不使用这个方法。
 
-- **XMLHttpRequest.onreadystatechange**当 `readyState` 属性发生变化时，调用的 [`EventHandler`](https://developer.mozilla.org/zh-CN/docs/Web/API/EventHandler)。
+（4）**通信联系**
 
--  **readyState** HTTP 请求的状态，当一个 XMLHttpRequest 初次创建时，这个属性的值从 0 开始，直到接收到完整的 HTTP 响应，这个值增加到 4。 
+Worker 线程和主线程不在同一个上下文环境，它们不能直接通信，必须通过消息完成。
 
--  **status**   由服务器返回的 HTTP 状态代码，如 200 表示成功，而 404 表示 “Not Found” 错误。当 readyState 小于 3 的时候读取这一属性会导致一个异常。 
+（5）**脚本限制**
 
--  **response**   该属性只读表示服务器返回的数据体，可能是任意的数据类型，比如字符串，对象，二进制对象等，具体类型由responseType 属性决定。如果本次请求没有成功或者数据不完整，该属性等于 null 
+Worker 线程不能执行`alert()`方法和`confirm()`方法，但可以使用 XMLHttpRequest 对象发出 AJAX 请求。
 
-  **2.方法**
+（6）**文件限制**
 
-| abort()                 | 取消当前响应，关闭连接并且结束任何未决的网络活动             |
-| ----------------------- | ------------------------------------------------------------ |
-| getAllResponseHeaders() | 把 HTTP 响应头部作为未解析的字符串返回                       |
-| getResponseHeader()     | 返回指定的 HTTP 响应头部的值                                 |
-| open()                  | 初始化 HTTP 请求参数，例如 URL 和 HTTP 方法，但是并不发送请求 |
-| send()                  | 发送 HTTP 请求，使用传递给 open() 方法的参数，以及传递给该方法的可选请求体 |
-| setRequestHeader()      | 向一个打开但未发送的请求设置或添加一个 HTTP 请求             |
+Worker 线程无法读取本地文件，即不能打开本机的文件系统（`file://`），它所加载的脚本，必须来自网络。		
 
-## webSocket
+# webSocket
 
 （1）实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端；
 （2）实时数据交互。
+
+```js
 // Create WebSocket connection.
 var socket = new WebSocket('ws://localhost:8080');    //创建一个webSocket实例
 
@@ -207,6 +422,8 @@ socket.addEventListener('open', function (event) {   //一旦服务端响应WebS
 socket.addEventListener('message', function (event) {  //当消息被接受会触发消息事件
     console.log('Message from server', event.data);
 });
+```
+
 （1）send
 通过WebSocket连接向服务器发送数据。
 
@@ -216,71 +433,7 @@ socket.addEventListener('message', function (event) {  //当消息被接受会�
 
 使用close方法来关闭连接，如果连接以及关闭，这方法将什么也不做。调用close方法只后，将不能发送数据。close方法可以传入两个可选的参数，code（numerical）和reason（string）,以告诉服务端为什么终止连接。
 
-## 浏览器Request Header和Response Header
-
-HTTP最常见的请求头如下：
-
-​    **Accept**：浏览器可接受的MIME类型 (客户端能接收的资源类型)  ；
-
-​    Accept-Charset：浏览器可接受的字符集；
-
-   Accept-Encoding: gzip, deflate(客户端能接收的压缩数据的类型)  
-
-   Accept-Language：浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到；
-
-   Authorization：授权信息,用于表示HTTP协议中需要认证资源的认证信息 ,通常出现在对服务器发送的WWW-Authenticate头的应答中；
-
-   Cache-Control:用来指定当前的请求/回复中的，是否使用缓存机制。
-
-   Connection：表示是否需要持久连接。如果Servlet看到这里的值为“Keep-Alive”，或者看到请求使用的是HTTP 1.1（HTTP 1.1默认进行持久连接），它就可以利用持久连接的优点，当页面包含多个元素时（例如Applet，图片），显著地减少下载所需要的时间。要实现这一点，Servlet需要在应答中发送一个Content-Length头，最简单的实现方法是：先把内容写入ByteArrayOutputStream，然后在正式写出内容之前计算它的大小；
-
-   Content-Length：表示请求消息正文的长度；
-
-   Cookie：这是最重要的请求头信息之一；
-
-   From：请求发送者的email地址，由一些特殊的Web客户程序使用，浏览器不会用到它；
-
-   Host：初始URL中的主机和端口；
-
-   If-Modified-Since：只有当所请求的内容在指定的日期之后又经过修改才返回它，否则返回304“Not Modified”应答；
-
-  Origin：发起一个针对跨域资源共享的请求（该请求要求服务器在响应中加入一个Access-Control-Allow-Origin的消息头，表示访问控制所允许的来源）。
-
-   Pragma：指定“no-cache”值表示服务器必须返回一个刷新后的文档，即使它是代理服务器而且已经有了页面的本地拷贝；
-
-   Referer：包含一个URL，用户从该URL代表的页面出发访问当前请求的页面。
-
-   User-Agent：浏览器类型，如果Servlet返回的内容与浏览器类型有关则该值非常有用；
-
-   UA-Pixels，UA-Color，UA-OS，UA-CPU：由某些版本的IE浏览器所发送的非标准的请求头，表示屏幕大小、颜色深度、操作系统和CPU类型。
-
-
-
-2)响应(服务端->客户端[response])
-  HTTP/1.1(响应采用的协议和版本号) 200(状态码) OK(描述信息)
-  Location: http://www.baidu.com(服务端需要客户端访问的页面路径) 
-  Server:apache tomcat(服务端的Web服务端名)
-  Content-Encoding: gzip(服务端能够发送压缩编码类型) 
-  Content-Length: 80(服务端发送的压缩数据的长度) 
-  Content-Language: zh-cn(服务端发送的语言类型) 
-  Content-Type: text/html; charset=GB2312(服务端发送的类型及采用的编码方式)
-  Last-Modified: Tue, 11 Jul 2000 18:23:51 GMT(服务端对该资源最后修改的时间)
-  Refresh: 1;url=http://www.it315.org(服务端要求客户端1秒钟后，刷新，然后访问指定的页面	路径)
-  Content-Disposition: attachment; filename=aaa.zip(服务端要求客户端以下载文件的方式打    开该文件) 
-  Transfer-Encoding: chunked(分块传递数据到客户端）  
-  Set-Cookie:SS=Q0=5Lb_nQ; path=/search(服务端发送到客户端的暂存数据)
-  Expires: -1//3种(服务端禁止客户端缓存页面数据)
-  Cache-Control: no-cache(服务端禁止客户端缓存页面数据)  
-  Pragma: no-cache(服务端禁止客户端缓存页面数据)  
-  Connection: close(1.0)/(1.1)Keep-Alive(维护客户端和服务端的连接关系)                                                        Date: Tue, 11 Jul 2000 18:23:51 GMT(服务端响应客户端的时间)
-
-**在服务器响应客户端的时候，带上Access-Control-Allow-Origin头信息，是解决跨域的一种方法。**
-
-
-
-
-
-## php
+# php
 
 ### json和xml
 
@@ -377,4 +530,4 @@ echo $ret;  页面显示  {"a":"111",.....}
 
 
 
-	
+​	

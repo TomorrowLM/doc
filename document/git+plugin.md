@@ -128,7 +128,7 @@ git commit -m "提交的说明message"		放入分支里
 
 git commit  -am， add和commit的合并，便捷写法
 
-git commit --amend  尝试重新提交(漏掉了几个文件没有添加，或者提交信息写错)
+git commit --amend  尝试重新提交(漏掉了几个文件没有添加，或者**提交信息**写错)
 
 **commit规范**
 
@@ -141,47 +141,6 @@ refactor: A code change that neither fixes a bug nor adds a feature
 perf:     A code change that improves performance
 test:     Adding missing tests or correcting existing tests
 ```
-
-### 回退系列
-
-```
-git reset --hard HEAD^					      回退到上一个版本
-git reset --hard HEAD~1					     回退到上一个版本
-git reset --hard id(前6位就行)	        回退到指定版本
-
-git checkout .										   清空工作区改动
-git checkout -- 文件名 					  
-
-当你开始修改一个文件后，还没有执行 git add命令前(此时还在工作区）,想撤销对这个文件的改动，可以使用git checkout -- filename
-一旦你使用了 git add命令将文件添加到暂存区，此时不想改这个文件了，需要用git reset HEAD filename(git reset HEAD .)把文件移会到工作区，再使用第一步的git checkout -- filenmae(git checkout .)撤销改动
-```
-
-
-
-### 文件的操作
-
-```
-git rm 文件名									删除文件，若误删，可以使用git checkout -- 文件名 
-rm -rf  `git status | grep app/code`
-
-cut 文件名										 获取文件内容
-```
-
-### 远程的操作
-
-```
-远程仓库的移除与重命名
- git remote rm paul				
- git push origin --delete main
- git remote rename pb paul       pb 重命名为 paul
-
-
-git push --set-upstream origin wangxiao
-将本地的分支推送远程上
-
-```
-
-
 
 ### 分支的操作
 
@@ -197,7 +156,20 @@ git rebase 分支														合并分支
 git push orgin dev 										         上传分支到dev上
 
 git checkout -b paynicorn2-repay-notice origin/paynicorn2-repay-notice	直接拉取远程的分支，创建为本地的分支
-git push																	直接上传到远程的paynicorn2-repay-notice
+```
+
+### 远程的操作
+
+```
+远程仓库的移除与重命名
+ git remote rm paul				
+ git push origin --delete main
+ 
+ pb 重命名为 paul
+ git remote rename pb paul       
+ 
+将本地的分支推送远程上
+git push --set-upstream origin wangxiao
 
 ```
 
@@ -207,8 +179,10 @@ git push																	直接上传到远程的paynicorn2-repay-notice
 git status 					  查看文件状态（是否被add或者commit）
 使用 git status -s 命令或 git status –short 命令，你将得到一种更为紧凑的格式输出
 
-git diff 						 						 查看修改
-git diff –cached 							  若要查看已暂存的将要添加到下次提交里的内容
+git diff 						 						显示暂存区和工作区的差异
+git diff --cached 							  显示暂存区和上一个commit的差异
+git diff HEAD									显示工作区与当前分支最新commit之间的差异
+
 git diff –staged
 git diff branch-1 branch-2 			比较两个分支的不同
 
@@ -231,6 +205,30 @@ git ls-files					查看暂存区的文件
 cat .git/HEAD			查看当前 HEAD 指向
 ```
 
+
+
+### 回退系列
+
+```
+git reset --hard HEAD^					      回退到上一个版本
+git reset --hard HEAD~1					     回退到上一个版本
+git reset --hard id(前6位就行)	        回退到指定版本
+
+git checkout .										   清空工作区改动
+git checkout -- 文件名 					  
+
+当你开始修改一个文件后，还没有执行 git add命令前(此时还在工作区）,想撤销对这个文件的改动，可以使用git checkout -- filename
+一旦你使用了 git add命令将文件添加到暂存区，此时不想改这个文件了，需要用git reset HEAD filename(git reset HEAD .)把文件移会到工作区，再使用第一步的git checkout -- filenmae(git checkout .)撤销改动
+```
+
+### 文件的操作
+
+```
+git rm 文件名									删除文件，若误删，可以使用git checkout -- 文件名 
+rm -rf  `git status | grep app/code`
+cut 文件名										 获取文件内容
+```
+
 ### git stash
 
 ```
@@ -240,8 +238,6 @@ git satsh pop		恢复并删除
 git stash list
 git stash apply stash@{}
 ```
-
-
 
 ## Tips
 
