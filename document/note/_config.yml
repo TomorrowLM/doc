@@ -3,13 +3,14 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Web-LM
+title: TomorrowLM-Web
 subtitle: ''
-description: 'web前端汇总'
+description: '热爱'
 keywords: 'web 前端 vue react git html css js es6'
 author: LMTomorrow
 language: zh-CN
 timezone: 'Asia/Shanghai'
+email: 120329698@qq.com
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
@@ -51,6 +52,7 @@ highlight:
   tab_replace: ''
   wrap: true
   hljs: false
+  theme: mac
 prismjs:
   enable: false
   preprocess: true
@@ -86,7 +88,7 @@ updated_option: 'mtime'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
-per_page: 7
+per_page: 5
 pagination_dir: page
 
 # Include / Exclude file(s)
@@ -107,9 +109,18 @@ deploy:
   repo: git@github.com:TomorrowLM/TomorrowLM.github.io.git
   branch: master
   
+
+
 menu:
   home: /
   archives: /archives
   tags: /tags
   categories: /categories 	
+
+social:
+  fab fa-github: https://github.com/TomorrowLM || Github
+  fas fa-envelope: 120329698@qq.com || Email
+
+
+
 
