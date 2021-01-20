@@ -63,6 +63,14 @@ import ReactDOM from 'react-dom'
 
 要使用 JSX 语法，必须先运行 `cnpm i babel-preset-react -D`，然后再 `.babelrc` 中添加 语法配置；
 
+表单 formik
+
+UI框架material
+
+yup用于值解析和验证的JavaScript模式构建器
+
+PropTypes 进行类型检查,可用于确保组件接收到的props数据类型是有效的
+
 ## 根组件APP.jsx
 
 ```js
@@ -314,7 +322,7 @@ https://reactrouter.com/web/api/Hooks/usehistory
 
 - `<HashRouter>`将当前位置存储在[URL](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHyperlinkElementUtils/hash)[的`hash`一部分中](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHyperlinkElementUtils/hash)，因此URL看起来像`http://example.com/#/your/page`。由于哈希从不发送到服务器，因此这意味着不需要特殊的服务器配置(**刷新不会找不到网址**)。
 
-#### 路线匹配器，
+#### 路线匹配器
 
 `<Route>`和`<Switch>`
 
@@ -331,7 +339,7 @@ https://reactrouter.com/web/api/Hooks/usehistory
 
 - Route
 
-   当 location 与 Route 的 path 匹配时渲染 Route 中的 Component
+  当 location 与 Route 的 path 匹配时渲染 Route 中的 Component
 
   - Route 接受三种渲染方式
 
@@ -341,11 +349,11 @@ https://reactrouter.com/web/api/Hooks/usehistory
       <Route render>
       ```
 
-      - `render` function 类型，Route 会渲染这个 function 的返回值，可以在函数中附加一些额外的逻辑，所以你可以在render中添加一些逻辑判断，再返回一个要渲染的 component
+      `render` function 类型，Route 会渲染这个 function 的返回值，可以在函数中附加一些额外的逻辑，所以你可以在render中添加一些逻辑判断，再返回一个要渲染的 component
 
     - `<Route children>`
 
-    - `children` function 类型，比 `render` 多了 `match参数`，可以根据 match参数来决定匹配的时候渲染什么，不匹配的时候渲染什么
+      `children` function 类型，比 `render` 多了 `match参数`，可以根据 match参数来决定匹配的时候渲染什么，不匹配的时候渲染什么
 
   - Route 经常用的是 exact、path 以及 component 属性
 
@@ -439,7 +447,7 @@ https://reactrouter.com/web/api/Hooks/usehistory
 - 其他还有 `<MemoryRouter>  内存路由组件`、`<NativeRouter>  Native的路由组件`、`<StaticRouter> 静态路由组件`这些路由组件，其中 MemoryRouter 主要用在 ReactNative 这种非浏览器的环境中，因此直接将 URL 的 history 保存在了内容中。StaticRouter 主要用于服务器端渲染
 
 
-  
+
 
 ### API
 
@@ -864,7 +872,6 @@ class Greeting extends React.Component {
     );
   }
 }
-
 Greeting.propTypes = {
   name: PropTypes.string
 };
@@ -984,6 +991,35 @@ ReactDOM.render(
   <Greeting />,
   document.getElementById('example')
 );
+```
+
+## React组件添加样式的三种方式
+
+**第一种：行内样式**
+
+想给虚拟dom添加行内样式，需要使用表达式传入样式对象的方式来实现：
+
+```javascript
+// 注意这里的两个括号，第一个表示我们在要JSX里插入JS了，第二个是对象的括号
+ <p style={{color:'red', fontSize:'14px'}}>Hello world</p>
+```
+
+**第二种：className（外部引用）**
+
+class需要写成className（因为毕竟是在写类js代码，会收到js规则的限制，而class是关键字）
+
+**第三种：样式组件（styled-components）**
+
+styled-components是针对React写的一套css-in-js框架，简单来讲就是在js中写css。npm链接
+styled-components是一个第三方包，要安装。**Material框架**中的样式也是如此
+
+```javascript
+const Container = styled.div`
+    width: 100px;
+    height: 100px;
+    background: pink;
+    color: white;
+`
 ```
 
 # Hooks函数
@@ -1316,5 +1352,569 @@ const handleClick = useCallback(()=>{
 <TextCell click={useCallback(()=>handleClick(‘传递的参数’),[])}/>
 ```
 
-# 父子组件通信
+# Redux
 
+## 三大原则
+
+### 单一数据源
+
+**整个应用的state被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个store 中。**
+
+### State 是只读的
+
+唯一**改变 state** 的方法就是**触发action**，action 是一个用于**描述行为的数据结构**。
+
+```js
+//添加新 todo 任务的 action 是这样的：
+const ADD_TODO = 'ADD_TODO'
+
+//action 创建函数，生成 action 
+function addTodo(text) {
+  return{
+  type: ADD_TODO,//执行的动作
+  text: 'Build my first Redux app'，
+  index：5，//用户完成任务的动作序列号
+}
+}
+
+//Redux 中只需把 action 创建函数的结果传给 dispatch() 方法即可发起一次 dispatch 过程。
+dispatch(addTodo(text))
+//或者创建一个 被绑定的 action 创建函数 来自动 dispatch：
+const boundAddTodo = text => dispatch(addTodo(text))
+boundAddTodo(text);
+//store 里能直接通过 store.dispatch() 调用 dispatch() 方法，但是多数情况下你会使用 react-redux 提供的 connect() 帮助器来调用。
+```
+
+### 使用纯函数来执行修改
+
+**为了描述 action 如何改变 state tree ，你需要编写reducers**
+
+```js
+import { createStore } from 'redux';
+function counter(state = 0, action) {
+  switch (action.type) {
+  case 'INCREMENT':
+    return state + 1;
+  case 'DECREMENT':
+    return state - 1;
+  default:
+    return state;
+  }
+}
+// 创建 Redux store 来存放应用的状态。
+// API 是 { subscribe, dispatch, getState }。
+let store = createStore(counter);
+
+// 可以手动订阅更新，也可以事件绑定到视图层。
+store.subscribe(() =>
+  console.log(store.getState())
+);
+
+// 改变内部 state 惟一方法是 dispatch 一个 action。
+// action 可以被序列化，用日记记录和储存下来，后期还可以以回放的方式执行
+store.dispatch({ type: 'INCREMENT' });
+// 1
+store.dispatch({ type: 'INCREMENT' });
+// 2
+store.dispatch({ type: 'DECREMENT' });
+// 1
+```
+
+## 项目构建
+
+**目录结构**
+
+[![sgpjbR.png](https://s3.ax1x.com/2021/01/19/sgpjbR.png)](https://imgchr.com/i/sgpjbR)
+
+### action
+
+**存放描述行为的数据结构**
+
+```js
+//	./actions/counter.js
+export const INCREMENT = 'INCREMENT';
+export const DECREMENT = 'DECREMENT';
+
+export const increment = ()=>{
+  {type:INCREMENT}
+}
+export const decrement = ()=>{
+  {type:DECREMENT}
+}
+```
+
+### **Reducer**
+
+```js
+//	./reducers/counter.js
+import {INCREMENT, DECREMENT} from "../actions/counter"
+export default function(state = 0, action){
+    switch (action.type) {
+        case INCREMENT:
+          return state + 1;
+        case DECREMENT:
+          return state - 1;
+        default:
+          return state;
+        }
+}
+```
+
+```js
+//	./reducers/index.js
+import { combineReducers } from 'redux'
+import counter from './counter'
+
+export default combineReducers({
+	counter
+})
+
+```
+
+### index.js
+
+**创建一个store**
+
+```js
+import { createStore, applyMiddleware, compose } from 'redux'
+import { createLogger } from 'redux-logger'
+import thunk from 'redux-thunk'
+import reducers from './reducers'
+
+function configureStore() {
+  const logger = createLogger({})
+
+  const middlewares = [thunk]
+
+  if (process.env.NODE_ENV !== 'production') {
+    middlewares.push(logger)
+  }
+
+  const composeEnhancers =
+    typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+      : compose
+  const enhancer = composeEnhancers(applyMiddleware(...middlewares))
+
+  return createStore(reducers, enhancer)
+}
+
+export default configureStore()
+
+```
+
+## API
+
+### createStore
+
+`createStore(reducer, [preloadedState], enhancer)`
+
+创建一个 Redux [store](https://www.redux.org.cn/docs/api/Store.html) 来以存放应用中所有的 state。
+应用中应有且仅有一个 store。
+
+**参数**
+
+1. `reducer` *(Function)*: 接收两个参数，分别是当前的 state 树和要处理的 [action](https://www.redux.org.cn/docs/Glossary.html#action)，返回新的 [state 树](https://www.redux.org.cn/docs/Glossary.html#state)。
+2. [`preloadedState`] *(any)*: 初始时的 state。 在同构应用中，你可以决定是否把服务端传来的 state 水合（hydrate）后传给它，或者从之前保存的用户会话中恢复一个传给它。如果你使用 [`combineReducers`](https://www.redux.org.cn/docs/api/combineReducers.html) 创建 `reducer`，它必须是一个普通对象，与传入的 keys 保持同样的结构。否则，你可以自由传入任何 `reducer` 可理解的内容。
+3. `enhancer` *(Function)*: Store enhancer 是一个组合 store creator 的高阶函数，返回一个新的强化过的 store creator。这与 middleware 相似，它也允许你通过复合函数改变 store 接口。
+
+**返回值**
+
+([*`Store`*](https://www.redux.org.cn/docs/api/Store.html)): 保存了应用所有 state 的对象。改变 state 的惟一方法是 [dispatch](https://www.redux.org.cn/docs/api/Store.html#dispatch) action。你也可以 [subscribe 监听](https://www.redux.org.cn/docs/api/Store.html#subscribe) state 的变化，然后更新 UI。
+
+```js
+import { createStore } from 'redux'
+
+function todos(state = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return state.concat([action.text])
+    default:
+      return state
+  }
+}
+
+let store = createStore(todos, ['Use Redux'])
+
+store.dispatch({
+  type: 'ADD_TODO',
+  text: 'Read the docs'
+})
+
+console.log(store.getState())
+// [ 'Use Redux', 'Read the docs' ]
+```
+
+### Store 方法
+
+https://www.redux.org.cn/docs/api/Store.html
+
+- getState()
+- dispatch(action)
+- subscribe(listener)
+- replaceReducer(nextReducer)
+
+### combineReducers
+
+**combineReducers(reducers)**
+
+把一个由多个不同 reducer 函数作为 value 的 object，合并成一个最终的 reducer 函数，然后就可以对这个 reducer 调用 createStore 方法。
+
+合并后的 reducer 可以调用各个子 reducer，并把它们返回的结果合并成一个 state 对象。
+
+### applyMiddleware
+
+https://www.redux.org.cn/docs/api/applyMiddleware.html
+
+**applyMiddleware(...middlewares)**
+
+Middleware 可以让你包装 store 的 dispatch 方法来达到你想要的目的。同时， middleware 还拥有“可组合”这一关键特性。多个 middleware 可以被组合到一起使用，形成 middleware 链。其中，每个 middleware 都不需要关心链中它前后的 middleware 的任何信息。
+
+Middleware 最常见的使用场景是无需引用大量代码或依赖类似 Rx 的第三方库实现异步 actions。这种方式可以让你像 dispatch 一般的 actions 那样 **dispatch 异步 actions**。
+
+###   ` compose(...functions)`
+
+从右到左来组合多个函数。
+
+这是函数式编程中的方法，为了方便，被放到了 Redux 里。
+当需要把多个 [store 增强器](https://www.redux.org.cn/docs/Glossary.html#store-enhancer) 依次执行的时候，需要用到它。
+
+**参数**
+
+1. (*arguments*): 需要合成的多个函数。预计每个函数都接收一个参数。它的返回值将作为一个参数提供给它左边的函数，以此类推。例外是最右边的参数可以接受多个参数，因为它将为由此产生的函数提供签名。（译者注：`compose(funcA, funcB, funcC)` 形象为 `compose(funcA(funcB(funcC())))`）
+
+**返回值**
+
+(*Function*): 从右到左把接收到的函数合成后的最终函数。
+
+```js
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import thunk from 'redux-thunk'
+import DevTools from './containers/DevTools'
+import reducer from '../reducers/index'
+
+const store = createStore(
+  reducer,
+  compose(
+    applyMiddleware(thunk),
+    DevTools.instrument()
+  )
+)
+```
+
+## react-redux
+
+http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_three_react-redux.html
+
+React-Redux 将所有组件分成两大类：UI 组件（presentational component）和容器组件（container component）。
+
+UI 组件有以下几个特征。
+
+> - 只负责 UI 的呈现，不带有任何业务逻辑
+> - 没有状态（即不使用`this.state`这个变量）
+> - 所有数据都由参数（`this.props`）提供
+> - 不使用任何 Redux 的 API
+
+容器组件的特征恰恰相反。
+
+> - 负责管理数据和业务逻辑，不负责 UI 的呈现
+> - 带有内部状态
+> - 使用 Redux 的 API
+
+UI 组件负责 UI 的呈现，容器组件负责管理数据和逻辑。
+
+如果一个组件既有 UI 又有业务逻辑，那怎么办？回答是，将它拆分成下面的结构：外面是一个容器组件，里面包了一个UI 组件。前者负责与外部的通信，将数据传给后者，由后者渲染出视图。所有的 UI 组件都由用户提供，容器组件则是由 React-Redux 自动生成
+
+### connect()
+
+React-Redux 提供`connect`方法，用于从 UI 组件生成容器组件。`connect`的意思，就是将这两种组件连起来。
+
+> ```javascript
+> import { connect } from 'react-redux'
+> const VisibleTodoList = connect()(TodoList);
+> ```
+
+上面代码中，`TodoList`是 UI 组件，`VisibleTodoList`就是由 React-Redux 通过`connect`方法自动生成的容器组件。
+
+但是，因为没有定义业务逻辑，上面这个容器组件毫无意义，只是 UI 组件的一个单纯的包装层。为了定义业务逻辑，需要给出下面两方面的信息。
+
+> （1）输入逻辑：外部的数据（即`state`对象）如何转换为 UI 组件的参数
+>
+> （2）输出逻辑：用户发出的动作如何变为 Action 对象，从 UI 组件传出去。
+
+因此，`connect`方法的完整 API 如下。
+
+> ```javascript
+> import { connect } from 'react-redux'
+> 
+> const VisibleTodoList = connect(
+>   mapStateToProps,
+>   mapDispatchToProps
+> )(TodoList)
+> ```
+
+上面代码中，`connect`方法接受两个参数：`mapStateToProps`和`mapDispatchToProps`。它们定义了 UI 组件的业务逻辑。前者负责输入逻辑，即将`state`映射到 UI 组件的参数（`props`），后者负责输出逻辑，即将用户对 UI 组件的操作映射成 Action。
+
+### mapStateToProps()
+
+`mapStateToProps`是一个函数。它的作用就是像它的名字那样，建立一个从（外部的）`state`对象到（UI 组件的）`props`对象的映射关系。
+
+作为函数，`mapStateToProps`执行后应该返回一个对象，里面的每一个键值对就是一个映射。请看下面的例子。
+
+> ```javascript
+> const mapStateToProps = (state) => {
+>   return {
+>     todos: getVisibleTodos(state.todos, state.visibilityFilter)
+>   }
+> }
+> ```
+
+上面代码中，`mapStateToProps`是一个函数，它接受`state`作为参数，返回一个对象。这个对象有一个`todos`属性，代表 UI 组件的同名参数，后面的`getVisibleTodos`也是一个函数，可以从`state`算出 `todos` 的值。
+
+下面就是`getVisibleTodos`的一个例子，用来算出`todos`。
+
+> ```javascript
+> const getVisibleTodos = (todos, filter) => {
+>   switch (filter) {
+>     case 'SHOW_ALL':
+>       return todos
+>     case 'SHOW_COMPLETED':
+>       return todos.filter(t => t.completed)
+>     case 'SHOW_ACTIVE':
+>       return todos.filter(t => !t.completed)
+>     default:
+>       throw new Error('Unknown filter: ' + filter)
+>   }
+> }
+> ```
+
+`mapStateToProps`会订阅 Store，每当`state`更新的时候，就会自动执行，重新计算 UI 组件的参数，从而触发 UI 组件的重新渲染。
+
+`mapStateToProps`的第一个参数总是`state`对象，还可以使用第二个参数，代表容器组件的`props`对象。
+
+> ```javascript
+> // 容器组件的代码
+> //    <FilterLink filter="SHOW_ALL">
+> //      All
+> //    </FilterLink>
+> 
+> const mapStateToProps = (state, ownProps) => {
+>   return {
+>     active: ownProps.filter === state.visibilityFilter
+>   }
+> }
+> ```
+
+使用`ownProps`作为参数后，如果容器组件的参数发生变化，也会引发 UI 组件重新渲染。
+
+`connect`方法可以省略`mapStateToProps`参数，那样的话，UI 组件就不会订阅Store，就是说 Store 的更新不会引起 UI 组件的更新。
+
+### mapDispatchToProps()
+
+`mapDispatchToProps`是`connect`函数的第二个参数，用来建立 UI 组件的参数到`store.dispatch`方法的映射。也就是说，它定义了哪些用户的操作应该当作 Action，传给 Store。它可以是一个函数，也可以是一个对象。
+
+如果`mapDispatchToProps`是一个函数，会得到`dispatch`和`ownProps`（容器组件的`props`对象）两个参数。
+
+> ```javascript
+> const mapDispatchToProps = (
+>   dispatch,
+>   ownProps
+> ) => {
+>   return {
+>     onClick: () => {
+>       dispatch({
+>         type: 'SET_VISIBILITY_FILTER',
+>         filter: ownProps.filter
+>       });
+>     }
+>   };
+> }
+> ```
+
+从上面代码可以看到，`mapDispatchToProps`作为函数，应该返回一个对象，该对象的每个键值对都是一个映射，定义了 UI 组件的参数怎样发出 Action。
+
+如果`mapDispatchToProps`是一个对象，它的每个键名也是对应 UI 组件的同名参数，键值应该是一个函数，会被当作 Action creator ，返回的 Action 会由 Redux 自动发出。举例来说，上面的`mapDispatchToProps`写成对象就是下面这样。
+
+> ```javascript
+> const mapDispatchToProps = {
+>   onClick: (filter) => {
+>     type: 'SET_VISIBILITY_FILTER',
+>     filter: filter
+>   };
+> }
+> ```
+
+### <Provider> 组件
+
+`connect`方法生成容器组件以后，需要让容器组件拿到`state`对象，才能生成 UI 组件的参数。
+
+一种解决方法是将`state`对象作为参数，传入容器组件。但是，这样做比较麻烦，尤其是容器组件可能在很深的层级，一级级将`state`传下去就很麻烦。
+
+React-Redux 提供`Provider`组件，可以让容器组件拿到`state`。
+
+> ```javascript
+> import { Provider } from 'react-redux'
+> import { createStore } from 'redux'
+> import todoApp from './reducers'
+> import App from './components/App'
+> 
+> let store = createStore(todoApp);
+> 
+> render(
+>   <Provider store={store}>
+>     <App />
+>   </Provider>,
+>   document.getElementById('root')
+> )
+> ```
+
+上面代码中，`Provider`在根组件外面包了一层，这样一来，`App`的所有子组件就默认都可以拿到`state`了。
+
+它的原理是`React`组件的[`context`](https://facebook.github.io/react/docs/context.html)属性，请看源码。
+
+> ```javascript
+> class Provider extends Component {
+>   getChildContext() {
+>     return {
+>       store: this.props.store
+>     };
+>   }
+>   render() {
+>     return this.props.children;
+>   }
+> }
+> 
+> Provider.childContextTypes = {
+>   store: React.PropTypes.object
+> }
+> ```
+
+上面代码中，`store`放在了上下文对象`context`上面。然后，子组件就可以从`context`拿到`store`，代码大致如下。
+
+> ```javascript
+> class VisibleTodoList extends Component {
+>   componentDidMount() {
+>     const { store } = this.context;
+>     this.unsubscribe = store.subscribe(() =>
+>       this.forceUpdate()
+>     );
+>   }
+> 
+>   render() {
+>     const props = this.props;
+>     const { store } = this.context;
+>     const state = store.getState();
+>     // ...
+>   }
+> }
+> 
+> VisibleTodoList.contextTypes = {
+>   store: React.PropTypes.object
+> }
+> ```
+
+`React-Redux`自动生成的容器组件的代码，就类似上面这样，从而拿到`store`。
+
+### 实例：计数器
+
+我们来看一个实例。下面是一个计数器组件，它是一个纯的 UI 组件。
+
+> ```javascript
+> class Counter extends Component {
+>   render() {
+>     const { value, onIncreaseClick } = this.props
+>     return (
+>       <div>
+>         <span>{value}</span>
+>         <button onClick={onIncreaseClick}>Increase</button>
+>       </div>
+>     )
+>   }
+> }
+> ```
+
+上面代码中，这个 UI 组件有两个参数：`value`和`onIncreaseClick`。前者需要从`state`计算得到，后者需要向外发出 Action。
+
+接着，定义`value`到`state`的映射，以及`onIncreaseClick`到`dispatch`的映射。
+
+> ```javascript
+> function mapStateToProps(state) {
+>   return {
+>     value: state.count
+>   }
+> }
+> 
+> function mapDispatchToProps(dispatch) {
+>   return {
+>     onIncreaseClick: () => dispatch(increaseAction)
+>   }
+> }
+> 
+> // Action Creator
+> const increaseAction = { type: 'increase' }
+> ```
+
+然后，使用`connect`方法生成容器组件。
+
+> ```javascript
+> const App = connect(
+>   mapStateToProps,
+>   mapDispatchToProps
+> )(Counter)
+> ```
+
+然后，定义这个组件的 Reducer。
+
+> ```javascript
+> // Reducer
+> function counter(state = { count: 0 }, action) {
+>   const count = state.count
+>   switch (action.type) {
+>     case 'increase':
+>       return { count: count + 1 }
+>     default:
+>       return state
+>   }
+> }
+> ```
+
+最后，生成`store`对象，并使用`Provider`在根组件外面包一层。
+
+> ```javascript
+> import { loadState, saveState } from './localStorage';
+> 
+> const persistedState = loadState();
+> const store = createStore(
+>   todoApp,
+>   persistedState
+> );
+> 
+> store.subscribe(throttle(() => {
+>   saveState({
+>     todos: store.getState().todos,
+>   })
+> }, 1000))
+> 
+> ReactDOM.render(
+>   <Provider store={store}>
+>     <App />
+>   </Provider>,
+>   document.getElementById('root')
+> );
+> ```
+
+完整的代码看[这里](https://github.com/jackielii/simplest-redux-example/blob/master/index.js)。
+
+### React-Router 路由库
+
+使用`React-Router`的项目，与其他项目没有不同之处，也是使用`Provider`在`Router`外面包一层，毕竟`Provider`的唯一功能就是传入`store`对象。
+
+> ```javascript
+> const Root = ({ store }) => (
+>   <Provider store={store}>
+>     <Router>
+>       <Route path="/" component={App} />
+>     </Router>
+>   </Provider>
+> );
+> ```

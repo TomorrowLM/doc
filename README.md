@@ -172,7 +172,6 @@
   + [node](document/node/node.md)
 ## note
   + [magento](document/note/magento.md)
-+ [ajax+php](document/ajax+php.md)
 + [es6](document/es6.md)
 + [git+plugin](document/git+plugin.md)
 + [http](document/http.md)
