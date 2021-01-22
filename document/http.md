@@ -103,8 +103,6 @@ if(xhr.readystate == 4)是否接收到数据{
   }
   ```
 
-  
-
 - php
 
   ```php
@@ -179,7 +177,7 @@ formData.set('username', '张三');
 formData.get('username') // "张三"
 ```
 
-#### FormData 提供以下实例方法
+## FormData 实例方法
 
 - `FormData.get(key)`：获取指定键名对应的键值，参数为键名。如果有多个同名的键值对，则返回第一个键值对的键值。
 - `FormData.getAll(key)`：返回一个数组，表示指定键名对应的所有键值。如果有多个同名的键值对，数组会包含所有的键值。
@@ -191,7 +189,7 @@ formData.get('username') // "张三"
 - `FormData.values()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键值。
 - `FormData.entries()`：返回一个遍历器对象，用于`for...of`循环遍历所有的键值对。如果直接用`for...of`循环遍历 FormData 实例，默认就会调用这个方法。
 
-#### 自动校验
+## 自动校验
 
 表单提交的时候，浏览器允许开发者指定一些条件，它会自动验证各个表单控件的值是否符合条件。
 
@@ -219,33 +217,21 @@ formData.get('username') // "张三"
 
 # XMLHttpRequest
 
-headers:一般头部放置验证参数等，例如cookie、token等
-
-2、Query Params:常用是get方式请求，用于校验请求参数
-
-3、Body Params：常用是post方式请求，用于校验请求参数
-
-header("Content-Type:text/plain(html); charset=utf-8")//设置服务器响应的文件类型plain是纯文本则echo中的标签当作是文本显示
-
 **XMLHttpRequest**
 
  XMLHttpRequest(XHR) 对象用于与服务器交互。通过 XMLHttpRequest 可以在不刷新页面的情况下请求特定 URL，获取数据。这允许网页在不影响用户操作的情况下，更新页面的局部内容。 
 
  `XMLHttpRequest` 可以用于获取任何类型的数据，而不仅仅是 XML。它甚至支持 [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) 以外的协议（包括 file:// 和 FTP），尽管可能受到更多出于安全等原因的限制。 
 
-​	 **1.  属性**
+ **1.  属性**
 
 - **XMLHttpRequest.responseType**  表示服务器返回数据的类型，这个属性是可写的，在 open 之后，send 之前，告诉服务器返回指定类型的数据。如果 responseType 设为空字符串，就等同于默认值 text 表示服务器返回文本数据； 
-
 - **XMLHttpRequest.onreadystatechange**当 `readyState` 属性发生变化时，调用的 [`EventHandler`](https://developer.mozilla.org/zh-CN/docs/Web/API/EventHandler)。
-
 - **readyState** HTTP 请求的状态，当一个 XMLHttpRequest 初次创建时，这个属性的值从 0 开始，直到接收到完整的 HTTP 响应，这个值增加到 4。 
-
 - **status**   由服务器返回的 HTTP 状态代码，如 200 表示成功，而 404 表示 “Not Found” 错误。当 readyState 小于 3 的时候读取这一属性会导致一个异常。 
-
 - **response**   该属性只读表示服务器返回的数据体，可能是任意的数据类型，比如字符串，对象，二进制对象等，具体类型由responseType 属性决定。如果本次请求没有成功或者数据不完整，该属性等于 null 
 
-  **2.方法**
+ **2.  方法**
 
 | abort()                 | 取消当前响应，关闭连接并且结束任何未决的网络活动             |
 | ----------------------- | ------------------------------------------------------------ |
@@ -253,9 +239,7 @@ header("Content-Type:text/plain(html); charset=utf-8")//设置服务器响应的
 | getResponseHeader()     | 返回指定的 HTTP 响应头部的值                                 |
 | open()                  | 初始化 HTTP 请求参数，例如 URL 和 HTTP 方法，但是并不发送请求 |
 | send()                  | 发送 HTTP 请求，使用传递给 open() 方法的参数，以及传递给该方法的可选请求体 |
-| setRequestHeader()      | 向一个打开但未发送的请求设置或添加一个 HTTP 请求             |
-
-
+| setRequestHeader()      | 向一个打开但未发送的请求设置或添加一个 HTTP 请求头           |
 
 # Request Header和Response Header
 
@@ -263,69 +247,150 @@ header("Content-Type:text/plain(html); charset=utf-8")//设置服务器响应的
 
 ![img](https://img2018.cnblogs.com/blog/1301998/201906/1301998-20190621104932351-2057147169.png)
 
+## HTTP消息头
+
+`HTTP消息头`是指，在超文本传输协议（ Hypertext Transfer Protocol ，HTTP）的请求和响应消息中，协议头部分的那些组件。HTTP消息头用来准确描述正在获取的资源、服务器或者客户端的行为，定义了HTTP事务中的具体操作参数。
+
+2、Query Params:常用是get方式请求，用于校验请求参数
+
+3、Body Params：常用是post方式请求，用于校验请求参数
+
 ## Request Header
 
 **HTTP协议使用TCP协议进行传输，在应用层协议发起交互之前，首先是TCP的三次握手。完成了TCP三次握手后，客户端会向服务器发出一个请求报文**
 
 **HTTP最常见的请求头如下：**
 
-**Accept**：浏览器可接受的MIME类型 (客户端能接收的资源类型)  ；
-
-Accept-Charset：浏览器可接受的字符集；
-
-Accept-Encoding: gzip, deflate(客户端能接收的压缩数据的类型)  
-
-Accept-Language：浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到；
-
-Authorization：授权信息,用于表示HTTP协议中需要认证资源的认证信息 ,通常出现在对服务器发送的WWW-Authenticate头的应答中；
-
-Cache-Control:用来指定当前的请求/回复中的，是否使用缓存机制。
-
-Connection：表示是否需要持久连接。如果Servlet看到这里的值为“Keep-Alive”，或者看到请求使用的是HTTP 1.1（HTTP 1.1默认进行持久连接），它就可以利用持久连接的优点，当页面包含多个元素时（例如Applet，图片），显著地减少下载所需要的时间。要实现这一点，Servlet需要在应答中发送一个Content-Length头，最简单的实现方法是：先把内容写入ByteArrayOutputStream，然后在正式写出内容之前计算它的大小；
-
-Content-Length：表示请求消息正文的长度；
-
-Cookie：这是最重要的请求头信息之一；
-
-From：请求发送者的email地址，由一些特殊的Web客户程序使用，浏览器不会用到它；
-
-Host：初始URL中的主机和端口；
-
-If-Modified-Since：只有当所请求的内容在指定的日期之后又经过修改才返回它，否则返回304“Not Modified”应答；
-
-Origin：发起一个针对跨域资源共享的请求（该请求要求服务器在响应中加入一个Access-Control-Allow-Origin的消息头，表示访问控制所允许的来源）。
-
-Pragma：指定“no-cache”值表示服务器必须返回一个刷新后的文档，即使它是代理服务器而且已经有了页面的本地拷贝；
-
-Referer：包含一个URL，用户从该URL代表的页面出发访问当前请求的页面。
-
-User-Agent：浏览器类型，如果Servlet返回的内容与浏览器类型有关则该值非常有用；
-
-UA-Pixels，UA-Color，UA-OS，UA-CPU：由某些版本的IE浏览器所发送的非标准的请求头，表示屏幕大小、颜色深度、操作系统和CPU类型。
+| 协议头              | 说明                                                         | 示例                                                    | 状态       |
+| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------- | ---------- |
+| Accept              | 可接受的响应内容类型（`Content-Types`）。                    | `Accept: text/plain`                                    | 固定       |
+| Accept-Charset      | 可接受的字符集                                               | `Accept-Charset: utf-8`                                 | 固定       |
+| Accept-Encoding     | 可接受的响应内容的编码方式。                                 | `Accept-Encoding: gzip, deflate`                        | 固定       |
+| Accept-Language     | 可接受的响应内容语言列表。                                   | `Accept-Language: en-US`                                | 固定       |
+| Accept-Datetime     | 可接受的按照时间来表示的响应内容版本                         | Accept-Datetime: Sat, 26 Dec 2015 17:30:00 GMT          | 临时       |
+| Authorization       | 用于表示HTTP协议中需要认证资源的认证信息                     | Authorization: Basic OSdjJGRpbjpvcGVuIANlc2SdDE==       | 固定       |
+| Cache-Control       | 用来指定当前的请求/回复中的，是否使用缓存机制。              | `Cache-Control: no-cache`                               | 固定       |
+| Connection          | 客户端（浏览器）想要优先使用的连接类型                       | `Connection: keep-alive``Connection: Upgrade`           | 固定       |
+| Cookie              | 由之前服务器通过`Set-Cookie`（见下文）设置的一个HTTP协议Cookie | `Cookie: $Version=1; Skin=new;`                         | 固定：标准 |
+| Content-Length      | 以8进制表示的请求体的长度                                    | `Content-Length: 348`                                   | 固定       |
+| Content-MD5         | 请求体的内容的二进制 MD5 散列值（数字签名），以 Base64 编码的结果 | Content-MD5: oD8dH2sgSW50ZWdyaIEd9D==                   | 废弃       |
+| Content-Type        | 请求体的MIME类型 （用于POST和PUT请求中）                     | Content-Type: application/x-www-form-urlencoded         | 固定       |
+| Date                | 发送该消息的日期和时间（以[RFC 7231](http://tools.ietf.org/html/rfc7231#section-7.1.1.1)中定义的"HTTP日期"格式来发送） | Date: Dec, 26 Dec 2015 17:30:00 GMT                     | 固定       |
+| Expect              | 表示客户端要求服务器做出特定的行为                           | `Expect: 100-continue`                                  | 固定       |
+| From                | 发起此请求的用户的邮件地址                                   | `From: user@itbilu.com`                                 | 固定       |
+| Host                | 表示服务器的域名以及服务器所监听的端口号。如果所请求的端口是对应的服务的标准端口（80），则端口号可以省略。 | `Host: www.itbilu.com:80``Host: www.itbilu.com`         | 固定       |
+| If-Match            | 仅当客户端提供的实体与服务器上对应的实体相匹配时，才进行对应的操作。主要用于像 PUT 这样的方法中，仅当从用户上次更新某个资源后，该资源未被修改的情况下，才更新该资源。 | If-Match: "9jd00cdj34pss9ejqiw39d82f20d0ikd"            | 固定       |
+| If-Modified-Since   | 允许在对应的资源未被修改的情况下返回304未修改                | If-Modified-Since: Dec, 26 Dec 2015 17:30:00 GMT        | 固定       |
+| If-None-Match       | 允许在对应的内容未被修改的情况下返回304未修改（ 304 Not Modified ），参考 超文本传输协议 的实体标记 | If-None-Match: "9jd00cdj34pss9ejqiw39d82f20d0ikd"       | 固定       |
+| If-Range            | 如果该实体未被修改过，则向返回所缺少的那一个或多个部分。否则，返回整个新的实体 | If-Range: "9jd00cdj34pss9ejqiw39d82f20d0ikd"            | 固定       |
+| If-Unmodified-Since | 仅当该实体自某个特定时间以来未被修改的情况下，才发送回应。   | If-Unmodified-Since: Dec, 26 Dec 2015 17:30:00 GMT      | 固定       |
+| Max-Forwards        | 限制该消息可被代理及网关转发的次数。                         | `Max-Forwards: 10`                                      | 固定       |
+| Origin              | 发起一个针对[跨域资源共享](http://itbilu.com/javascript/js/VkiXuUcC.html)的请求（该请求要求服务器在响应中加入一个`Access-Control-Allow-Origin`的消息头，表示访问控制所允许的来源）。 | `Origin: http://www.itbilu.com`                         | 固定: 标准 |
+| Pragma              | 与具体的实现相关，这些字段可能在请求/回应链中的任何时候产生。 | `Pragma: no-cache`                                      | 固定       |
+| Proxy-Authorization | 用于向代理进行认证的认证信息。                               | Proxy-Authorization: Basic IOoDZRgDOi0vcGVuIHNlNidJi2== | 固定       |
+| Range               | 表示请求某个实体的一部分，字节偏移以0开始。                  | `Range: bytes=500-999`                                  | 固定       |
+| Referer             | 表示浏览器所访问的前一个页面，可以认为是之前访问页面的链接将浏览器带到了当前页面。`Referer`其实是`Referrer`这个单词，但RFC制作标准时给拼错了，后来也就将错就错使用`Referer`了。 | Referer: http://itbilu.com/nodejs                       | 固定       |
+| TE                  | 浏览器预期接受的传输时的编码方式：可使用回应协议头`Transfer-Encoding`中的值（还可以使用"trailers"表示数据传输时的分块方式）用来表示浏览器希望在最后一个大小为0的块之后还接收到一些额外的字段。 | `TE: trailers,deflate`                                  | 固定       |
+| User-Agent          | 浏览器的身份标识字符串                                       | `User-Agent: Mozilla/……`                                | 固定       |
+| Upgrade             | 要求服务器升级到一个高版本协议。                             | Upgrade: HTTP/2.0, SHTTP/1.3, IRC/6.9, RTA/x11          | 固定       |
+| Via                 | 告诉服务器，这个请求是由哪些代理发出的。                     | Via: 1.0 fred, 1.1 itbilu.com.com (Apache/1.1)          | 固定       |
+| Warning             | 一个一般性的警告，表示在实体内容体中可能存在错误。           | Warning: 199 Miscellaneous warning                      | 固定       |
 
 ## Response Header
 
 **响应报文**：**当收到get或post等方法发来的请求后，服务器就要对报文进行响应。**
-  HTTP/1.1(响应采用的协议和版本号) 200(状态码) OK(描述信息)
-  Location: http://www.baidu.com(服务端需要客户端访问的页面路径) 
-  Server:apache tomcat(服务端的Web服务端名)
-  Content-Encoding: gzip(服务端能够发送压缩编码类型) 
-  Content-Length: 80(服务端发送的压缩数据的长度) 
-  Content-Language: zh-cn(服务端发送的语言类型) 
-  Content-Type: text/html; charset=GB2312(服务端发送的类型及采用的编码方式)
-  Last-Modified: Tue, 11 Jul 2000 18:23:51 GMT(服务端对该资源最后修改的时间)
-  Refresh: 1;url=http://www.it315.org(服务端要求客户端1秒钟后，刷新，然后访问指定的页面	路径)
-  Content-Disposition: attachment; filename=aaa.zip(服务端要求客户端以下载文件的方式打    开该文件) 
-  Transfer-Encoding: chunked(分块传递数据到客户端）  
-  Set-Cookie:SS=Q0=5Lb_nQ; path=/search(服务端发送到客户端的暂存数据)
-  Expires: -1//3种(服务端禁止客户端缓存页面数据)
-  Cache-Control: no-cache(服务端禁止客户端缓存页面数据)  
-  Pragma: no-cache(服务端禁止客户端缓存页面数据)  
-  Connection: close(1.0)/(1.1)Keep-Alive(维护客户端和服务端的连接关系)                                                        
 
-  Date: Tue, 11 Jul 2000 18:23:51 GMT(服务端响应客户端的时间)
+| 响应头                      | 说明                                                         | 示例                                                         | 状态       |
+| :-------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :--------- |
+| Access-Control-Allow-Origin | 指定哪些网站可以`跨域源资源共享`                             | `Access-Control-Allow-Origin: *`                             | 临时       |
+| Accept-Patch                | 指定服务器所支持的文档补丁格式                               | Accept-Patch: text/example;charset=utf-8                     | 固定       |
+| Accept-Ranges               | 服务器所支持的内容范围                                       | `Accept-Ranges: bytes`                                       | 固定       |
+| Age                         | 响应对象在代理缓存中存在的时间，以秒为单位                   | `Age: 12`                                                    | 固定       |
+| Allow                       | 对于特定资源的有效动作;                                      | `Allow: GET, HEAD`                                           | 固定       |
+| Cache-Control               | 通知从服务器到客户端内的所有缓存机制，表示它们是否可以缓存这个对象及缓存有效时间。其单位为秒 | `Cache-Control: max-age=3600`                                | 固定       |
+| Connection                  | 针对该连接所预期的选项                                       | `Connection: close`                                          | 固定       |
+| Content-Disposition         | 对已知MIME类型资源的描述，浏览器可以根据这个响应头决定是对返回资源的动作，如：将其下载或是打开。 | Content-Disposition: attachment; filename="fname.ext"        | 固定       |
+| Content-Encoding            | 响应资源所使用的编码类型。                                   | `Content-Encoding: gzip`                                     | 固定       |
+| Content-Language            | 响就内容所使用的语言                                         | `Content-Language: zh-cn`                                    | 固定       |
+| Content-Length              | 响应消息体的长度，用8进制字节表示                            | `Content-Length: 348`                                        | 固定       |
+| Content-Location            | 所返回的数据的一个候选位置                                   | `Content-Location: /index.htm`                               | 固定       |
+| Content-MD5                 | 响应内容的二进制 MD5 散列值，以 Base64 方式编码              | Content-MD5: IDK0iSsgSW50ZWd0DiJUi==                         | 已淘汰     |
+| Content-Range               | 如果是响应部分消息，表示属于完整消息的哪个部分               | Content-Range: bytes 21010-47021/47022                       | 固定       |
+| Content-Type                | 当前内容的`MIME`类型                                         | Content-Type: text/html; charset=utf-8                       | 固定       |
+| Date                        | 此条消息被发送时的日期和时间(以[RFC 7231](http://tools.ietf.org/html/rfc7231#section-7.1.1.1)中定义的"HTTP日期"格式来表示) | Date: Tue, 15 Nov 1994 08:12:31 GMT                          | 固定       |
+| ETag                        | 对于某个资源的某个特定版本的一个标识符，通常是一个 消息散列  | ETag: "737060cd8c284d8af7ad3082f209582d"                     | 固定       |
+| Expires                     | 指定一个日期/时间，超过该时间则认为此回应已经过期            | Expires: Thu, 01 Dec 1994 16:00:00 GMT                       | 固定: 标准 |
+| Last-Modified               | 所请求的对象的最后修改日期(按照 RFC 7231 中定义的“超文本传输协议日期”格式来表示) | Last-Modified: Dec, 26 Dec 2015 17:30:00 GMT                 | 固定       |
+| Link                        | 用来表示与另一个资源之间的类型关系，此类型关系是在[RFC 5988](https://tools.ietf.org/html/rfc5988)中定义 | `Link: `; rel="alternate"                                    | 固定       |
+| Location                    | 用于在进行重定向，或在创建了某个新资源时使用。               | Location: http://www.itbilu.com/nodejs                       | 固定       |
+| P3P                         | P3P策略相关设置                                              | P3P: CP="This is not a P3P policy!                           | 固定       |
+| Pragma                      | 与具体的实现相关，这些响应头可能在请求/回应链中的不同时候产生不同的效果 | `Pragma: no-cache`                                           | 固定       |
+| Proxy-Authenticate          | 要求在访问代理时提供身份认证信息。                           | `Proxy-Authenticate: Basic`                                  | 固定       |
+| Public-Key-Pins             | 用于防止中间攻击，声明网站认证中传输层安全协议的证书散列值   | Public-Key-Pins: max-age=2592000; pin-sha256="……";           | 固定       |
+| Refresh                     | 用于重定向，或者当一个新的资源被创建时。默认会在5秒后刷新重定向。 | Refresh: 5; url=http://itbilu.com                            |            |
+| Retry-After                 | 如果某个实体临时不可用，那么此协议头用于告知客户端稍后重试。其值可以是一个特定的时间段(以秒为单位)或一个超文本传输协议日期。 | 示例1:Retry-After: 120示例2: Retry-After: Dec, 26 Dec 2015 17:30:00 GMT | 固定       |
+| Server                      | 服务器的名称                                                 | `Server: nginx/1.6.3`                                        | 固定       |
+| Set-Cookie                  | 设置`HTTP cookie`                                            | Set-Cookie: UserID=itbilu; Max-Age=3600; Version=1           | 固定: 标准 |
+| Status                      | 通用网关接口的响应头字段，用来说明当前HTTP连接的响应状态。   | `Status: 200 OK`                                             |            |
+| Trailer                     | `Trailer`用户说明传输中分块编码的编码信息                    | `Trailer: Max-Forwards`                                      | 固定       |
+| Transfer-Encoding           | 用表示实体传输给用户的编码形式。包括：`chunked`、`compress`、 `deflate`、`gzip`、`identity`。 | Transfer-Encoding: chunked                                   | 固定       |
+| Upgrade                     | 要求客户端升级到另一个高版本协议。                           | Upgrade: HTTP/2.0, SHTTP/1.3, IRC/6.9, RTA/x11               | 固定       |
+| Vary                        | 告知下游的代理服务器，应当如何对以后的请求协议头进行匹配，以决定是否可使用已缓存的响应内容而不是重新从原服务器请求新的内容。 | `Vary: *`                                                    | 固定       |
+| Via                         | 告知代理服务器的客户端，当前响应是通过什么途径发送的。       | Via: 1.0 fred, 1.1 itbilu.com (nginx/1.6.3)                  | 固定       |
+| Warning                     | 一般性警告，告知在实体内容体中可能存在错误。                 | Warning: 199 Miscellaneous warning                           | 固定       |
+| WWW-Authenticate            | 表示在请求获取这个实体时应当使用的认证模式。                 | `WWW-Authenticate: Basic`                                    | 固定       |
 
 **在服务器响应客户端的时候，带上Access-Control-Allow-Origin头信息，是解决跨域的一种方法。**
+
+# HTTP状态码及其含义
+
+- 1XX：信息状态码
+
+  - `100 Continue` 继续，一般在发送`post`请求时，已发送了`http header`之后服务端将返回此信息，表示确认，之后发送具体参数信息
+
+- 2XX：成功状态码
+
+  | 200  | OK                            | 请求成功。一般用于GET与POST请求                              |
+  | ---- | ----------------------------- | ------------------------------------------------------------ |
+  | 201  | Created                       | 已创建。成功请求并创建了新的资源                             |
+  | 202  | Accepted                      | 已接受。已经接受请求，但未处理完成                           |
+  | 203  | Non-Authoritative Information | 非授权信息。请求成功。但返回的meta信息不在原始的服务器，而是一个副本 |
+  | 204  | No Content                    | 无内容。服务器成功处理，但未返回内容。在未更新网页的情况下，可确保浏览器继续显示当前文档 |
+  | 205  | Reset Content                 | 重置内容。服务器处理成功，用户终端（例如：浏览器）应重置文档视图。可通过此返回码清除浏览器的表单域 |
+  | 206  | Partial Content               | 部分内容。服务器成功处理了部分GET请求                        |
+
+- 3XX：重定向
+
+  | 300  | Multiple Choices   | 多种选择。请求的资源可包括多个位置，相应可返回一个资源特征与地址的列表用于用户终端（例如：浏览器）选择 |
+  | ---- | ------------------ | ------------------------------------------------------------ |
+  | 301  | Moved Permanently  | 永久移动。请求的资源已被永久的移动到新URI，返回信息会包括新的URI，浏览器会自动定向到新URI。今后任何新的请求都应使用新的URI代替 |
+  | 302  | Found              | 临时移动。与301类似。但资源只是临时被移动。客户端应继续使用原有URI |
+  | 303  | See Other          | 查看其它地址。与301类似。使用GET和POST请求查看               |
+  | 304  | Not Modified       | 未修改。所请求的资源未修改，服务器返回此状态码时，不会返回任何资源。客户端通常会缓存访问过的资源，通过提供一个头信息指出客户端希望只返回在指定日期之后修改的资源 |
+  | 305  | Use Proxy          | 使用代理。所请求的资源必须通过代理访问                       |
+  | 306  | Unused             | 已经被废弃的HTTP状态码                                       |
+  | 307  | Temporary Redirect | 临时重定向。与302类似。使用GET请求重定向                     |
+
+- 4XX：客户端错误
+
+  | 400  | Bad Request      | 客户端请求的语法错误，服务器无法理解                         |
+  | ---- | ---------------- | ------------------------------------------------------------ |
+  | 401  | Unauthorized     | 请求要求用户的身份认证                                       |
+  | 402  | Payment Required | 保留，将来使用                                               |
+  | 403  | Forbidden        | 服务器理解请求客户端的请求，但是拒绝执行此请求               |
+  | 404  | Not Found        | 服务器无法根据客户端的请求找到资源（网页）。通过此代码，网站设计人员可设置"您所请求的资源无法找到"的个性页面 |
+
+- 5XX:服务器错误
+
+  | 500  | Internal Server Error      | 服务器内部错误，无法完成请求                                 |
+  | ---- | -------------------------- | ------------------------------------------------------------ |
+  | 501  | Not Implemented            | 服务器不支持请求的功能，无法完成请求                         |
+  | 502  | Bad Gateway                | 作为网关或者代理工作的服务器尝试执行请求时，从远程服务器接收到了一个无效的响应 |
+  | 503  | Service Unavailable        | 由于超载或系统维护，服务器暂时的无法处理客户端的请求。延时的长度可包含在服务器的Retry-After头信息中 |
+  | 504  | Gateway Time-out           | 充当网关或代理的服务器，未及时从远端服务器获取请求           |
+  | 505  | HTTP Version not supported | 服务器不支持请求的HTTP协议的版本，无法完成处理               |
+
+
 
 # manifest
 

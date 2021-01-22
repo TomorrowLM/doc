@@ -231,11 +231,9 @@ module.exports = {
 
 ```
 
+## 依赖
 
-
-# 依赖
-
-## webpack和webpack-dev-server的区别
+### webpack和webpack-dev-server的区别
 
 **webpack**
 
@@ -253,7 +251,7 @@ webpack-dev-server：一个服务器插件，相当于webpack+apache，启动一
 - webpack打包输出路径，output字段为path，webpack-dev-server打包输出路径，output字段为publicPath(此值为空时默认是项目根目录，  contentBase:'src',//指定托管的根目录)
 - webpack打包输出的文件，是真的存在于物理地址path中，而webpack-dev-server打包输出的文件，是保存在内存中的，在项目目录中是找不到的。
 
-## html-webpack-plugin插件
+### html-webpack-plugin插件
 
 webpack-dev-server实现了自动编译刷新浏览器，让编译出来的bundle.js托关于服务器根路径（电脑内存）中去。
 

@@ -1791,7 +1791,7 @@ React-Redux 提供`Provider`组件，可以让容器组件拿到`state`。
 
 上面代码中，`store`放在了上下文对象`context`上面。然后，子组件就可以从`context`拿到`store`，代码大致如下。
 
-> ```javascript
+> ```js
 > class VisibleTodoList extends Component {
 >   componentDidMount() {
 >     const { store } = this.context;
@@ -1819,88 +1819,99 @@ React-Redux 提供`Provider`组件，可以让容器组件拿到`state`。
 
 我们来看一个实例。下面是一个计数器组件，它是一个纯的 UI 组件。
 
-> ```javascript
-> class Counter extends Component {
->   render() {
->     const { value, onIncreaseClick } = this.props
->     return (
+> ```js
+> import React from "react";
+> import { connect } from "react-redux";
+> import { increment, decrement } from "../../store/actions/counter";
+> 
+> const Home = function (props) {
+>     //生成props
+>   const { count, onincrement, ondecrement} = props;
+>   // console.log(props);
+>   return (
 >       <div>
->         <span>{value}</span>
->         <button onClick={onIncreaseClick}>Increase</button>
+>         <Button
+>           variant="contained"
+>           color="primary"
+>           onClick={onincrement}
+>         >
+>           increment
+>         </Button>
+>         <Button
+>           variant="contained"
+>           color="primary"
+>           onClick={ondecrement}
+>           style={{marginLeft:'30px'}}
+>         >
+>           decrement
+>         </Button>
+>         <p style={{fontSize:'30px'}}>{count}</p>
 >       </div>
->     )
->   }
-> }
+>   );
+> };
 > ```
 
-上面代码中，这个 UI 组件有两个参数：`value`和`onIncreaseClick`。前者需要从`state`计算得到，后者需要向外发出 Action。
+上面代码中，这个 UI 组件有三个参数：count和 onincrement, ondecrement。前者需要从`state`计算得到，后者需要向外发出 Action。
 
-接着，定义`value`到`state`的映射，以及`onIncreaseClick`到`dispatch`的映射。
+接着，定义`count`到`state`的映射，以及`onincrement, ondecrement`到`dispatch`的映射。
 
 > ```javascript
 > function mapStateToProps(state) {
->   return {
->     value: state.count
->   }
+>     console.log(state)
+>      return {
+>       count: state.counter.count,
+>   };
 > }
-> 
 > function mapDispatchToProps(dispatch) {
->   return {
->     onIncreaseClick: () => dispatch(increaseAction)
->   }
+>     return {
+>        onincrement: () => dispatch(increment()),
+>       ondecrement: () => dispatch(decrement())
+>   };
 > }
 > 
-> // Action Creator
-> const increaseAction = { type: 'increase' }
 > ```
 
 然后，使用`connect`方法生成容器组件。
 
 > ```javascript
-> const App = connect(
->   mapStateToProps,
->   mapDispatchToProps
-> )(Counter)
-> ```
+> export default connect(mapStateToProps, mapDispatchToProps)(Home);
+>   ```
 
 然后，定义这个组件的 Reducer。
 
 > ```javascript
 > // Reducer
-> function counter(state = { count: 0 }, action) {
+> import {INCREMENT, DECREMENT} from "../actions/counter"
+> export default function(state = { count: 0}, action){
 >   const count = state.count
 >   switch (action.type) {
->     case 'increase':
->       return { count: count + 1 }
->     default:
->       return state
->   }
+>         case INCREMENT:
+>           return {count:count + 1};
+>         case DECREMENT:
+>           return {count:count - 1};
+>         default:
+>           return {count:count};
+>         }
 > }
 > ```
 
 最后，生成`store`对象，并使用`Provider`在根组件外面包一层。
 
-> ```javascript
-> import { loadState, saveState } from './localStorage';
+> ```js
+> import React from "react";
+> import route from "../route/index.js";
+> import { Provider } from "react-redux";
+> import store from "../store";
+> export default function Menu() {
+>   const classes = useStyles();
+>   return (
+>     <div className={classes.root}>
+>       <Provider store={store}>
+>       </Provider>
+>     </div>
+>   );
+> }
 > 
-> const persistedState = loadState();
-> const store = createStore(
->   todoApp,
->   persistedState
-> );
-> 
-> store.subscribe(throttle(() => {
->   saveState({
->     todos: store.getState().todos,
->   })
-> }, 1000))
-> 
-> ReactDOM.render(
->   <Provider store={store}>
->     <App />
->   </Provider>,
->   document.getElementById('root')
-> );
 > ```
 
 完整的代码看[这里](https://github.com/jackielii/simplest-redux-example/blob/master/index.js)。

@@ -1,6 +1,8 @@
 # 创建实例
 
-```
+## 核心概念
+
+```js
 var vm=new Vue({
             el:'#box',
             data:{
@@ -12,7 +14,6 @@ var vm=new Vue({
             methods:{
                 show:function(){
                     alert(this.arr);
-
 ​            },
 ​            add:function(){
 ​                console.log(this);
@@ -23,6 +24,7 @@ var vm=new Vue({
 ```
 
 - 绑定数据：
+
 1. {{msg}} , msg也可以是js表达式，但只能包含单个表达式
 
    ```
@@ -81,7 +83,7 @@ var vm=new Vue({
     {{ todo }}
   </li>
   ```
-  
+
 - 事件：
 
   ```
@@ -135,7 +137,7 @@ var vm=new Vue({
     ```
 
 - 键盘: `keyCode` 的事件用法[已经被废弃了](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode)并可能不会被最新的浏览器支持。 
-  		@keydown	$event	ev.keyCode
+  @keydown	$event	ev.keyCode
 
   ```
   常用键:
@@ -186,7 +188,7 @@ var vm=new Vue({
 
   计算属性的使用: 对于任何复杂逻辑，你都应当使用**计算属性**。 
 
-  ```
+  ```js
   computed:{
   		b:function(){	//默认调用get
   			return 值
@@ -204,7 +206,7 @@ var vm=new Vue({
 
   监听数据变化: 计算属性在大多数情况下更合适，但有时也需要一个自定义的侦听器 
 
-  ```
+  ```js
   var vm = new Vue({
   	data: {
       question: '',
@@ -225,7 +227,7 @@ var vm=new Vue({
 
 - filter:
 
-  ```
+  ```js
   <p>1.msg|filterA</p>
   {{'welcome'|uppercase}}  
   <p>2.msg|filterA</p>
@@ -252,8 +254,6 @@ var vm=new Vue({
   	});
   {{msg | name([a,b])}}
   ```
-
-  
 
 自定义指令:
 
@@ -297,7 +297,7 @@ destroyed		组件销毁后
 
  比如 `created: () => console.log(this.a)` 或 `vm.$watch('a', newValue => this.myMethod())` 
 
-## vue实例简单方法:
+## vue实例简单方法
 
 vm= new Vue({})
 
@@ -309,6 +309,7 @@ vm= new Vue({})
 	vm.$log();	->  查看现在数据的状态
 	vm.$refs  ->  获取页面中所有含有ref属性的DOM元素（如vm.$refs.hello，获取页面中含有属性ref = “hello”的DOM元素，如果有多个元素，那么只返回最后一个）
 
+```js
  var vm=new Vue({
             // el:'#box',
             aa:11,//自定义属性
@@ -322,8 +323,7 @@ vm= new Vue({})
 
 console.log(vm.$options.aa);//获取自定义属性
 vm.$options.show();
-
-
+```
 
 ## 组件
 
@@ -345,7 +345,7 @@ eg:Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa
 
 定义组件
 
-```
+```js
 var Aaa=Vue.extend({
         //必须以函数的形式返回
         data(){
@@ -424,8 +424,7 @@ Aaa.components={
 	子组件之内:props:['data']
 	
 
-
-vue.2.0
+**vue.2.0**
 
 	子组件想要拿到父组件数据:通过  props
 	之前，子组件child-com可以更改父组件信息，可以是同步  sync
@@ -522,7 +521,7 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
 事件总线eventBus主要是在要相互通信的两个Vue页面之中，都引入一个新的vue实例，然后通过分别调用这个实例的事件触发和监听来实现通信和参数传递。
 ```
 
-```
+```js
 //准备一个空的实例对象
         var Event=new Vue();
         var A={
@@ -568,13 +567,11 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
 
  在大型应用中，我们可能需要将应用分割成小一些的代码块，并且只在需要的时候才从服务器加载一个模块。 
 
-
-
 ## 插槽：slot
 
 组件里所有标签赋值给slot标签
 
-```
+```js
 <aaa>
 <ul slot="ul-slot">
 	<li>1111</li>

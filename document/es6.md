@@ -1,3 +1,7 @@
+文档来源
+
+http://caibaojian.com/es6/
+
 # **let和const**
 
 `let`和`const`。其中，`let`完全可以取代`var`，因为两者语义相同，而且`let`没有副作用。在`let`和`const`之间，建议优先使用`const`，尤其是在全局环境，不应该设置变量，只应设置常量。同时JavaScript 编译器会对`const`进行优化，所以多使用`const`，有利于提高程序的运行效率 
@@ -143,6 +147,10 @@ var [a, b, c] = [1, 2, 3];
 let [x, y, z] = new Set(["a", "b", "c"]);//x="a"
 2//另一种情况是不完全解构，即等号左边的模式，只匹配一部分的等号右边的数组。
 let [x, y] = [1, 2, 3];//x = 1  y = 2
+let [x, y, ...z] = ['a'];
+x // "a"
+y // undefined
+z // []
 3//嵌套
 let [a, [b], d] = [1, [2, 3], 4];//b=2
 4//
@@ -163,7 +171,7 @@ let [first, second, third, fourth, fifth, sixth] = fibs();
 7//ES6 内部使用严格相等运算符（===），判断一个位置是否有值。所以，只有当一个数组成员严格等于undefined，默认值才会生效。
 let [x = 1] = [undefined];//x=1
 let [x = 1] = [null];//x=null
-
+//undefined == null 	true
 ```
 
 ## 2.对象
@@ -193,6 +201,8 @@ var {x = 3} = {};
 x // 3
 var {x, y = 5} = {x: 1};
 x // 1
+y // 5
+var {x:y = 3} = {x: 5};
 y // 5
 //默认值生效的条件是，对象的属性值严格等于undefined。
 var {x = 3} = {x: undefined};
@@ -243,7 +253,7 @@ add([1, 2]); // 3
 
 **函数参数的解构也可以使用默认值。**
 
-```
+```js
 function move({x = 0, y = 0} = {}) {
   return [x, y];
 }
@@ -254,7 +264,7 @@ move({}); // [0, 0]
 move(); // [0, 0]
 ```
 
-```
+```js
 function move({x, y} = { x: 0, y: 0 }) {
   return [x, y];
 }
@@ -466,11 +476,1660 @@ Math.sign(undefined)  // NaN
 3.Math.cbrt()方法用于计算一个数的立方根。对于非数值，Math.cbrt()方法内部也是先使用Number()方法将其转为数值。
 ```
 
-# 函数的扩展---
 
-# 数组的扩展---
 
-# 对象的扩展---
+# 数组的扩展
+
+## Array.from()
+
+`Array.from`方法用于将两类对象转为真正的数组：类似数组的对象（array-like object）和可遍历（**iterable**）的对象（包括ES6新增的数据结构Set和Map）。
+
+```javascript
+let arrayLike = {
+    '0': 'a',
+    '1': 'b',
+    '2': 'c',
+    length: 3
+};
+
+// ES5的写法
+var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
+
+// ES6的写法
+let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+```
+
+实际应用中，常见的类似数组的对象是DOM操作返回的NodeList集合，以及函数内部的`arguments`对象。`Array.from`都可以将它们转为真正的数组。只要是部署了**Iterator**接口的数据结构，`Array.from`都能将其转为数组。
+
+`Array.from`还可以接受第二个参数，作用类似于数组的`map`方法，用来对每个元素进行处理，将处理后的值放入返回的数组。
+
+```javascript
+Array.from(arrayLike, x => x * x);
+// 等同于
+Array.from(arrayLike).map(x => x * x);
+
+Array.from([1, 2, 3], (x) => x * x)
+// [1, 4, 9]
+```
+
+## Array.of()
+
+`Array.of`方法用于将一组值，转换为数组。
+
+```javascript
+Array.of(3, 11, 8) // [3,11,8]
+Array.of(3) // [3]
+Array.of(3).length // 1
+```
+
+这个方法的主要目的，是弥补数组构造函数`Array()`的不足。因为参数个数的不同，会导致`Array()`的行为有差异。
+
+```javascript
+Array() // []
+//参数个数只有一个时，实际上是指定数组的长度。
+Array(3) // [, , ,]
+Array(3, 11, 8) // [3, 11, 8]
+```
+
+## 数组实例的copyWithin()
+
+数组实例的`copyWithin`方法，在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组。也就是说，使用这个方法，会修改当前数组。
+
+```javascript
+Array.prototype.copyWithin(target, start = 0, end = this.length)
+```
+
+它接受三个参数。
+
+- target（必需）：从该位置开始替换数据。
+- start（可选）：从该位置开始读取数据，默认为0。如果为负值，表示倒数。
+- end（可选）：到该位置前停止读取数据，默认等于数组长度。如果为负值，表示倒数。
+
+这三个参数都应该是数值，如果不是，会自动转为数值。
+
+```javascript
+[1, 2, 3, 4, 5].copyWithin(0, 3)
+// [4, 5, 3, 4, 5]
+```
+
+上面代码表示将从3号位直到数组结束的成员（4和5），复制到从0号位开始的位置，结果覆盖了原来的1和2。
+
+```js
+// 将3号位复制到0号位
+[1, 2, 3, 4, 5].copyWithin(0, 3, 4)
+// [4, 2, 3, 4, 5]
+```
+
+## 数组实例的find()和findIndex()
+
+数组实例的`find`方法，用于找出第一个符合条件的数组成员。它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出**第一个**返回值为`true`的成员，然后返回该成员。如果没有符合条件的成员，则返回`undefined`。
+
+```javascript
+[1, 4, -5, 10].find((n) => n < 0)
+// -5
+```
+
+上面代码找出数组中第一个小于0的成员。
+
+```javascript
+[1, 5, 10, 15].find(function(value, index, arr) {
+  return value > 9;
+}) // 10
+```
+
+上面代码中，`find`方法的回调函数可以接受三个参数，依次为当前的值、当前的位置和原数组。
+
+数组实例的`findIndex`方法的用法与`find`方法非常类似，返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回`-1`。
+
+```javascript
+[1, 5, 10, 15].findIndex(function(value, index, arr) {
+  return value > 9;
+}) // 2
+```
+
+另外，这两个方法都可以发现`NaN`，弥补了数组的`IndexOf`方法的不足。
+
+```javascript
+[NaN].indexOf(NaN)
+// -1
+
+[NaN].findIndex(y => Object.is(NaN, y))
+// 0
+```
+
+上面代码中，`indexOf`方法无法识别数组的`NaN`成员，但是`findIndex`方法可以借助`Object.is`方法做到。
+
+## 数组实例的fill()
+
+`fill`方法使用给定值，填充一个数组。
+
+```javascript
+['a', 'b', 'c'].fill(7)
+// [7, 7, 7]
+
+new Array(3).fill(7)
+// [7, 7, 7]
+```
+
+上面代码表明，`fill`方法用于空数组的初始化非常方便。
+
+## 数组实例的entries()，keys()和values()
+
+ES6提供三个新的方法——`entries()`，`keys()`和`values()`——用于遍历数组。它们都返回一个遍历器对象（详见《Iterator》一章），可以用`for...of`循环进行遍历，唯一的区别是`keys()`是对键名的遍历、`values()`是对键值的遍历，`entries()`是对键值对的遍历。
+
+## 数组实例的includes()
+
+`Array.prototype.includes`方法返回一个布尔值，表示某个数组是否包含给定的值，与字符串的`includes`方法类似。该方法属于ES7，但Babel转码器已经支持。
+
+```javascript
+[1, 2, 3].includes(2);     // true
+[1, 2, 3].includes(4);     // false
+[1, 2, NaN].includes(NaN); // true
+```
+
+# 对象的扩展
+
+## 简洁表示法
+
+### **属性简写**
+
+ES6允许直接写入变量和函数，作为对象的属性和方法。这样的书写更加简洁。
+
+```javascript
+var foo = 'bar';
+var baz = {foo};
+baz // {foo: "bar"}
+
+// 等同于
+var baz = {foo: foo};
+```
+
+上面代码表明，ES6允许在对象之中，直接写变量。这时，属性名为变量名, 属性值为变量的值。下面是另一个例子。
+
+```javascript
+function f(x, y) {
+  return {x, y};
+}
+
+// 等同于
+
+function f(x, y) {
+  return {x: x, y: y};
+}
+
+f(1, 2) // Object {x: 1, y: 2}
+```
+
+### **方法简写**
+
+```javascript
+var o = {
+  method() {
+    return "Hello!";
+  }
+};
+
+// 等同于
+
+var o = {
+  method: function() {
+    return "Hello!";
+  }
+};
+```
+
+下面是一个实际的例子。
+
+```javascript
+var birth = '2000/01/01';
+
+var Person = {
+  name: '张三',
+  //等同于birth: birth
+  birth,
+  // 等同于hello: function ()...
+  hello() { console.log('我的名字是', this.name); }
+
+};
+```
+
+这种写法用于函数的返回值，将会非常方便。
+
+```javascript
+function getPoint() {
+  var x = 1;
+  var y = 10;
+  return {x, y};
+}
+
+getPoint()
+// {x:1, y:10}
+```
+
+CommonJS模块输出变量，就非常合适使用简洁写法。
+
+```javascript
+var ms = {};
+function getItem (key) {
+  return key in ms ? ms[key] : null;
+}
+function setItem (key, value) {
+  ms[key] = value;
+}
+function clear () {
+  ms = {};
+}
+module.exports = { getItem, setItem, clear };
+// 等同于
+module.exports = {
+  getItem: getItem,
+  setItem: setItem,
+  clear: clear
+};
+```
+
+属性的赋值器（setter）和取值器（getter），事实上也是采用这种写法。
+
+```javascript
+var cart = {
+  _wheels: 4,
+
+  get wheels () {
+    return this._wheels;
+  },
+
+  set wheels (value) {
+    if (value < this._wheels) {
+      throw new Error('数值太小了！');
+    }
+    this._wheels = value;
+  }
+}
+```
+
+注意，简洁写法的属性名总是字符串，这会导致一些看上去比较奇怪的结果。
+
+```javascript
+var obj = {
+  class () {}
+};
+
+// 等同于
+
+var obj = {
+  'class': function() {}
+};
+```
+
+上面代码中，`class`是字符串，所以不会因为它属于关键字，而导致语法解析报错。
+
+如果某个方法的值是一个Generator函数，前面需要加上星号。
+
+```javascript
+var obj = {
+  * m(){
+    yield 'hello world';
+  }
+};
+```
+
+## 属性名表达式
+
+JavaScript语言定义对象的属性，有两种方法。
+
+```javascript
+// 方法一
+obj.foo = true;
+
+// 方法二
+obj['a' + 'bc'] = 123;
+```
+
+上面代码的方法一是直接用标识符作为属性名，方法二是用表达式作为属性名，这时要将表达式放在方括号之内。
+
+但是，如果使用字面量方式定义对象（使用大括号），在 ES5 中只能使用方法一（标识符）定义属性。
+
+```javascript
+var obj = {
+  foo: true,
+  abc: 123
+};
+```
+
+ES6 允许字面量定义对象时，用方法二（表达式）作为对象的属性名，即把表达式放在方括号内。
+
+```javascript
+let propKey = 'foo';
+
+let obj = {
+  [propKey]: true,
+  ['a' + 'bc']: 123
+};
+```
+
+下面是另一个例子。
+
+```javascript
+var lastWord = 'last word';
+
+var a = {
+  'first word': 'hello',
+  [lastWord]: 'world'
+};
+
+a['first word'] // "hello"
+a[lastWord] // "world"
+a['last word'] // "world"
+```
+
+表达式还可以用于定义方法名。
+
+```javascript
+let obj = {
+  ['h' + 'ello']() {
+    return 'hi';
+  }
+};
+
+obj.hello() // hi
+```
+
+注意，属性名表达式与简洁表示法，不能同时使用，会报错。
+
+```javascript
+// 报错
+var foo = 'bar';
+var bar = 'abc';
+var baz = { [foo] };
+
+// 正确
+var foo = 'bar';
+var baz = { [foo]: 'abc'};
+```
+
+注意，属性名表达式如果是一个对象，默认情况下会自动将对象转为字符串`[object Object]`，这一点要特别小心。
+
+```javascript
+const keyA = {a: 1};
+const keyB = {b: 2};
+
+const myObject = {
+  [keyA]: 'valueA',
+  [keyB]: 'valueB'
+};
+
+myObject // Object {[object Object]: "valueB"}
+```
+
+上面代码中，`[keyA]`和`[keyB]`得到的都是`[object Object]`，所以`[keyB]`会把`[keyA]`覆盖掉，而`myObject`最后只有一个`[object Object]`属性。
+
+## 方法的 name 属性
+
+函数的`name`属性，返回函数名。对象方法也是函数，因此也有`name`属性。
+
+```javascript
+var person = {
+  sayName() {
+    console.log(this.name);
+  },
+  get firstName() {
+    return "Nicholas";
+  }
+};
+
+person.sayName.name   // "sayName"
+person.firstName.name // "get firstName"
+```
+
+上面代码中，方法的`name`属性返回函数名（即方法名）。如果使用了取值函数，则会在方法名前加上`get`。如果是存值函数，方法名的前面会加上`set`。
+
+有两种特殊情况：`bind`方法创造的函数，`name`属性返回“bound”加上原函数的名字；`Function`构造函数创造的函数，`name`属性返回“anonymous”。
+
+```javascript
+(new Function()).name // "anonymous"
+
+var doSomething = function() {
+  // ...
+};
+doSomething.bind().name // "bound doSomething"
+```
+
+如果对象的方法是一个Symbol值，那么`name`属性返回的是这个Symbol值的描述。
+
+```javascript
+const key1 = Symbol('description');
+const key2 = Symbol();
+let obj = {
+  [key1]() {},
+  [key2]() {},
+};
+obj[key1].name // "[description]"
+obj[key2].name // ""
+```
+
+上面代码中，`key1`对应的Symbol值有描述，`key2`没有。
+
+## Object.is()
+
+ES5比较两个值是否相等，只有两个运算符：相等运算符（`==`）和严格相等运算符（`===`）。它们都有缺点，前者会自动转换数据类型，后者的`NaN`不等于自身，以及`+0`等于`-0`。JavaScript缺乏一种运算，在所有环境中，只要两个值是一样的，它们就应该相等。
+
+ES6提出“Same-value equality”（同值相等）算法，用来解决这个问题。`Object.is`就是部署这个算法的新方法。它用来比较两个值是否严格相等，与严格比较运算符（===）的行为基本一致。
+
+```javascript
+Object.is('foo', 'foo')
+// true
+Object.is({}, {})
+// false
+```
+
+不同之处只有两个：一是`+0`不等于`-0`，二是`NaN`等于自身。
+
+```javascript
++0 === -0 //true
+NaN === NaN // false
+
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+
+ES5可以通过下面的代码，部署`Object.is`。
+
+```javascript
+Object.defineProperty(Object, 'is', {
+  value: function(x, y) {
+    if (x === y) {
+      // 针对+0 不等于 -0的情况
+      return x !== 0 || 1 / x === 1 / y;
+    }
+    // 针对NaN的情况
+    return x !== x && y !== y;
+  },
+  configurable: true,
+  enumerable: false,
+  writable: true
+});
+```
+
+## Object.assign()
+
+### 基本用法
+
+`Object.assign`方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象（target）。
+
+```javascript
+var target = { a: 1 };
+
+var source1 = { b: 2 };
+var source2 = { c: 3 };
+
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
+
+`Object.assign`方法的第一个参数是目标对象，后面的参数都是源对象。
+
+注意，如果目标对象与源对象有同名属性，或多个源对象有同名属性，则后面的属性会覆盖前面的属性。
+
+```javascript
+var target = { a: 1, b: 1 };
+
+var source1 = { b: 2, c: 2 };
+var source2 = { c: 3 };
+
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
+
+如果只有一个参数，`Object.assign`会直接返回该参数。
+
+```javascript
+var obj = {a: 1};
+Object.assign(obj) === obj // true
+```
+
+如果该参数不是对象，则会先转成对象，然后返回。
+
+```javascript
+typeof Object.assign(2) // "object"
+```
+
+由于`undefined`和`null`无法转成对象，所以如果它们作为参数，就会报错。
+
+```javascript
+Object.assign(undefined) // 报错
+Object.assign(null) // 报错
+```
+
+如果非对象参数出现在源对象的位置（即非首参数），那么处理规则有所不同。首先，这些参数都会转成对象，如果无法转成对象，就会跳过。这意味着，如果`undefined`和`null`不在首参数，就不会报错。
+
+```javascript
+let obj = {a: 1};
+Object.assign(obj, undefined) === obj // true
+Object.assign(obj, null) === obj // true
+```
+
+其他类型的值（即数值、字符串和布尔值）不在首参数，也不会报错。但是，除了字符串会以数组形式，拷贝入目标对象，其他值都不会产生效果。
+
+```javascript
+var v1 = 'abc';
+var v2 = true;
+var v3 = 10;
+
+var obj = Object.assign({}, v1, v2, v3);
+console.log(obj); // { "0": "a", "1": "b", "2": "c" }
+```
+
+上面代码中，`v1`、`v2`、`v3`分别是字符串、布尔值和数值，结果只有字符串合入目标对象（以字符数组的形式），数值和布尔值都会被忽略。这是因为只有字符串的包装对象，会产生可枚举属性。
+
+```javascript
+Object(true) // {[[PrimitiveValue]]: true}
+Object(10)  //  {[[PrimitiveValue]]: 10}
+Object('abc') // {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}
+```
+
+上面代码中，布尔值、数值、字符串分别转成对应的包装对象，可以看到它们的原始值都在包装对象的内部属性`[[PrimitiveValue]]`上面，这个属性是不会被`Object.assign`拷贝的。只有字符串的包装对象，会产生可枚举的实义属性，那些属性则会被拷贝。
+
+`Object.assign`拷贝的属性是有限制的，只拷贝源对象的自身属性（不拷贝继承属性），也不拷贝不可枚举的属性（`enumerable: false`）。
+
+```javascript
+Object.assign({b: 'c'},
+  Object.defineProperty({}, 'invisible', {
+    enumerable: false,
+    value: 'hello'
+  })
+)
+// { b: 'c' }
+```
+
+上面代码中，`Object.assign`要拷贝的对象只有一个不可枚举属性`invisible`，这个属性并没有被拷贝进去。
+
+属性名为Symbol值的属性，也会被`Object.assign`拷贝。
+
+```javascript
+Object.assign({ a: 'b' }, { [Symbol('c')]: 'd' })
+// { a: 'b', Symbol(c): 'd' }
+```
+
+### 注意点
+
+`Object.assign`方法实行的是**浅拷贝**，而不是深拷贝。也就是说，如果源对象某个属性的值是对象，那么目标对象拷贝得到的是这个对象的引用。
+
+```javascript
+var obj1 = {a: {b: 1}};
+var obj2 = Object.assign({}, obj1);
+
+obj1.a.b = 2;
+obj2.a.b // 2
+```
+
+上面代码中，源对象`obj1`的`a`属性的值是一个对象，`Object.assign`拷贝得到的是这个对象的引用。这个对象的任何变化，都会反映到目标对象上面。
+
+对于这种嵌套的对象，一旦遇到同名属性，`Object.assign`的处理方法是替换，而不是添加。
+
+```javascript
+var target = { a: { b: 'c', d: 'e' } }
+var source = { a: { b: 'hello' } }
+Object.assign(target, source)
+// { a: { b: 'hello' } }
+```
+
+上面代码中，`target`对象的`a`属性被`source`对象的`a`属性整个替换掉了，而不会得到`{ a: { b: 'hello', d: 'e' } }`的结果。这通常不是开发者想要的，需要特别小心。
+
+有一些函数库提供`Object.assign`的定制版本（比如Lodash的`_.defaultsDeep`方法），可以解决浅拷贝的问题，得到深拷贝的合并。
+
+注意，`Object.assign`可以用来处理数组，但是会把数组视为对象。
+
+```javascript
+Object.assign([1, 2, 3], [4, 5])
+// [4, 5, 3]
+```
+
+上面代码中，`Object.assign`把数组视为属性名为0、1、2的对象，因此目标数组的0号属性`4`覆盖了原数组的0号属性`1`。
+
+### 常见用途
+
+`Object.assign`方法有很多用处。
+
+**（1）为对象添加属性**
+
+```javascript
+class Point {
+  constructor(x, y) {
+    Object.assign(this, {x, y});
+  }
+}
+```
+
+上面方法通过`Object.assign`方法，将`x`属性和`y`属性添加到`Point`类的对象实例。
+
+**（2）为对象添加方法**
+
+```javascript
+Object.assign(SomeClass.prototype, {
+  someMethod(arg1, arg2) {
+    ···
+  },
+  anotherMethod() {
+    ···
+  }
+});
+
+// 等同于下面的写法
+SomeClass.prototype.someMethod = function (arg1, arg2) {
+  ···
+};
+SomeClass.prototype.anotherMethod = function () {
+  ···
+};
+```
+
+上面代码使用了对象属性的简洁表示法，直接将两个函数放在大括号中，再使用assign方法添加到SomeClass.prototype之中。
+
+**（3）克隆对象**
+
+```javascript
+function clone(origin) {
+  return Object.assign({}, origin);
+}
+```
+
+上面代码将原始对象拷贝到一个空对象，就得到了原始对象的克隆。
+
+不过，采用这种方法克隆，只能克隆原始对象自身的值，不能克隆它继承的值。如果想要保持继承链，可以采用下面的代码。
+
+```javascript
+function clone(origin) {
+  let originProto = Object.getPrototypeOf(origin);
+  return Object.assign(Object.create(originProto), origin);
+}
+```
+
+**（4）合并多个对象**
+
+将多个对象合并到某个对象。
+
+```javascript
+const merge =
+  (target, ...sources) => Object.assign(target, ...sources);
+```
+
+如果希望合并后返回一个新对象，可以改写上面函数，对一个空对象合并。
+
+```javascript
+const merge =
+  (...sources) => Object.assign({}, ...sources);
+```
+
+**（5）为属性指定默认值**
+
+```javascript
+const DEFAULTS = {
+  logLevel: 0,
+  outputFormat: 'html'
+};
+
+function processContent(options) {
+  options = Object.assign({}, DEFAULTS, options);
+}
+```
+
+上面代码中，`DEFAULTS`对象是默认值，`options`对象是用户提供的参数。`Object.assign`方法将`DEFAULTS`和`options`合并成一个新对象，如果两者有同名属性，则`option`的属性值会覆盖`DEFAULTS`的属性值。
+
+注意，由于存在深拷贝的问题，`DEFAULTS`对象和`options`对象的所有属性的值，都只能是简单类型，而不能指向另一个对象。否则，将导致`DEFAULTS`对象的该属性不起作用。
+
+## Object.create()
+
+方法创建一个新对象，使用现有的对象来提供新创建的对象的__proto__。 
+
+```
+Object.create(proto，[propertiesObject])
+```
+
+- proto
+  新创建对象的原型对象。
+
+- propertiesObject
+  可选。需要传入一个对象，该对象的属性类型参照Object.defineProperties()的第二个参数。如果该参数被指定且不为 undefined，该传入对象的自有可枚举属性(即其自身定义的属性，而不是其原型链上的枚举属性)将为新创建的对象添加指定的属性值和对应的属性描述符。
+
+  ```js
+  let obj = Object.create({a:1}, {b:3})
+  // Uncaught TypeError: Property description must be an object: 3
+  let obj = Object.create({a:1}, {b:{value:2}})
+  console.log(obj) // {b: 2}
+  console.log(obj.a) // 1
+  obj.b = 3
+  console.log(obj.b) // 2
+  console.log(Object.keys(obj))// []
+   
+   
+  let obj2 = Object.create(null,{a:{
+      value: 2,       // 属性值
+      writable: true,     //  是否可以重写值
+      enumerable: true,   //是否可枚举
+      configurable: true  //是否可以修改以上几项配置
+  }})
+   
+  console.log(obj2)//{a: 2}
+  obj2.a=3
+  console.log(obj2)// {a: 3}
+  Object.keys(obj2)// ["a"]
+  
+  ```
+
+## 属性的可枚举性
+
+对象的每个属性都有一个描述对象（Descriptor），用来控制该属性的行为。`Object.getOwnPropertyDescriptor`方法可以获取该属性的描述对象。
+
+```javascript
+let obj = { foo: 123 };
+Object.getOwnPropertyDescriptor(obj, 'foo')
+//  {
+//    value: 123,
+//    writable: true,
+//    enumerable: true,
+//    configurable: true
+//  }
+```
+
+描述对象的`enumerable`属性，称为”可枚举性“，如果该属性为`false`，就表示某些操作会忽略当前属性。
+
+ES5有三个操作会忽略`enumerable`为`false`的属性。
+
+- `for...in`循环：只遍历对象自身的和继承的可枚举的属性
+- `Object.keys()`：返回对象自身的所有可枚举的属性的键名
+- `JSON.stringify()`：只串行化对象自身的可枚举的属性
+
+ES6新增了一个操作`Object.assign()`，会忽略`enumerable`为`false`的属性，只拷贝对象自身的可枚举的属性。
+
+这四个操作之中，只有`for...in`会返回继承的属性。实际上，引入`enumerable`的最初目的，就是让某些属性可以规避掉`for...in`操作。比如，对象原型的`toString`方法，以及数组的`length`属性，就通过这种手段，不会被`for...in`遍历到。
+
+```javascript
+Object.getOwnPropertyDescriptor(Object.prototype, 'toString').enumerable
+// false
+
+Object.getOwnPropertyDescriptor([], 'length').enumerable
+// false
+```
+
+上面代码中，`toString`和`length`属性的`enumerable`都是`false`，因此`for...in`不会遍历到这两个继承自原型的属性。
+
+另外，ES6规定，所有Class的原型的方法都是不可枚举的。
+
+```javascript
+Object.getOwnPropertyDescriptor(class {foo() {}}.prototype, 'foo').enumerable
+// false
+```
+
+总的来说，操作中引入继承的属性会让问题复杂化，大多数时候，我们只关心对象自身的属性。所以，尽量不要用`for...in`循环，而用`Object.keys()`代替。
+
+## Prototype
+
+**`__proto__`属性，Object.setPrototypeOf()，Object.getPrototypeOf()**
+
+### **`__proto__`属性**
+
+`__proto__`属性（前后各两个下划线），用来读取或设置当前对象的`prototype`对象。目前，所有浏览器（包括IE11）都部署了这个属性。
+
+```javascript
+// es6的写法
+var obj = {
+  method: function() { ... }
+};
+obj.__proto__ = someOtherObj;
+
+// es5的写法
+var obj = Object.create(someOtherObj);
+obj.method = function() { ... };
+```
+
+该属性没有写入ES6的正文，而是写入了附录，原因是`__proto__`前后的双下划线，说明它本质上是一个内部属性，而不是一个正式的对外的API，只是由于浏览器广泛支持，才被加入了ES6。标准明确规定，只有浏览器必须部署这个属性，其他运行环境不一定需要部署，而且新的代码最好认为这个属性是不存在的。因此，无论从语义的角度，还是从兼容性的角度，都不要使用这个属性，而是使用下面的`Object.setPrototypeOf()`（写操作）、`Object.getPrototypeOf()`（读操作）、`Object.create()`（生成操作）代替。
+
+在实现上，`__proto__`调用的是`Object.prototype.__proto__`，具体实现如下。
+
+```javascript
+Object.defineProperty(Object.prototype, '__proto__', {
+  get() {
+    let _thisObj = Object(this);
+    return Object.getPrototypeOf(_thisObj);
+  },
+  set(proto) {
+    if (this === undefined || this === null) {
+      throw new TypeError();
+    }
+    if (!isObject(this)) {
+      return undefined;
+    }
+    if (!isObject(proto)) {
+      return undefined;
+    }
+    let status = Reflect.setPrototypeOf(this, proto);
+    if (!status) {
+      throw new TypeError();
+    }
+  },
+});
+function isObject(value) {
+  return Object(value) === value;
+}
+```
+
+如果一个对象本身部署了`__proto__`属性，则该属性的值就是对象的原型。
+
+```javascript
+Object.getPrototypeOf({ __proto__: null })
+// null
+```
+
+### Object.setPrototypeOf()
+
+`Object.setPrototypeOf`方法的作用与`__proto__`相同，用来设置一个对象的`prototype`对象。它是ES6正式推荐的设置原型对象的方法。
+
+```javascript
+// 格式
+Object.setPrototypeOf(object, prototype)
+
+// 用法
+var o = Object.setPrototypeOf({}, null);
+```
+
+该方法等同于下面的函数。
+
+```javascript
+function (obj, proto) {
+  obj.__proto__ = proto;
+  return obj;
+}
+```
+
+下面是一个例子。
+
+```javascript
+let proto = {};
+let obj = { x: 10 };
+Object.setPrototypeOf(obj, proto);
+
+proto.y = 20;
+proto.z = 40;
+
+obj.x // 10
+obj.y // 20
+obj.z // 40
+```
+
+上面代码将proto对象设为obj对象的原型，所以从obj对象可以读取proto对象的属性。
+
+### Object.getPrototypeOf()
+
+该方法与setPrototypeOf方法配套，用于读取一个对象的prototype对象。
+
+```javascript
+Object.getPrototypeOf(obj);
+```
+
+下面是一个例子。
+
+```javascript
+function Rectangle() {
+}
+
+var rec = new Rectangle();
+
+Object.getPrototypeOf(rec) === Rectangle.prototype
+// true
+
+Object.setPrototypeOf(rec, Object.prototype);
+Object.getPrototypeOf(rec) === Rectangle.prototype
+// false
+```
+
+### hasOwnProperty() 
+
+方法会返回一个布尔值，指示对象自身属性中是否具有指定的属性（也就是，是否有指定的键）。
+
+```js
+const object1 = {};
+object1.property1 = 42;
+
+console.log(object1.hasOwnProperty('property1'));
+// expected output: true
+```
+
+即使属性的值是 null 或 undefined，只要属性存在，hasOwnProperty 依旧会返回 true。
+
+```js
+o = new Object();
+o.propOne = null;
+o.hasOwnProperty('propOne'); // 返回 true
+o.propTwo = undefined;
+o.hasOwnProperty('propTwo'); // 返回 true
+```
+
+自身属性与继承属性
+
+```js
+o = new Object();
+o.prop = 'exists';
+o.hasOwnProperty('prop');             // 返回 true
+o.hasOwnProperty('toString');         // 返回 false
+o.hasOwnProperty('hasOwnProperty');   // 返回 false
+```
+
+### Object.defineProperties()
+
+在一个对象上定义新的属性或修改现有属性，并返回该对象。
+
+```js
+Object.defineProperties(obj, props)
+```
+
+- **参数**
+  obj
+  在其上定义或修改属性的对象。
+- props
+  要定义其可枚举属性或修改的属性描述符的对象。对象中存在的属性描述符主要有两种：数据描述符和访问器描述符（更多详情，请参阅Object.defineProperty()）。描述符具有以下键：
+  - configurable
+    true 只有该属性描述符的类型可以被改变并且该属性可以从对应对象中删除。
+    默认为 false
+  - enumerable
+    true 只有在枚举相应对象上的属性时该属性显现。
+    默认为 false
+  - value
+    与属性关联的值。可以是任何有效的JavaScript值（数字，对象，函数等）。
+    默认为 undefined.
+  - writable
+    true只有与该属性相关联的值被assignment operator改变时。
+    默认为 false
+  - get
+    作为该属性的 getter 函数，如果没有 getter 则为undefined。函数返回值将被用作属性的值。
+    默认为 undefined
+  - set
+    作为属性的 setter 函数，如果没有 setter 则为undefined。函数将仅接受参数赋值给该属性的新值。
+    默认为 undefined
+
+### getOwnPropertyDescriptors
+
+ES5有一个`Object.getOwnPropertyDescriptor`方法，返回某个对象属性的描述对象（descriptor）。
+
+```javascript
+var obj = { p: 'a' };
+
+Object.getOwnPropertyDescriptor(obj, 'p')
+// Object { value: "a",
+//   writable: true,
+//   enumerable: true,
+//   configurable: true
+// }
+```
+
+ES7有一个提案，提出了`Object.getOwnPropertyDescriptors`方法，返回指定对象所有自身属性（非继承属性）的描述对象。
+
+```javascript
+const obj = {
+  foo: 123,
+  get bar() { return 'abc' }
+};
+
+Object.getOwnPropertyDescriptors(obj)
+// { foo:
+//    { value: 123,
+//      writable: true,
+//      enumerable: true,
+//      configurable: true },
+//   bar:
+//    { get: [Function: bar],
+//      set: undefined,
+//      enumerable: true,
+//      configurable: true } }
+```
+
+`Object.getOwnPropertyDescriptors`方法返回一个对象，所有原对象的属性名都是该对象的属性名，对应的属性值就是该属性的描述对象。
+
+该方法的实现非常容易。
+
+```javascript
+function getOwnPropertyDescriptors(obj) {
+  const result = {};
+  for (let key of Reflect.ownKeys(obj)) {
+    result[key] = Object.getOwnPropertyDescriptor(obj, key);
+  }
+  return result;
+}
+```
+
+该方法的提出目的，主要是为了解决`Object.assign()`无法正确拷贝`get`属性和`set`属性的问题。
+
+```javascript
+const source = {
+  set foo(value) {
+    console.log(value);
+  }
+};
+
+const target1 = {};
+Object.assign(target1, source);
+
+Object.getOwnPropertyDescriptor(target1, 'foo')
+// { value: undefined,
+//   writable: true,
+//   enumerable: true,
+//   configurable: true }
+```
+
+上面代码中，`source`对象的`foo`属性的值是一个赋值函数，`Object.assign`方法将这个属性拷贝给`target1`对象，结果该属性的值变成了`undefined`。这是因为`Object.assign`方法总是拷贝一个属性的值，而不会拷贝它背后的赋值方法或取值方法。
+
+这时，`Object.getOwnPropertyDescriptors`方法配合`Object.defineProperties`方法，就可以实现正确拷贝。
+
+```javascript
+const source = {
+  set foo(value) {
+    console.log(value);
+  }
+};
+
+const target2 = {};
+Object.defineProperties(target2, Object.getOwnPropertyDescriptors(source));
+Object.getOwnPropertyDescriptor(target2, 'foo')
+// { get: undefined,
+//   set: [Function: foo],
+//   enumerable: true,
+//   configurable: true }
+```
+
+上面代码中，将两个对象合并的逻辑提炼出来，就是下面这样。
+
+```javascript
+const shallowMerge = (target, source) => Object.defineProperties(
+  target,
+  Object.getOwnPropertyDescriptors(source)
+);
+```
+
+`Object.getOwnPropertyDescriptors`方法的另一个用处，是配合`Object.create`方法，将对象属性克隆到一个新对象。这属于浅拷贝。
+
+```javascript
+const clone = Object.create(Object.getPrototypeOf(obj),
+  Object.getOwnPropertyDescriptors(obj));
+
+// 或者
+
+const shallowClone = (obj) => Object.create(
+  Object.getPrototypeOf(obj),
+  Object.getOwnPropertyDescriptors(obj)
+);
+```
+
+上面代码会克隆对象`obj`。
+
+另外，`Object.getOwnPropertyDescriptors`方法可以实现，一个对象继承另一个对象。以前，继承另一个对象，常常写成下面这样。
+
+```javascript
+const obj = {
+  __proto__: prot,
+  foo: 123,
+};
+```
+
+ES6规定`__proto__`只有浏览器要部署，其他环境不用部署。如果去除`__proto__`，上面代码就要改成下面这样。
+
+```javascript
+const obj = Object.create(prot);
+obj.foo = 123;
+
+// 或者
+
+const obj = Object.assign(
+  Object.create(prot),
+  {
+    foo: 123,
+  }
+);
+```
+
+有了`Object.getOwnPropertyDescriptors`，我们就有了另一种写法。
+
+```javascript
+const obj = Object.create(
+  prot,
+  Object.getOwnPropertyDescriptors({
+    foo: 123,
+  })
+);
+```
+
+`Object.getOwnPropertyDescriptors`也可以用来实现Mixin（混入）模式。
+
+```javascript
+let mix = (object) => ({
+  with: (...mixins) => mixins.reduce(
+    (c, mixin) => Object.create(
+      c, Object.getOwnPropertyDescriptors(mixin)
+    ), object)
+});
+
+// multiple mixins example
+let a = {a: 'a'};
+let b = {b: 'b'};
+let c = {c: 'c'};
+let d = mix(c).with(a, b);
+```
+
+上面代码中，对象`a`和`b`被混入了对象`c`。
+
+出于完整性的考虑，`Object.getOwnPropertyDescriptors`进入标准以后，还会有`Reflect.getOwnPropertyDescriptors`方法。
+
+## 属性的遍历
+
+### Object.keys()
+
+ES5引入了`Object.keys`方法，返回一个数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键名。
+
+```javascript
+var obj = { foo: "bar", baz: 42 };
+Object.keys(obj)
+// ["foo", "baz"]
+```
+
+目前，ES7有一个[提案](https://github.com/tc39/proposal-object-values-entries)，引入了跟`Object.keys`配套的`Object.values`和`Object.entries`。
+
+```javascript
+let {keys, values, entries} = Object;
+let obj = { a: 1, b: 2, c: 3 };
+
+for (let key of keys(obj)) {
+  console.log(key); // 'a', 'b', 'c'
+}
+
+for (let value of values(obj)) {
+  console.log(value); // 1, 2, 3
+}
+
+for (let [key, value] of entries(obj)) {
+  console.log([key, value]); // ['a', 1], ['b', 2], ['c', 3]
+}
+```
+
+### Object.values()
+
+`Object.values`方法返回一个数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值。
+
+```javascript
+var obj = { foo: "bar", baz: 42 };
+Object.values(obj)
+// ["bar", 42]
+```
+
+返回数组的成员顺序，与本章的《属性的遍历》部分介绍的排列规则一致。
+
+```javascript
+var obj = { 100: 'a', 2: 'b', 7: 'c' };
+Object.values(obj)
+// ["b", "c", "a"]
+```
+
+上面代码中，属性名为数值的属性，是按照数值大小，从小到大遍历的，因此返回的顺序是`b`、`c`、`a`。
+
+`Object.values`只返回对象自身的可遍历属性。
+
+```javascript
+var obj = Object.create({}, {p: {value: 42}});
+Object.values(obj) // []
+```
+
+上面代码中，`Object.create`方法的第二个参数添加的对象属性（属性`p`），如果不显式声明，默认是不可遍历的。`Object.values`不会返回这个属性。
+
+`Object.values`会过滤属性名为Symbol值的属性。
+
+```javascript
+Object.values({ [Symbol()]: 123, foo: 'abc' });
+// ['abc']
+```
+
+如果`Object.values`方法的参数是一个字符串，会返回各个字符组成的一个数组。
+
+```javascript
+Object.values('foo')
+// ['f', 'o', 'o']
+```
+
+上面代码中，字符串会先转成一个类似数组的对象。字符串的每个字符，就是该对象的一个属性。因此，`Object.values`返回每个属性的键值，就是各个字符组成的一个数组。
+
+如果参数不是对象，`Object.values`会先将其转为对象。由于数值和布尔值的包装对象，都不会为实例添加非继承的属性。所以，`Object.values`会返回空数组。
+
+```javascript
+Object.values(42) // []
+Object.values(true) // []
+```
+
+### Object.entries
+
+`Object.entries`方法返回一个数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值对数组。
+
+```javascript
+var obj = { foo: 'bar', baz: 42 };
+Object.entries(obj)
+// [ ["foo", "bar"], ["baz", 42] ]
+```
+
+除了返回值不一样，该方法的行为与`Object.values`基本一致。
+
+如果原对象的属性名是一个Symbol值，该属性会被省略。
+
+```javascript
+Object.entries({ [Symbol()]: 123, foo: 'abc' });
+// [ [ 'foo', 'abc' ] ]
+```
+
+上面代码中，原对象有两个属性，`Object.entries`只输出属性名非Symbol值的属性。将来可能会有`Reflect.ownEntries()`方法，返回对象自身的所有属性。
+
+`Object.entries`的基本用途是遍历对象的属性。
+
+```javascript
+let obj = { one: 1, two: 2 };
+for (let [k, v] of Object.entries(obj)) {
+  console.log(`${JSON.stringify(k)}: ${JSON.stringify(v)}`);
+}
+// "one": 1
+// "two": 2
+```
+
+`Object.entries`方法的一个用处是，将对象转为真正的`Map`结构。
+
+```javascript
+var obj = { foo: 'bar', baz: 42 };
+var map = new Map(Object.entries(obj));
+map // Map { foo: "bar", baz: 42 }
+```
+
+自己实现`Object.entries`方法，非常简单。
+
+```javascript
+// Generator函数的版本
+function* entries(obj) {
+  for (let key of Object.keys(obj)) {
+    yield [key, obj[key]];
+  }
+}
+
+// 非Generator函数的版本
+function entries(obj) {
+  let arr = [];
+  for (let key of Object.keys(obj)) {
+    arr.push([key, obj[key]]);
+  }
+  return arr;
+}
+```
+
+## 对象的扩展运算符
+
+目前，ES7有一个[提案](https://github.com/sebmarkbage/ecmascript-rest-spread)，将Rest运算符（解构赋值）/扩展运算符（`...`）引入对象。Babel转码器已经支持这项功能。
+
+**（1）解构赋值**
+
+对象的解构赋值用于从一个对象取值，相当于将所有可遍历的、但尚未被读取的属性，分配到指定的对象上面。所有的键和它们的值，都会拷贝到新对象上面。
+
+```javascript
+let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
+x // 1
+y // 2
+z // { a: 3, b: 4 }
+```
+
+上面代码中，变量`z`是解构赋值所在的对象。它获取等号右边的所有尚未读取的键（`a`和`b`），将它们连同值一起拷贝过来。
+
+由于解构赋值要求等号右边是一个对象，所以如果等号右边是`undefined`或`null`，就会报错，因为它们无法转为对象。
+
+```javascript
+let { x, y, ...z } = null; // 运行时错误
+let { x, y, ...z } = undefined; // 运行时错误
+```
+
+解构赋值必须是最后一个参数，否则会报错。
+
+```javascript
+let { ...x, y, z } = obj; // 句法错误
+let { x, ...y, ...z } = obj; // 句法错误
+```
+
+上面代码中，解构赋值不是最后一个参数，所以会报错。
+
+注意，解构赋值的拷贝是浅拷贝，即如果一个键的值是复合类型的值（数组、对象、函数）、那么解构赋值拷贝的是这个值的引用，而不是这个值的副本。
+
+```javascript
+let obj = { a: { b: 1 } };
+let { ...x } = obj;
+obj.a.b = 2;
+x.a.b // 2
+```
+
+上面代码中，`x`是解构赋值所在的对象，拷贝了对象`obj`的`a`属性。`a`属性引用了一个对象，修改这个对象的值，会影响到解构赋值对它的引用。
+
+另外，解构赋值不会拷贝继承自原型对象的属性。
+
+```javascript
+let o1 = { a: 1 };
+let o2 = { b: 2 };
+o2.__proto__ = o1;
+let o3 = { ...o2 };
+o3 // { b: 2 }
+```
+
+上面代码中，对象`o3`是`o2`的拷贝，但是只复制了`o2`自身的属性，没有复制它的原型对象`o1`的属性。
+
+下面是另一个例子。
+
+```javascript
+var o = Object.create({ x: 1, y: 2 });
+o.z = 3;
+
+let { x, ...{ y, z } } = o;
+x // 1
+y // undefined
+z // 3
+```
+
+上面代码中，变量`x`是单纯的解构赋值，所以可以读取继承的属性；解构赋值产生的变量`y`和`z`，只能读取对象自身的属性，所以只有变量`z`可以赋值成功。
+
+解构赋值的一个用处，是扩展某个函数的参数，引入其他操作。
+
+```javascript
+function baseFunction({ a, b }) {
+  // ...
+}
+function wrapperFunction({ x, y, ...restConfig }) {
+  // 使用x和y参数进行操作
+  // 其余参数传给原始函数
+  return baseFunction(restConfig);
+}
+```
+
+上面代码中，原始函数`baseFunction`接受`a`和`b`作为参数，函数`wrapperFunction`在`baseFunction`的基础上进行了扩展，能够接受多余的参数，并且保留原始函数的行为。
+
+**（2）扩展运算符**
+
+扩展运算符（`...`）用于取出参数对象的所有可遍历属性，拷贝到当前对象之中。
+
+```javascript
+let z = { a: 3, b: 4 };
+let n = { ...z };
+n // { a: 3, b: 4 }
+```
+
+这等同于使用`Object.assign`方法。
+
+```javascript
+let aClone = { ...a };
+// 等同于
+let aClone = Object.assign({}, a);
+```
+
+扩展运算符可以用于合并两个对象。
+
+```javascript
+let ab = { ...a, ...b };
+// 等同于
+let ab = Object.assign({}, a, b);
+```
+
+如果用户自定义的属性，放在扩展运算符后面，则扩展运算符内部的同名属性会被覆盖掉。
+
+```javascript
+let aWithOverrides = { ...a, x: 1, y: 2 };
+// 等同于
+let aWithOverrides = { ...a, ...{ x: 1, y: 2 } };
+// 等同于
+let x = 1, y = 2, aWithOverrides = { ...a, x, y };
+// 等同于
+let aWithOverrides = Object.assign({}, a, { x: 1, y: 2 });
+```
+
+上面代码中，`a`对象的`x`属性和`y`属性，拷贝到新对象后会被覆盖掉。
+
+这用来修改现有对象部分的部分属性就很方便了。
+
+```javascript
+let newVersion = {
+  ...previousVersion,
+  name: 'New Name' // Override the name property
+};
+```
+
+上面代码中，`newVersion`对象自定义了`name`属性，其他属性全部复制自`previousVersion`对象。
+
+如果把自定义属性放在扩展运算符前面，就变成了设置新对象的默认属性值。
+
+```javascript
+let aWithDefaults = { x: 1, y: 2, ...a };
+// 等同于
+let aWithDefaults = Object.assign({}, { x: 1, y: 2 }, a);
+// 等同于
+let aWithDefaults = Object.assign({ x: 1, y: 2 }, a);
+```
+
+扩展运算符的参数对象之中，如果有取值函数`get`，这个函数是会执行的。
+
+```javascript
+// 并不会抛出错误，因为x属性只是被定义，但没执行
+let aWithXGetter = {
+  ...a,
+  get x() {
+    throws new Error('not thrown yet');
+  }
+};
+
+// 会抛出错误，因为x属性被执行了
+let runtimeError = {
+  ...a,
+  ...{
+    get x() {
+      throws new Error('thrown now');
+    }
+  }
+};
+```
+
+如果扩展运算符的参数是`null`或`undefined`，这个两个值会被忽略，不会报错。
+
+```javascript
+let emptyObject = { ...null, ...undefined }; // 不报错
+```
+
+
+
+# 函数的扩展
+
+## 函数参数的默认值
+
+**基本用法**
+
+在ES6之前，不能直接为函数的参数指定默认值，只能采用变通的方法。
+
+```javascript
+function log(x, y) {
+  y = y || 'World';
+  console.log(x, y);
+}
+
+log('Hello') // Hello World
+log('Hello', 'China') // Hello China
+log('Hello', '') // Hello World
+```
+
+上面代码检查函数`log`的参数`y`有没有赋值，如果没有，则指定默认值为`World`。这种写法的缺点在于，如果参数`y`赋值了，但是对应的布尔值为`false`，则该赋值不起作用。就像上面代码的最后一行，参数`y`等于空字符，结果被改为默认值。
+
+为了避免这个问题，通常需要先判断一下参数`y`是否被赋值，如果没有，再等于默认值。
+
+```javascript
+if (typeof y === 'undefined') {
+  y = 'World';
+}
+```
+
+ES6允许为函数的参数设置默认值，即直接写在参数定义的后面。
+
+```javascript
+function log(x, y = 'World') {
+  console.log(x, y);
+}
+
+log('Hello') // Hello World
+log('Hello', 'China') // Hello China
+log('Hello', '') // Hello
+```
+
+参数变量是默认声明的，所以不能用`let`或`const`再次声明。
+
+```javascript
+function foo(x = 5) {
+  let x = 1; // error
+  const x = 2; // error
+}
+```
+
+## 与解构赋值默认值结合使用
+
+参数默认值可以与解构赋值的默认值，结合起来使用。
+
+```javascript
+function foo({x, y = 5}) {
+  console.log(x, y);
+}
+
+foo({}) // undefined, 5
+foo({x: 1}) // 1, 5
+```
+
+## rest参数
+
+ES6引入rest参数（形式为“...变量名”），用于获取函数的多余参数，这样就不需要使用arguments对象了。rest参数搭配的变量是一个数组，该变量将多余的参数放入数组中。
+
+```javascript
+function add(...values) {
+  let sum = 0;
+
+  for (var val of values) {
+    sum += val;
+  }
+
+  return sum;
+}
+
+add(2, 5, 3) // 10
+```
+
+## 扩展运算符
+
+### **含义**
+
+扩展运算符（spread）是三个点（`...`）。它好比rest参数的逆运算，将一个数组转为用逗号分隔的参数序列。
+
+```javascript
+console.log(...[1, 2, 3])
+// 1 2 3
+
+console.log(1, ...[2, 3, 4], 5)
+// 1 2 3 4 5
+```
+
+该运算符主要用于函数调用。
+
+```javascript
+function push(array, ...items) {
+  array.push(...items);
+}
+```
+
+### 扩展运算符的应用
+
+**（1）合并数组**
+
+扩展运算符提供了数组合并的新写法。
+
+```javascript
+// ES5
+[1, 2].concat(more)
+// ES6
+[1, 2, ...more]
+```
+
+**（2）与解构赋值结合**
+
+扩展运算符可以与解构赋值结合起来，用于生成数组。
+
+```javascript
+const [first, ...rest] = [1, 2, 3, 4, 5];
+first // 1
+rest  // [2, 3, 4, 5]
+```
+
+如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错。
+
+```javascript
+const [...butLast, last] = [1, 2, 3, 4, 5];
+// 报错
+
+const [first, ...middle, last] = [1, 2, 3, 4, 5];
+// 报错
+```
+
+**4）字符串**
+
+扩展运算符还可以将字符串转为真正的数组。
+
+```javascript
+[...'hello']
+// [ "h", "e", "l", "l", "o" ]
+```
+
+## 箭头函数
+
+### 基本用法
+
+ES6允许使用“箭头”（`=>`）定义函数。
+
+```javascript
+var f = v => v;
+```
+
+上面的箭头函数等同于：
+
+```javascript
+var f = function(v) {
+  return v;
+};
+```
+
+如果箭头函数不需要参数或需要多个参数，就使用一个圆括号代表参数部分。
+
+```javascript
+var f = () => 5;
+// 等同于
+var f = function () { return 5 };
+```
+
+如果箭头函数的代码块部分多于一条语句，就要使用大括号将它们括起来，并且使用`return`语句返回。
+
+```javascript
+var sum = (num1, num2) => { return num1 + num2; }
+```
+
+由于大括号被解释为代码块，所以如果箭头函数直接返回一个对象，必须在对象外面加上括号。
+
+```javascript
+var getTempItem = id => ({ id: id, name: "Temp" });
+```
+
+### 注意点
+
+（1）函数体内的`this`对象，就是定义时所在的对象，而不是使用时所在的对象。
+
+（2）不可以当作构造函数，也就是说，不可以使用`new`命令，否则会抛出一个错误。
+
+（3）不可以使用`arguments`对象，该对象在函数体内不存在。如果要用，可以用Rest参数代替。
+
+（4）不可以使用`yield`命令，因此箭头函数不能用作Generator函数。
+
+上面四点中，第一点尤其值得注意。`this`对象的指向是可变的，但是在箭头函数中，它是固定的。
 
 #  Promise对象
 
@@ -873,24 +2532,74 @@ Generator 函数的语法糖 , 使得异步操作变得更加方便。
 
 ## 异步编程
 
-**异步**:所谓"异步"，简单说就是一个任务分成两段，先执行第一段，然后转而执行其他任务，等做好了准备，再回过头执行第二段。
+**背景:js语言执行环境是单线程**
 
-**回调函数**
+JavaScript 只在一个线程上运行。也就是说，JavaScript 同时只能执行一个任务，其他任务都必须在后面排队等待。JavaScript 只在一个线程上运行，不代表 JavaScript 引擎只有一个线程。事实上，JavaScript 引擎有多个线程，**单个脚本**只能在一个线程上运行（称为主线程），其他线程都是在后台配合。
 
-JavaScript语言对异步编程的实现，就是回调函数。所谓回调函数，就是把任务的第二段单独写在一个函数里面，等到重新执行这个任务的时候，就直接调用这个函数。它的英语名字callback，直译过来就是"重新调用"。
-
-读取文件进行处理，是这样写的。
-
-```javascript
-fs.readFile('/etc/passwd', function (err, data) {
-  if (err) throw err;
-  console.log(data);
-});
+```
+JS中的异步操作：
+1、定时器都是异步操作
+2、事件绑定都是异步操作
+3、AJAX中一般我们都采取异步操作（也可以同步）
+4、回调函数可以理解为异步（不是严谨的异步操作）
+剩下的都是同步处理
 ```
 
-上面代码中，readFile函数的第二个参数，就是回调函数，也就是任务的第二段。等到操作系统返回了`/etc/passwd`这个文件以后，回调函数才会执行。
+### 回调函数
 
-**Promise**
+一个函数作为参数传递到另一个函数中
+
+```js
+function f1(callback){
+	setTimeout(function(){
+	callback()//f1的任务
+	},1000)
+}
+f1(f2);
+```
+
+优缺点:简单,容易部署,但不利于代码的阅读和维护,各部分之间高度耦合
+
+**注意:回调并不一定是异步**
+
+### 事件监听
+
+异步任务的执行不取决于代码的顺序，而取决于某个事件是否发生
+
+监听函数:on,bind,listen,addEventListener
+
+监听方法:onclick...
+
+### 发布/订阅
+
+事件完全可以理解成“信号”，如果存在一个“信号中心”，某个任务执行完成，就向信号中心“发布”（publish）一个信号，其他任务可以向信号中心“订阅”（subscribe）这个信号，从而知道什么时候自己可以开始执行。这就叫做”[发布/订阅模式](https://en.wikipedia.org/wiki/Publish-subscribe_pattern)”（publish-subscribe pattern），又称“[观察者模式](https://en.wikipedia.org/wiki/Observer_pattern)”（observer pattern）。
+
+首先，`f2`向信号中心`jQuery`订阅`done`信号。
+
+```
+jQuery.subscribe('done', f2);
+```
+
+然后，`f1`进行如下改写。
+
+```
+function f1() {
+  setTimeout(function () {
+    // ...
+    jQuery.publish('done');
+  }, 1000);
+}
+```
+
+上面代码中，`jQuery.publish('done')`的意思是，`f1`执行完成后，向信号中心`jQuery`发布`done`信号，从而引发`f2`的执行。
+
+`f2`完成执行后，可以取消订阅（unsubscribe）。
+
+```
+jQuery.unsubscribe('done', f2);	
+```
+
+### **Promise**
 
 回调函数本身并没有问题，它的问题出现在多个回调函数嵌套。假定读取A文件之后，再读取B文件，代码如下。
 
@@ -911,9 +2620,7 @@ fs.readFile(fileA, function (err, data) {
 - **发布/订阅**
 - **Promise 对象**
 
-
-
-## `async`函数对 Generator 函数的改进
+### `async`对 Generator 的改进
 
  `async`函数对 Generator 函数的改进，体现在以下四点。 
 
@@ -934,6 +2641,8 @@ Generator 函数的执行必须靠执行器，所以才有了`co`模块，而`as
 `async`函数的返回值是 Promise 对象，这比 Generator 函数的返回值是 Iterator 对象方便多了。你可以用`then`方法指定下一步的操作。 `async`函数内部`return`语句返回的值，会成为`then`方法回调函数的参数。 
 
 ## async 函数
+
+### 声明
 
 ```javascript
 // 函数声明
@@ -1062,4 +2771,2170 @@ let foo = await fooPromise;
 let bar = await barPromise;
 ```
 
-# Class和Class的继承
+# TS
+
+## 基础类型
+
+### 布尔值
+
+最基本的数据类型就是简单的true/false值，在JavaScript和TypeScript里叫做`boolean`（其它语言中也一样）。
+
+```ts
+let isDone: boolean = false;
+```
+
+### 数字
+
+和JavaScript一样，TypeScript里的所有数字都是浮点数。 这些浮点数的类型是 `number`。 除了支持十进制和十六进制字面量，TypeScript还支持ECMAScript 2015中引入的二进制和八进制字面量。
+
+```ts
+let decLiteral: number = 6;// 十进制
+let hexLiteral: number = 0xf00d; // 十六进制
+let binaryLiteral: number = 0b1010;// 二进制
+let octalLiteral: number = 0o744;  // 八进制
+```
+
+### 字符串
+
+```ts
+let name: string = "bob";
+name = "smith";
+```
+
+你还可以使用*模版字符串*，它可以定义多行文本和内嵌表达式。 这种字符串是被反引号包围（ ```），并且以`${ expr }`这种形式嵌入表达式
+
+```ts
+let name: string = `Gene`;
+let age: number = 37;
+let sentence: string = `Hello, my name is ${ name }.I'll be ${ age + 1 } years old next month.`;
+```
+
+这与下面定义`sentence`的方式效果相同：
+
+```ts
+let sentence: string = "Hello, my name is " + name + ".\n\n" +"I'll be " + (age + 1) + " years old next month.";
+```
+
+### 数组
+
+TypeScript像JavaScript一样可以操作数组元素。 有两种方式可以定义数组。 第一种，可以在**元素类型**后面接上 `[]`，表示由此类型元素组成的一个数组：
+
+```ts
+let list: number[] = [1, 2, 3];
+```
+
+第二种方式是使用**数组泛型**，`Array<元素类型>`：
+
+```ts
+let list: Array<number> = [1, 2, 3];
+```
+
+### 元组 Tuple
+
+元组类型允许表示一个已知元素数量和类型的**数组**，各元素的类型不必相同。 比如，你可以定义一对值分别为 `string`和`number`类型的元组。
+
+```ts
+// Declare a tuple type
+let x: [string, number];
+// Initialize it
+x = ['hello', 10]; // OK
+// Initialize it incorrectly
+x = [10, 'hello']; // Error
+```
+
+当访问一个已知索引的元素，会得到正确的类型：
+
+```ts
+console.log(x[0].substr(1)); // OK
+console.log(x[1].substr(1)); // Error, 'number' does not have 'substr'
+```
+
+当访问一个越界的元素，会使用**联合类型**替代：
+
+```ts
+x[3] = 'world'; // OK, 字符串可以赋值给(string | number)类型
+
+console.log(x[5].toString()); // OK, 'string' 和 'number' 都有 toString
+
+x[6] = true; // Error, 布尔不是(string | number)类型
+```
+
+### 枚举
+
+`enum`类型是对JavaScript标准数据类型的一个补充。 像C#等其它语言一样，使用枚举类型可以为一组数值赋予友好的名字。
+
+```ts
+enum Color {Red, Green, Blue}
+let c: Color = Color.Green;
+console.log(c);    // 输出 1
+```
+
+默认情况下，从`0`开始为元素编号。 你也可以手动的指定成员的数值。 例如，我们将上面的例子改成从 `1`开始编号：
+
+```ts
+enum Color {Red = 1, Green, Blue}
+let c: Color = Color.Green;
+```
+
+或者，全部都采用手动赋值：
+
+```ts
+enum Color {Red = 1, Green = 2, Blue = 4}
+let c: Color = Color.Green;
+```
+
+枚举类型提供的一个便利是你可以由枚举的值得到它的名字。 例如，我们知道数值为2，但是不确定它映射到Color里的哪个名字，我们可以查找相应的名字：
+
+```ts
+enum Color {Red = 1, Green, Blue}
+let colorName: string = Color[2];
+
+console.log(colorName);  // 显示'Green'因为上面代码里它的值是2
+```
+
+### Any
+
+有时候，我们会想要为那些在编程阶段还不清楚类型的变量指定一个类型。 这些值可能来自于动态的内容，比如来自用户输入或第三方代码库。 这种情况下，我们不希望类型检查器对这些值进行检查而是直接让它们通过编译阶段的检查。 那么我们可以使用 `any`类型来标记这些变量：
+
+```ts
+let notSure: any = 4;
+notSure = "maybe a string instead";
+notSure = false; // okay, definitely a boolean
+```
+
+在对现有代码进行改写的时候，`any`类型是十分有用的，它允许你在**编译时**可选择地包含或移除类型检查。 
+
+```ts
+let notSure: any = 4;
+notSure.ifItExists(); // okay, ifItExists might exist at runtime
+notSure.toFixed(); // okay, toFixed exists (but the compiler doesn't check)
+
+let prettySure: Object = 4;
+prettySure.toFixed(); // Error: Property 'toFixed' doesn't exist on type 'Object'.
+```
+
+当你只知道一部分数据的类型时，`any`类型也是有用的。 比如，你有一个数组，它包含了不同的类型的数据：
+
+```ts
+let list: any[] = [1, true, "free"];
+
+list[1] = 100;
+```
+
+### Void
+
+某种程度上来说，`void`类型像是与`any`类型相反，它表示没有任何类型。 当一个函数没有返回值时，你通常会见到其返回值类型是 `void`：
+
+```ts
+function warnUser(): void {
+    console.log("This is my warning message");
+}
+```
+
+声明一个`void`类型的变量没有什么大用，因为你只能为它赋予`undefined`和`null`：
+
+```ts
+let unusable: void = undefined;
+```
+
+### Null 和 Undefined
+
+**null**
+
+在 JavaScript 中 null 表示 "什么都没有"。
+
+null是一个只有一个值的特殊类型。表示一个空对象引用。
+
+用 typeof 检测 null 返回是 object。
+
+**undefined**
+
+在 JavaScript 中, undefined 是一个没有设置值的变量。
+
+typeof 一个没有值的变量会返回 undefined。
+
+Null 和 Undefined 是其他任何类型（包括 void）的子类型，可以赋值给其它类型，如数字类型，此时，赋值后的类型会变成 null 或 undefined。而在TypeScript中启用严格的空校验（--strictNullChecks）特性，就可以使得null 和 undefined 只能被赋值给 void 或本身对应的类型，示例代码如下：
+
+```ts
+// 启用 --strictNullChecks
+let x: number;
+x = 1; // 运行正确
+x = undefined;    // 运行错误
+x = null;    // 运行错误
+```
+
+上面的例子中变量 x 只能是数字类型。如果一个类型可能出现 null 或 undefined， 可以用 | 来支持多种类型，示例代码如下：
+
+```ts
+// 启用 --strictNullChecks
+let x: number | null | undefined;
+x = 1; // 运行正确
+x = undefined;    // 运行正确
+x = null;    // 运行正确
+```
+
+### Never
+
+never 是其它类型（包括 null 和 undefined）的子类型，代表从不会出现的值。这意味着声明为 never 类型的变量只能被 never 类型所赋值，在函数中它通常表现为抛出异常或无法执行到终止点（例如无限循环），示例代码如下：
+
+```ts
+let x: never;
+let y: number;
+
+// 运行错误，数字类型不能转为 never 类型
+x = 123;
+
+// 运行正确，never 类型可以赋值给 never类型
+x = (()=>{ throw new Error('exception')})();
+
+// 运行正确，never 类型可以赋值给 数字类型
+y = (()=>{ throw new Error('exception')})();
+
+// 返回值为 never 的函数可以是抛出异常的情况
+function error(message: string): never {
+    throw new Error(message);
+}
+
+// 返回值为 never 的函数可以是无法被执行到的终止点的情况
+function loop(): never {
+    while (true) {}
+}
+```
+
+### Object
+
+`object`表示非原始类型，也就是除`number`，`string`，`boolean`，`symbol`，`null`或`undefined`之外的类型。
+
+使用`object`类型，就可以更好的表示像`Object.create`这样的API。例如：
+
+```ts
+declare function create(o: object | null): void;
+
+create({ prop: 0 }); // OK
+create(null); // OK
+
+create(42); // Error
+create("string"); // Error
+create(false); // Error
+create(undefined); // Error
+```
+
+### 类型断言
+
+有时候你会遇到这样的情况，你会比TypeScript更了解某个值的详细信息。 通常这会发生在你清楚地知道一个实体具有比它现有类型更确切的类型。
+
+通过*类型断言*这种方式可以告诉编译器，“相信我，我知道自己在干什么”。 类型断言好比其它语言里的类型转换，但是不进行特殊的数据检查和解构。 它没有运行时的影响，只是在编译阶段起作用。 **TypeScript会假设你，程序员，已经进行了必须的检查。**
+
+类型断言有两种形式。 其一是“尖括号”语法：
+
+```ts
+let someValue: any = "this is a string";
+
+let strLength: number = (<string>someValue).length;
+```
+
+另一个为`as`语法：
+
+```ts
+let someValue: any = "this is a string";
+
+let strLength: number = (someValue as string).length;
+```
+
+两种形式是等价的。 至于使用哪个大多数情况下是凭个人喜好；然而，当你在TypeScript里使用JSX时，只有 `as`语法断言是被允许的。
+
+### 联合类型
+
+联合类型（Union Types）可以通过**管道(|)**将变量设置多种类型，赋值时可以根据设置的类型来赋值。
+
+**注意**：只能赋值指定的类型，如果赋值其它类型就会报错。
+
+创建联合类型的语法格式如下：
+
+```
+Type1|Type2|Type3 
+```
+
+实例
+
+声明一个联合类型：
+
+```ts
+var val:string|number 
+val = 12 
+console.log("数字为 "+ val) 
+val = "Runoob" 
+console.log("字符串为 " + val)
+```
+
+## 变量声明
+
+```ts
+var [变量名] : [类型] = 值;
+```
+
+因为TypeScript是JavaScript的超集，所以它本身就支持`let`和`const`。 下面我们会详细说明这些新的声明方式以及为什么推荐使用它们来代替 `var`。
+
+### 作用域规则
+
+对于熟悉其它语言的人来说，`var`声明有些奇怪的作用域规则。 看下面的例子：
+
+```ts
+function f(shouldInitialize: boolean) {
+    if (shouldInitialize) {
+        var x = 10;
+    }
+
+    return x;
+}
+
+f(true);  // returns '10'
+f(false); // returns 'undefined'
+```
+
+变量 `x`是定义在*`if`语句里面*，但是我们却可以在语句的外面访问它。 这是因为 `var`声明可以在包含它的函数，模块，命名空间或全局作用域内部任何位置被访问（我们后面会详细介绍），包含它的代码块对此没有什么影响。 有些人称此为* `var`作用域*或*函数作用域*。 函数参数也使用函数作用域。
+
+这些作用域规则可能会引发一些错误。 其中之一就是，多次声明同一个变量并不会报错：
+
+```ts
+function sumMatrix(matrix: number[][]) {
+    var sum = 0;
+    for (var i = 0; i < matrix.length; i++) {
+        var currentRow = matrix[i];
+        for (var i = 0; i < currentRow.length; i++) {
+            sum += currentRow[i];
+        }
+    }
+
+    return sum;
+}
+```
+
+这里很容易看出一些问题，里层的`for`循环会覆盖变量`i`，因为所有`i`都引用相同的函数作用域内的变量。 有经验的开发者们很清楚，这些问题可能在代码审查时漏掉，引发无穷的麻烦。
+
+### 捕获变量怪异之处
+
+快速的猜一下下面的代码会返回什么：
+
+```ts
+for (var i = 0; i < 10; i++) {
+    setTimeout(function() { console.log(i); }, 100 * i);
+}
+```
+
+介绍一下，`setTimeout`会在若干毫秒的延时后执行一个函数（等待其它代码执行完毕）。
+
+好吧，看一下结果：
+
+```text
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+```
+
+很多JavaScript程序员对这种行为已经很熟悉了，但如果你很不解，你并不是一个人。 大多数人期望输出结果是这样：
+
+```text
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+```
+
+还记得我们上面提到的捕获变量吗？
+
+> 我们传给`setTimeout`的每一个函数表达式实际上都引用了相同作用域里的同一个`i`。
+
+让我们花点时间思考一下这是为什么。 `setTimeout`在若干毫秒后执行一个函数，并且是在`for`循环结束后。 `for`循环结束后，`i`的值为`10`。 所以当函数被调用的时候，它会打印出 `10`！
+
+一个通常的解决方法是使用立即执行的函数表达式（IIFE）来捕获每次迭代时`i`的值：
+
+```ts
+for (var i = 0; i < 10; i++) {
+    // capture the current state of 'i'
+    // by invoking a function with its current value
+    (function(i) {
+        setTimeout(function() { console.log(i); }, 100 * i);
+    })(i);
+}
+```
+
+这种奇怪的形式我们已经司空见惯了。 参数 `i`会覆盖`for`循环里的`i`，但是因为我们起了同样的名字，所以我们不用怎么改`for`循环体里的代码。
+
+### `let` 声明
+
+现在你已经知道了`var`存在一些问题，这恰好说明了为什么用`let`语句来声明变量。 除了名字不同外， `let`与`var`的写法一致。
+
+```ts
+let hello = "Hello!";
+```
+
+主要的区别不在语法上，而是语义，我们接下来会深入研究。
+
+#### 块作用域
+
+当用`let`声明一个变量，它使用的是*词法作用域*或*块作用域*。 不同于使用 `var`声明的变量那样可以在包含它们的函数外访问，块作用域变量在包含它们的块或`for`循环之外是不能访问的。
+
+```ts
+function f(input: boolean) {
+    let a = 100;
+
+    if (input) {
+        // Still okay to reference 'a'
+        let b = a + 1;
+        return b;
+    }
+
+    // Error: 'b' doesn't exist here
+    return b;
+}
+```
+
+这里我们定义了2个变量`a`和`b`。 `a`的作用域是`f`函数体内，而`b`的作用域是`if`语句块里。
+
+在`catch`语句里声明的变量也具有同样的作用域规则。
+
+```ts
+try {
+    throw "oh no!";
+}
+catch (e) {
+    console.log("Oh well.");
+}
+
+// Error: 'e' doesn't exist here
+console.log(e);
+```
+
+拥有块级作用域的变量的另一个特点是，它们不能在被声明之前读或写。 虽然这些变量始终“存在”于它们的作用域里，但在直到声明它的代码之前的区域都属于 *暂时性死区*。 它只是用来说明我们不能在 `let`语句之前访问它们，幸运的是TypeScript可以告诉我们这些信息。
+
+```ts
+a++; // illegal to use 'a' before it's declared;
+let a;
+```
+
+注意一点，我们仍然可以在一个拥有块作用域变量被声明前*获取*它。 只是我们不能在变量声明前去调用那个函数。 如果生成代码目标为ES2015，现代的运行时会抛出一个错误；然而，现今TypeScript是不会报错的。
+
+```ts
+function foo() {
+    // okay to capture 'a'
+    return a;
+}
+
+// 不能在'a'被声明前调用'foo'
+// 运行时应该抛出错误
+foo();
+
+let a;
+```
+
+关于*暂时性死区*的更多信息，查看这里[Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Temporal_dead_zone_and_errors_with_let).
+
+### 重定义及屏蔽
+
+我们提过使用`var`声明时，它不在乎你声明多少次；你只会得到1个。
+
+```ts
+function f(x) {
+    var x;
+    var x;
+
+    if (true) {
+        var x;
+    }
+}
+```
+
+在上面的例子里，所有`x`的声明实际上都引用一个*相同*的`x`，并且这是完全有效的代码。 这经常会成为bug的来源。 好的是， `let`声明就不会这么宽松了。
+
+```ts
+let x = 10;
+let x = 20; // 错误，不能在1个作用域里多次声明`x`
+```
+
+并不是要求两个均是块级作用域的声明TypeScript才会给出一个错误的警告。
+
+```ts
+function f(x) {
+    let x = 100; // error: interferes with parameter declaration
+}
+
+function g() {
+    let x = 100;
+    var x = 100; // error: can't have both declarations of 'x'
+}
+```
+
+并不是说块级作用域变量不能用函数作用域变量来声明。 而是块级作用域变量需要在明显不同的块里声明。
+
+```ts
+function f(condition, x) {
+    if (condition) {
+        let x = 100;
+        return x;
+    }
+
+    return x;
+}
+
+f(false, 0); // returns 0
+f(true, 0);  // returns 100
+```
+
+在一个嵌套作用域里引入一个新名字的行为称做*屏蔽*。 它是一把双刃剑，它可能会不小心地引入新问题，同时也可能会解决一些错误。 例如，假设我们现在用 `let`重写之前的`sumMatrix`函数。
+
+```ts
+function sumMatrix(matrix: number[][]) {
+    let sum = 0;
+    for (let i = 0; i < matrix.length; i++) {
+        var currentRow = matrix[i];
+        for (let i = 0; i < currentRow.length; i++) {
+            sum += currentRow[i];
+        }
+    }
+
+    return sum;
+}
+```
+
+这个版本的循环能得到正确的结果，因为内层循环的`i`可以屏蔽掉外层循环的`i`。
+
+*通常*来讲应该避免使用屏蔽，因为我们需要写出清晰的代码。 同时也有些场景适合利用它，你需要好好打算一下。
+
+### 块级作用域变量的获取
+
+在我们最初谈及获取用`var`声明的变量时，我们简略地探究了一下在获取到了变量之后它的行为是怎样的。 直观地讲，每次进入一个作用域时，它创建了一个变量的 *环境*。 就算作用域内代码已经执行完毕，这个环境与其捕获的变量依然存在。
+
+```ts
+function theCityThatAlwaysSleeps() {
+    let getCity;
+
+    if (true) {
+        let city = "Seattle";
+        getCity = function() {
+            return city;
+        }
+    }
+
+    return getCity();
+}
+```
+
+因为我们已经在`city`的环境里获取到了`city`，所以就算`if`语句执行结束后我们仍然可以访问它。
+
+回想一下前面`setTimeout`的例子，我们最后需要使用立即执行的函数表达式来获取每次`for`循环迭代里的状态。 实际上，我们做的是为获取到的变量创建了一个新的变量环境。 这样做挺痛苦的，但是幸运的是，你不必在TypeScript里这样做了。
+
+当`let`声明出现在循环体里时拥有完全不同的行为。 不仅是在循环里引入了一个新的变量环境，而是针对 *每次迭代*都会创建这样一个新作用域。 这就是我们在使用立即执行的函数表达式时做的事，所以在 `setTimeout`例子里我们仅使用`let`声明就可以了。
+
+```ts
+for (let i = 0; i < 10 ; i++) {
+    setTimeout(function() {console.log(i); }, 100 * i);
+}
+```
+
+会输出与预料一致的结果：
+
+```text
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+```
+
+### `const` 声明
+
+`const` 声明是声明变量的另一种方式。
+
+```ts
+const numLivesForCat = 9;
+```
+
+它们与`let`声明相似，但是就像它的名字所表达的，它们被赋值后不能再改变。 换句话说，它们拥有与 `let`相同的作用域规则，但是不能对它们重新赋值。
+
+这很好理解，它们引用的值是*不可变的*。
+
+```ts
+const numLivesForCat = 9;
+const kitty = {
+    name: "Aurora",
+    numLives: numLivesForCat,
+}
+
+// Error
+kitty = {
+    name: "Danielle",
+    numLives: numLivesForCat
+};
+
+// all "okay"
+kitty.name = "Rory";
+kitty.name = "Kitty";
+kitty.name = "Cat";
+kitty.numLives--;
+```
+
+除非你使用特殊的方法去避免，实际上`const`变量的内部状态是可修改的。 幸运的是，TypeScript允许你将对象的成员设置成只读的。 [接口](https://www.tslang.cn/docs/handbook/interfaces.html)一章有详细说明。
+
+### 解构
+
+#### 解构数组
+
+最简单的解构莫过于数组的解构赋值了：
+
+```ts
+let input = [1, 2];
+let [first, second] = input;
+console.log(first); // outputs 1
+console.log(second); // outputs 2
+```
+
+这创建了2个命名变量 `first` 和 `second`。 相当于使用了索引，但更为方便：
+
+```ts
+first = input[0];
+second = input[1];
+```
+
+解构作用于已声明的变量会更好：
+
+```ts
+// swap variables
+[first, second] = [second, first];
+```
+
+作用于函数参数：
+
+```ts
+function f([first, second]: [number, number]) {
+    console.log(first);
+    console.log(second);
+}
+f(input);
+```
+
+你可以在数组里使用`...`语法创建剩余变量：
+
+```ts
+let [first, ...rest] = [1, 2, 3, 4];
+console.log(first); // outputs 1
+console.log(rest); // outputs [ 2, 3, 4 ]
+```
+
+当然，由于是JavaScript, 你可以忽略你不关心的尾随元素：
+
+```ts
+let [first] = [1, 2, 3, 4];
+console.log(first); // outputs 1
+```
+
+或其它元素：
+
+```ts
+let [, second, , fourth] = [1, 2, 3, 4];
+```
+
+#### 对象解构
+
+你也可以解构对象：
+
+```ts
+let o = {
+    a: "foo",
+    b: 12,
+    c: "bar"
+};
+let { a, b } = o;
+```
+
+这通过 `o.a` and `o.b` 创建了 `a` 和 `b` 。 注意，如果你不需要 `c` 你可以忽略它。
+
+就像数组解构，你可以用没有声明的赋值：
+
+```ts
+({ a, b } = { a: "baz", b: 101 });
+```
+
+注意，我们需要用括号将它括起来，因为Javascript通常会将以 `{` 起始的语句解析为一个块。
+
+你可以在对象里使用`...`语法创建剩余变量：
+
+```ts
+let { a, ...passthrough } = o;
+let total = passthrough.b + passthrough.c.length;
+```
+
+#### 属性重命名
+
+你也可以给属性以不同的名字：
+
+```ts
+let { a: newName1, b: newName2 } = o;
+```
+
+这里的语法开始变得混乱。 你可以将 `a: newName1` 读做 "`a` 作为 `newName1`"。 方向是从左到右，好像你写成了以下样子：
+
+```ts
+let newName1 = o.a;
+let newName2 = o.b;
+```
+
+令人困惑的是，这里的冒号*不是*指示类型的。 如果你想指定它的类型， 仍然需要在其后写上完整的模式。
+
+```ts
+let {a, b}: {a: string, b: number} = o;
+```
+
+#### 默认值
+
+默认值可以让你在属性为 undefined 时使用缺省值：
+
+```ts
+function keepWholeObject(wholeObject: { a: string, b?: number }) {
+    let { a, b = 1001 } = wholeObject;
+}
+```
+
+现在，即使 `b` 为 undefined ， `keepWholeObject` 函数的变量 `wholeObject` 的属性 `a` 和 `b` 都会有值。
+
+#### 函数声明
+
+解构也能用于函数声明。 看以下简单的情况：
+
+```ts
+type C = { a: string, b?: number }
+function f({ a, b }: C): void {
+    // ...
+}
+```
+
+但是，通常情况下更多的是指定默认值，解构默认值有些棘手。 首先，你需要在默认值之前设置其格式。
+
+```ts
+function f({ a="", b=0 } = {}): void {
+    // ...
+}
+f();
+```
+
+> 上面的代码是一个类型推断的例子，将在本手册后文介绍。
+
+其次，你需要知道在解构属性上给予一个默认或可选的属性用来替换主初始化列表。 要知道 `C` 的定义有一个 `b` 可选属性：
+
+```ts
+function f({ a, b = 0 } = { a: "" }): void {
+    // ...
+}
+f({ a: "yes" }); // ok, default b = 0
+f(); // ok, default to {a: ""}, which then defaults b = 0
+f({}); // error, 'a' is required if you supply an argument
+```
+
+要小心使用解构。 从前面的例子可以看出，就算是最简单的解构表达式也是难以理解的。 尤其当存在深层嵌套解构的时候，就算这时没有堆叠在一起的重命名，默认值和类型注解，也是令人难以理解的。 解构表达式要尽量保持小而简单。 你自己也可以直接使用解构将会生成的赋值表达式。
+
+#### 展开
+
+展开操作符正与解构相反。 它允许你将一个数组展开为另一个数组，或将一个对象展开为另一个对象。 例如：
+
+```ts
+let first = [1, 2];
+let second = [3, 4];
+let bothPlus = [0, ...first, ...second, 5];
+```
+
+这会令`bothPlus`的值为`[0, 1, 2, 3, 4, 5]`。 展开操作创建了 `first`和`second`的一份浅拷贝。 它们不会被展开操作所改变。
+
+你还可以展开对象：
+
+```ts
+let defaults = { food: "spicy", price: "$$", ambiance: "noisy" };
+let search = { ...defaults, food: "rich" };
+```
+
+search的值为{ food: "rich", price: "$$", ambiance: "noisy" }
+
+## 接口
+
+### 介绍
+
+TypeScript的核心原则之一是对值所具有的*结构*进行类型检查。 它有时被称做“鸭式辨型法”或“结构性子类型化”。 在TypeScript里，接口的作用就是为这些类型命名和为你的代码或第三方代码定义契约。
+
+### 接口初探
+
+下面通过一个简单示例来观察接口是如何工作的：
+
+```ts
+function printLabel(labelledObj: { label: string }) {
+  console.log(labelledObj.label);
+}
+
+let myObj = { size: 10, label: "Size 10 Object" };
+printLabel(myObj);
+```
+
+必须包含一个`label`属性且类型为`string`：
+
+```ts
+interface LabelledValue {
+  label: string;
+}
+
+function printLabel(labelledObj: LabelledValue) {
+  console.log(labelledObj.label);
+}
+
+let myObj = {size: 10, label: "Size 10 Object"};
+printLabel(myObj);
+```
+
+`LabelledValue`接口就好比一个名字，用来描述上面例子里的要求。 它代表了有一个 `label`属性且类型为`string`的对象。 
+
+### 可选属性
+
+接口里的属性不全都是必需的。 有些是只在某些条件下存在，或者根本不存在。 可选属性在应用“option bags”模式时很常用，即给函数传入的参数对象中只有部分属性赋值了。
+
+下面是应用了“option bags”的例子：
+
+```ts
+interface SquareConfig {
+  color?: string;
+  width?: number;
+}
+
+function createSquare(config: SquareConfig): {color: string; area: number} {
+  let newSquare = {color: "white", area: 100};
+  if (config.color) {
+    newSquare.color = config.color;
+  }
+  if (config.width) {
+    newSquare.area = config.width * config.width;
+  }
+  return newSquare;
+}
+
+let mySquare = createSquare({color: "black"});
+```
+
+带有可选属性的接口与普通的接口定义差不多，只是在可选属性名字定义的后面加一个`?`符号。
+
+可选属性的好处之一是可以对可能存在的属性进行预定义，好处之二是可以捕获引用了不存在的属性时的错误。 比如，我们故意将 `createSquare`里的`color`属性名拼错，就会得到一个错误提示：
+
+```ts
+interface SquareConfig {
+  color?: string;
+  width?: number;
+}
+
+function createSquare(config: SquareConfig): { color: string; area: number } {
+  let newSquare = {color: "white", area: 100};
+  if (config.clor) {
+    // Error: Property 'clor' does not exist on type 'SquareConfig'
+    newSquare.color = config.clor;
+  }
+  if (config.width) {
+    newSquare.area = config.width * config.width;
+  }
+  return newSquare;
+}
+
+let mySquare = createSquare({color: "black"});
+```
+
+### 只读属性
+
+一些对象属性只能在对象刚刚创建的时候修改其值。 你可以在属性名前用 `readonly`来指定只读属性:
+
+```ts
+interface Point {
+    readonly x: number;
+    readonly y: number;
+}
+```
+
+你可以通过赋值一个对象字面量来构造一个`Point`。 赋值后， `x`和`y`再也不能被改变了。
+
+```ts
+let p1: Point = { x: 10, y: 20 };
+p1.x = 5; // error!
+```
+
+TypeScript具有`ReadonlyArray<T>`类型，它与`Array<T>`相似，只是把所有可变方法去掉了，因此可以确保数组创建后再也不能被修改：
+
+```ts
+let a: number[] = [1, 2, 3, 4];
+let ro: ReadonlyArray<number> = a;
+ro[0] = 12; // error!
+ro.push(5); // error!
+ro.length = 100; // error!
+a = ro; // error!
+```
+
+上面代码的最后一行，可以看到就算把整个`ReadonlyArray`赋值到一个普通数组也是不可以的。 但是你可以用类型断言重写：
+
+```ts
+a = ro as number[];
+```
+
+### `readonly` vs `const`
+
+最简单判断该用`readonly`还是`const`的方法是看要把它做为变量使用还是做为一个属性。 做为变量使用的话用 `const`，若做为属性则使用`readonly`。
+
+### 额外的属性检查
+
+我们在第一个例子里使用了接口，TypeScript让我们传入`{ size: number; label: string; }`到仅期望得到`{ label: string; }`的函数里。 我们已经学过了可选属性，并且知道他们在“option bags”模式里很有用。
+
+然而，天真地将这两者结合的话就会像在JavaScript里那样搬起石头砸自己的脚。 比如，拿 `createSquare`例子来说：
+
+```ts
+interface SquareConfig {
+    color?: string;
+    width?: number;
+}
+
+function createSquare(config: SquareConfig): { color: string; area: number } {
+    // ...
+}
+
+let mySquare = createSquare({ colour: "red", width: 100 });
+```
+
+注意传入`createSquare`的参数拼写为*`colour`*而不是`color`。 在JavaScript里，这会默默地失败。
+
+你可能会争辩这个程序已经正确地类型化了，因为`width`属性是兼容的，不存在`color`属性，而且额外的`colour`属性是无意义的。
+
+然而，TypeScript会认为这段代码可能存在bug。 对象字面量会被特殊对待而且会经过 *额外属性检查*，当将它们赋值给变量或作为参数传递的时候。 如果一个对象字面量存在任何“目标类型”不包含的属性时，你会得到一个错误。
+
+```ts
+// error: 'colour' not expected in type 'SquareConfig'
+let mySquare = createSquare({ colour: "red", width: 100 });
+```
+
+绕开这些检查非常简单。 最简便的方法是使用类型断言：
+
+```ts
+let mySquare = createSquare({ width: 100, opacity: 0.5 } as SquareConfig);
+```
+
+然而，最佳的方式是能够添加一个**字符串索引签名**，前提是你能够确定这个对象可能具有某些做为特殊用途使用的额外属性。 如果 `SquareConfig`带有上面定义的类型的`color`和`width`属性，并且*还会*带有任意数量的其它属性，那么我们可以这样定义它：
+
+
+
+```ts
+interface SquareConfig {
+    color?: string;
+    width?: number;
+    [propName: string]: any;
+}
+```
+
+我们稍后会讲到索引签名，但在这我们要表示的是`SquareConfig`可以有任意数量的属性，并且只要它们不是`color`和`width`，那么就无所谓它们的类型是什么。
+
+还有最后一种跳过这些检查的方式，这可能会让你感到惊讶，它就是将这个对象赋值给一个另一个变量： 因为 `squareOptions`不会经过额外属性检查，所以编译器不会报错。
+
+```ts
+let squareOptions = { colour: "red", width: 100 };
+let mySquare = createSquare(squareOptions);
+```
+
+要留意，在像上面一样的简单代码里，你可能不应该去绕开这些检查。 对于包含方法和内部状态的复杂对象字面量来讲，你可能需要使用这些技巧，但是大部额外属性检查错误是真正的bug。 就是说你遇到了额外类型检查出的错误，比如“option bags”，你应该去审查一下你的类型声明。 在这里，如果支持传入 `color`或`colour`属性到`createSquare`，你应该修改`SquareConfig`定义来体现出这一点。
+
+### 函数类型
+
+接口能够描述JavaScript中对象拥有的各种各样的外形。 除了描述带有属性的普通对象外，接口也可以描述函数类型。
+
+为了使用接口表示函数类型，我们需要给接口定义一个调用签名。 它就像是一个只有参数列表和返回值类型的函数定义。参数列表里的每个参数都需要名字和类型。
+
+```ts
+interface SearchFunc {
+  (source: string, subString: string): boolean;
+}
+```
+
+这样定义后，我们可以像使用其它接口一样使用这个函数类型的接口。 下例展示了如何创建一个函数类型的变量，并将一个同类型的函数赋值给这个变量。
+
+```ts
+let mySearch: SearchFunc;
+mySearch = function(source: string, subString: string) {
+  let result = source.search(subString);
+  return result > -1;
+}
+```
+
+对于函数类型的类型检查来说，函数的参数名不需要与接口里定义的名字相匹配。 比如，我们使用下面的代码重写上面的例子：
+
+```ts
+let mySearch: SearchFunc;
+mySearch = function(src: string, sub: string): boolean {
+  let result = src.search(sub);
+  return result > -1;
+}
+```
+
+函数的参数会逐个进行检查，要求对应位置上的参数类型是兼容的。 如果你不想指定类型，TypeScript的类型系统会推断出参数类型，因为函数直接赋值给了 `SearchFunc`类型变量。 函数的返回值类型是通过其返回值推断出来的（此例是 `false`和`true`）。 如果让这个函数返回数字或字符串，类型检查器会警告我们函数的返回值类型与 `SearchFunc`接口中的定义不匹配。
+
+
+
+```ts
+let mySearch: SearchFunc;
+mySearch = function(src, sub) {
+    let result = src.search(sub);
+    return result > -1;
+}
+```
+
+### 可索引的类型
+
+与使用接口描述函数类型差不多，我们也可以描述那些能够“通过索引得到”的类型，比如`a[10]`或`ageMap["daniel"]`。 可索引类型具有一个 *索引签名*，它描述了对象索引的类型，还有相应的索引返回值类型。 让我们看一个例子：
+
+```ts
+interface StringArray {
+  [index: number]: string;
+}
+
+let myArray: StringArray;
+myArray = ["Bob", "Fred"];
+
+let myStr: string = myArray[0];
+```
+
+上面例子里，我们定义了`StringArray`接口，它具有索引签名。 这个索引签名表示了当用 `number`去索引`StringArray`时会得到`string`类型的返回值。
+
+TypeScript支持两种索引签名：字符串和数字。 可以同时使用两种类型的索引，但是数字索引的返回值必须是字符串索引返回值类型的子类型。 这是因为当使用 `number`来索引时，JavaScript会将它转换成`string`然后再去索引对象。 也就是说用 `100`（一个`number`）去索引等同于使用`"100"`（一个`string`）去索引，因此两者需要保持一致。
+
+```ts
+class Animal {
+    name: string;
+}
+class Dog extends Animal {
+    breed: string;
+}
+
+// 错误：使用数值型的字符串索引，有时会得到完全不同的Animal!
+interface NotOkay {
+    [x: number]: Animal;
+    [x: string]: Dog;
+}
+```
+
+
+
+字符串索引签名能够很好的描述`dictionary`模式，并且它们也会确保所有属性与其返回值类型相匹配。 因为字符串索引声明了 `obj.property`和`obj["property"]`两种形式都可以。 下面的例子里， `name`的类型与字符串索引类型不匹配，所以类型检查器给出一个错误提示：
+
+```ts
+interface NumberDictionary {
+  [index: string]: number;
+  length: number;    // 可以，length是number类型
+  name: string       // 错误，`name`的类型与索引类型返回值的类型不匹配
+}
+```
+
+最后，你可以将索引签名设置为只读，这样就防止了给索引赋值：
+
+```ts
+interface ReadonlyStringArray {
+    readonly [index: number]: string;
+}
+let myArray: ReadonlyStringArray = ["Alice", "Bob"];
+myArray[2] = "Mallory"; // error!
+```
+
+你不能设置`myArray[2]`，因为索引签名是只读的。
+
+### 类类型
+
+#### 实现接口
+
+与C#或Java里接口的基本作用一样，TypeScript也能够用它来明确的强制一个类去符合某种契约。
+
+```ts
+interface ClockInterface {
+    currentTime: Date;
+}
+
+class Clock implements ClockInterface {
+    currentTime: Date;
+    constructor(h: number, m: number) { }
+}
+```
+
+你也可以在接口中描述一个方法，在类里实现它，如同下面的`setTime`方法一样：
+
+```ts
+interface ClockInterface {
+    currentTime: Date;
+    setTime(d: Date);
+}
+
+class Clock implements ClockInterface {
+    currentTime: Date;
+    setTime(d: Date) {
+        this.currentTime = d;
+    }
+    constructor(h: number, m: number) { }
+}
+```
+
+接口描述了类的公共部分，而不是公共和私有两部分。 它不会帮你检查类是否具有某些私有成员。
+
+#### 类静态部分与实例部分的区别
+
+当你操作类和接口的时候，你要知道类是具有两个类型的：静态部分的类型和实例的类型。 你会注意到，当你用构造器签名去定义一个接口并试图定义一个类去实现这个接口时会得到一个错误：
+
+```ts
+interface ClockConstructor {
+    new (hour: number, minute: number);
+}
+
+class Clock implements ClockConstructor {
+    currentTime: Date;
+    constructor(h: number, m: number) { }
+}
+```
+
+
+
+这里因为当一个类实现了一个接口时，只对其实例部分进行类型检查。 constructor存在于类的静态部分，所以不在检查的范围内。
+
+因此，我们应该直接操作类的静态部分。 看下面的例子，我们定义了两个接口， `ClockConstructor`为构造函数所用和`ClockInterface`为实例方法所用。 为了方便我们定义一个构造函数 `createClock`，它用传入的类型创建实例。
+
+```ts
+interface ClockConstructor {
+    new (hour: number, minute: number): ClockInterface;
+}
+interface ClockInterface {
+    tick();
+}
+
+function createClock(ctor: ClockConstructor, hour: number, minute: number): ClockInterface {
+    return new ctor(hour, minute);
+}
+
+class DigitalClock implements ClockInterface {
+    constructor(h: number, m: number) { }
+    tick() {
+        console.log("beep beep");
+    }
+}
+class AnalogClock implements ClockInterface {
+    constructor(h: number, m: number) { }
+    tick() {
+        console.log("tick tock");
+    }
+}
+
+let digital = createClock(DigitalClock, 12, 17);
+let analog = createClock(AnalogClock, 7, 32);
+```
+
+因为`createClock`的第一个参数是`ClockConstructor`类型，在`createClock(AnalogClock, 7, 32)`里，会检查`AnalogClock`是否符合构造函数签名。
+
+### 继承接口
+
+和类一样，接口也可以相互继承。 这让我们能够从一个接口里复制成员到另一个接口里，可以更灵活地将接口分割到可重用的模块里。
+
+```ts
+interface Shape {
+    color: string;
+}
+
+interface Square extends Shape {
+    sideLength: number;
+}
+
+let square = <Square>{};
+square.color = "blue";
+square.sideLength = 10;
+```
+
+一个接口可以继承多个接口，创建出多个接口的合成接口。
+
+```ts
+interface Shape {
+    color: string;
+}
+
+interface PenStroke {
+    penWidth: number;
+}
+
+interface Square extends Shape, PenStroke {
+    sideLength: number;
+}
+
+let square = <Square>{};
+square.color = "blue";
+square.sideLength = 10;
+square.penWidth = 5.0;
+```
+
+### 混合类型
+
+先前我们提过，接口能够描述JavaScript里丰富的类型。 因为JavaScript其动态灵活的特点，有时你会希望一个对象可以同时具有上面提到的多种类型。
+
+一个例子就是，一个对象可以同时做为函数和对象使用，并带有额外的属性。
+
+```ts
+interface Counter {
+    (start: number): string;
+    interval: number;
+    reset(): void;
+}
+
+function getCounter(): Counter {
+    let counter = <Counter>function (start: number) { };
+    counter.interval = 123;
+    counter.reset = function () { };
+    return counter;
+}
+
+let c = getCounter();
+c(10);
+c.reset();
+c.interval = 5.0;
+```
+
+在使用JavaScript第三方库的时候，你可能需要像上面那样去完整地定义类型。
+
+### 接口继承类
+
+当接口继承了一个类类型时，它会继承类的成员但不包括其实现。 就好像接口声明了所有类中存在的成员，但并没有提供具体实现一样。 接口同样会继承到类的private和protected成员。 这意味着当你创建了一个接口继承了一个拥有私有或受保护的成员的类时，这个接口类型只能被这个类或其子类所实现（implement）。
+
+当你有一个庞大的继承结构时这很有用，但要指出的是你的代码只在子类拥有特定属性时起作用。 这个子类除了继承至基类外与基类没有任何关系。 例：
+
+```ts
+class Control {
+    private state: any;
+}
+
+interface SelectableControl extends Control {
+    select(): void;
+}
+
+class Button extends Control implements SelectableControl {
+    select() { }
+}
+
+class TextBox extends Control {
+    select() { }
+}
+
+// 错误：“Image”类型缺少“state”属性。
+class Image implements SelectableControl {
+    select() { }
+}
+
+class Location {
+
+}
+```
+
+在上面的例子里，`SelectableControl`包含了`Control`的所有成员，包括私有成员`state`。 因为 `state`是私有成员，所以只能够是`Control`的子类们才能实现`SelectableControl`接口。 因为只有 `Control`的子类才能够拥有一个声明于`Control`的私有成员`state`，这对私有成员的兼容性是必需的。
+
+在`Control`类内部，是允许通过`SelectableControl`的实例来访问私有成员`state`的。 实际上， `SelectableControl`接口和拥有`select`方法的`Control`类是一样的。 `Button`和`TextBox`类是`SelectableControl`的子类（因为它们都继承自`Control`并有`select`方法），但`Image`和`Location`类并不是这样的。
+
+## 类
+
+### 介绍
+
+传统的JavaScript程序使用函数和基于原型的继承来创建可重用的组件，但对于熟悉使用面向对象方式的程序员来讲就有些棘手，因为他们用的是基于类的继承并且对象是由类构建出来的。 从ECMAScript 2015，也就是ECMAScript 6开始，JavaScript程序员将能够使用基于类的面向对象的方式。 使用TypeScript，我们允许开发者现在就使用这些特性，并且编译后的JavaScript可以在所有主流浏览器和平台上运行，而不需要等到下个JavaScript版本。
+
+### 类
+
+下面看一个使用类的例子：
+
+```ts
+class Car { 
+    // 字段 
+    engine:string; 
+ 
+    // 构造函数 
+    constructor(engine:string) { 
+        this.engine = engine 
+    }  
+ 
+    // 方法 
+    disp():void { 
+        console.log("发动机为 :   "+this.engine) 
+    } 
+}
+```
+
+- **字段** − 字段是类里面声明的变量。字段表示对象的有关数据。
+- **构造函数** − 类实例化时调用，可以为类的对象分配内存。
+- **方法** − 方法为对象要执行的操作。
+
+### 继承
+
+在TypeScript里，我们可以使用常用的面向对象模式。 基于类的程序设计中一种最基本的模式是允许使用继承来扩展现有的类。
+
+看下面的例子：
+
+```ts
+class Animal {
+    move(distanceInMeters: number = 0) {
+        console.log(`Animal moved ${distanceInMeters}m.`);
+    }
+}
+
+class Dog extends Animal {
+    bark() {
+        console.log('Woof! Woof!');
+    }
+}
+
+const dog = new Dog();
+dog.bark();
+dog.move(10);
+dog.bark();
+```
+
+这个例子展示了最基本的继承：类从基类中继承了属性和方法。 这里， `Dog`是一个 *派生类*，它派生自 `Animal` *基类*，通过 `extends`关键字。 派生类通常被称作 *子类*，基类通常被称作 *超类*。
+
+因为 `Dog`继承了 `Animal`的功能，因此我们可以创建一个 `Dog`的实例，它能够 `bark()`和 `move()`。
+
+下面我们来看个更加复杂的例子。
+
+```ts
+class Animal {
+    name: string;
+    constructor(theName: string) { this.name = theName; }
+    move(distanceInMeters: number = 0) {
+        console.log(`${this.name} moved ${distanceInMeters}m.`);
+    }
+}
+
+class Snake extends Animal {
+    constructor(name: string) { super(name); }
+    move(distanceInMeters = 5) {
+        console.log("Slithering...");
+        super.move(distanceInMeters);
+    }
+}
+
+class Horse extends Animal {
+    constructor(name: string) { super(name); }
+    move(distanceInMeters = 45) {
+        console.log("Galloping...");
+        super.move(distanceInMeters);
+    }
+}
+
+let sam = new Snake("Sammy the Python");
+let tom: Animal = new Horse("Tommy the Palomino");
+
+sam.move();
+tom.move(34);
+```
+
+这个例子展示了一些上面没有提到的特性。 这一次，我们使用 `extends`关键字创建了 `Animal`的两个子类： `Horse`和 `Snake`。
+
+与前一个例子的不同点是，派生类包含了一个构造函数，它 *必须*调用 `super()`，它会执行基类的构造函数。 而且，在构造函数里访问 `this`的属性之前，我们 *一定*要调用 `super()`。 这个是TypeScript强制执行的一条重要规则。
+
+这个例子演示了如何在子类里可以重写父类的方法。 `Snake`类和 `Horse`类都创建了 `move`方法，它们重写了从 `Animal`继承来的 `move`方法，使得 `move`方法根据不同的类而具有不同的功能。 注意，即使 `tom`被声明为 `Animal`类型，但因为它的值是 `Horse`，调用 `tom.move(34)`时，它会调用 `Horse`里重写的方法：
+
+```text
+Slithering...
+Sammy the Python moved 5m.
+Galloping...
+Tommy the Palomino moved 34m.
+```
+
+### 公共，私有与受保护的修饰符
+
+#### 默认为 `public`
+
+在上面的例子里，我们可以自由的访问程序里定义的成员。 如果你对其它语言中的类比较了解，就会注意到我们在之前的代码里并没有使用 `public`来做修饰；例如，C#要求必须明确地使用 `public`指定成员是可见的。 在TypeScript里，成员都默认为 `public`。
+
+你也可以明确的将一个成员标记成 `public`。 我们可以用下面的方式来重写上面的 `Animal`类：
+
+```ts
+class Animal {
+    public name: string;
+    public constructor(theName: string) { this.name = theName; }
+    public move(distanceInMeters: number) {
+        console.log(`${this.name} moved ${distanceInMeters}m.`);
+    }
+}
+```
+
+#### 理解 `private`
+
+当成员被标记成 `private`时，它就不能在声明它的类的外部访问。比如：
+
+```ts
+class Animal {
+    private name: string;
+    constructor(theName: string) { this.name = theName; }
+}
+
+new Animal("Cat").name; // 错误: 'name' 是私有的.
+```
+
+TypeScript使用的是结构性类型系统。 当我们比较两种不同的类型时，并不在乎它们从何处而来，如果所有成员的类型都是兼容的，我们就认为它们的类型是兼容的。
+
+
+
+然而，当我们比较带有 `private`或 `protected`成员的类型的时候，情况就不同了。 如果其中一个类型里包含一个 `private`成员，那么只有当另外一个类型中也存在这样一个 `private`成员， 并且它们都是来自同一处声明时，我们才认为这两个类型是兼容的。 对于 `protected`成员也使用这个规则。
+
+下面来看一个例子，更好地说明了这一点：
+
+```ts
+class Animal {
+    private name: string;
+    constructor(theName: string) { this.name = theName; }
+}
+
+class Rhino extends Animal {
+    constructor() { super("Rhino"); }
+}
+
+class Employee {
+    private name: string;
+    constructor(theName: string) { this.name = theName; }
+}
+
+let animal = new Animal("Goat");
+let rhino = new Rhino();
+let employee = new Employee("Bob");
+
+animal = rhino;
+animal = employee; // 错误: Animal 与 Employee 不兼容.
+```
+
+这个例子中有 `Animal`和 `Rhino`两个类， `Rhino`是 `Animal`类的子类。 还有一个 `Employee`类，其类型看上去与 `Animal`是相同的。 我们创建了几个这些类的实例，并相互赋值来看看会发生什么。 因为 `Animal`和 `Rhino`共享了来自 `Animal`里的私有成员定义 `private name: string`，因此它们是兼容的。 然而 `Employee`却不是这样。当把 `Employee`赋值给 `Animal`的时候，得到一个错误，说它们的类型不兼容。 尽管 `Employee`里也有一个私有成员 `name`，但它明显不是 `Animal`里面定义的那个。
+
+#### 理解 `protected`
+
+`protected`修饰符与 `private`修饰符的行为很相似，但有一点不同， `protected`成员在派生类中仍然可以访问。例如：
+
+```ts
+class Person {
+    protected name: string;
+    constructor(name: string) { this.name = name; }
+}
+
+class Employee extends Person {
+    private department: string;
+
+    constructor(name: string, department: string) {
+        super(name)
+        this.department = department;
+    }
+
+    public getElevatorPitch() {
+        return `Hello, my name is ${this.name} and I work in ${this.department}.`;
+    }
+}
+
+let howard = new Employee("Howard", "Sales");
+console.log(howard.getElevatorPitch());
+console.log(howard.name); // 错误
+```
+
+
+
+注意，我们不能在 `Person`类外使用 `name`，但是我们仍然可以通过 `Employee`类的实例方法访问，因为 `Employee`是由 `Person`派生而来的。
+
+构造函数也可以被标记成 `protected`。 这意味着这个类不能在包含它的类外被实例化，但是能被继承。比如，
+
+```ts
+class Person {
+    protected name: string;
+    protected constructor(theName: string) { this.name = theName; }
+}
+
+// Employee 能够继承 Person
+class Employee extends Person {
+    private department: string;
+
+    constructor(name: string, department: string) {
+        super(name);
+        this.department = department;
+    }
+
+    public getElevatorPitch() {
+        return `Hello, my name is ${this.name} and I work in ${this.department}.`;
+    }
+}
+
+let howard = new Employee("Howard", "Sales");
+let john = new Person("John"); // 错误: 'Person' 的构造函数是被保护的.
+```
+
+### readonly修饰符
+
+你可以使用 `readonly`关键字将属性设置为只读的。 只读属性必须在声明时或构造函数里被初始化。
+
+```ts
+class Octopus {
+    readonly name: string;
+    readonly numberOfLegs: number = 8;
+    constructor (theName: string) {
+        this.name = theName;
+    }
+}
+let dad = new Octopus("Man with the 8 strong legs");
+dad.name = "Man with the 3-piece suit"; // 错误! name 是只读的.
+```
+
+#### 参数属性
+
+在上面的例子中，我们必须在`Octopus`类里定义一个只读成员 `name`和一个参数为 `theName`的构造函数，并且立刻将 `theName`的值赋给 `name`，这种情况经常会遇到。 *参数属性*可以方便地让我们在一个地方定义并初始化一个成员。 下面的例子是对之前 `Octopus`类的修改版，使用了参数属性：
+
+```ts
+class Octopus {
+    readonly numberOfLegs: number = 8;
+    constructor(readonly name: string) {
+    }
+}
+```
+
+
+
+注意看我们是如何舍弃了 `theName`，仅在构造函数里使用 `readonly name: string`参数来创建和初始化 `name`成员。 我们把声明和赋值合并至一处。
+
+参数属性通过给构造函数参数前面添加一个访问限定符来声明。 使用 `private`限定一个参数属性会声明并初始化一个私有成员；对于 `public`和 `protected`来说也是一样。
+
+### 存取器
+
+TypeScript支持通过getters/setters来截取对对象成员的访问。 它能帮助你有效的控制对对象成员的访问。
+
+下面来看如何把一个简单的类改写成使用 `get`和 `set`。 首先，我们从一个没有使用存取器的例子开始。
+
+```ts
+class Employee {
+    fullName: string;
+}
+
+let employee = new Employee();
+employee.fullName = "Bob Smith";
+if (employee.fullName) {
+    console.log(employee.fullName);
+}
+```
+
+我们可以随意的设置 `fullName`，这是非常方便的，但是这也可能会带来麻烦。
+
+下面这个版本里，我们先检查用户密码是否正确，然后再允许其修改员工信息。 我们把对 `fullName`的直接访问改成了可以检查密码的 `set`方法。 我们也加了一个 `get`方法，让上面的例子仍然可以工作。
+
+```ts
+let passcode = "secret passcode";
+
+class Employee {
+    private _fullName: string;
+
+    get fullName(): string {
+        return this._fullName;
+    }
+
+    set fullName(newName: string) {
+        if (passcode && passcode == "secret passcode") {
+            this._fullName = newName;
+        }
+        else {
+            console.log("Error: Unauthorized update of employee!");
+        }
+    }
+}
+
+let employee = new Employee();
+employee.fullName = "Bob Smith";
+if (employee.fullName) {
+    alert(employee.fullName);
+}
+```
+
+我们可以修改一下密码，来验证一下存取器是否是工作的。当密码不对时，会提示我们没有权限去修改员工。
+
+对于存取器有下面几点需要注意的：
+
+首先，存取器要求你将编译器设置为输出ECMAScript 5或更高。 不支持降级到ECMAScript 3。 其次，只带有 `get`不带有 `set`的存取器自动被推断为 `readonly`。 这在从代码生成 `.d.ts`文件时是有帮助的，因为利用这个属性的用户会看到不允许够改变它的值。
+
+### 静态属性
+
+到目前为止，我们只讨论了类的实例成员，那些仅当类被实例化的时候才会被初始化的属性。 我们也可以创建类的静态成员，这些属性存在于类本身上面而不是类的实例上。 在这个例子里，我们使用 `static`定义 `origin`，因为它是所有网格都会用到的属性。 每个实例想要访问这个属性的时候，都要在 `origin`前面加上类名。 如同在实例属性上使用 `this.`前缀来访问属性一样，这里我们使用 `Grid.`来访问静态属性。
+
+```ts
+class Grid {
+    static origin = {x: 0, y: 0};
+    calculateDistanceFromOrigin(point: {x: number; y: number;}) {
+        let xDist = (point.x - Grid.origin.x);
+        let yDist = (point.y - Grid.origin.y);
+        return Math.sqrt(xDist * xDist + yDist * yDist) / this.scale;
+    }
+    constructor (public scale: number) { }
+}
+
+let grid1 = new Grid(1.0);  // 1x scale
+let grid2 = new Grid(5.0);  // 5x scale
+
+console.log(grid1.calculateDistanceFromOrigin({x: 10, y: 10}));
+console.log(grid2.calculateDistanceFromOrigin({x: 10, y: 10}));
+```
+
+### 抽象类
+
+抽象类做为其它派生类的基类使用。 它们一般不会直接被实例化。 不同于接口，抽象类可以包含成员的实现细节。 `abstract`关键字是用于定义抽象类和在抽象类内部定义抽象方法。
+
+```ts
+abstract class Animal {
+    abstract makeSound(): void;
+    move(): void {
+        console.log('roaming the earch...');
+    }
+}
+```
+
+
+
+抽象类中的抽象方法不包含具体实现并且必须在派生类中实现。 抽象方法的语法与接口方法相似。 两者都是定义方法签名但不包含方法体。 然而，抽象方法必须包含 `abstract`关键字并且可以包含访问修饰符。
+
+```ts
+abstract class Department {
+
+    constructor(public name: string) {
+    }
+
+    printName(): void {
+        console.log('Department name: ' + this.name);
+    }
+
+    abstract printMeeting(): void; // 必须在派生类中实现
+}
+
+class AccountingDepartment extends Department {
+
+    constructor() {
+        super('Accounting and Auditing'); // 在派生类的构造函数中必须调用 super()
+    }
+
+    printMeeting(): void {
+        console.log('The Accounting Department meets each Monday at 10am.');
+    }
+
+    generateReports(): void {
+        console.log('Generating accounting reports...');
+    }
+}
+
+let department: Department; // 允许创建一个对抽象类型的引用
+department = new Department(); // 错误: 不能创建一个抽象类的实例
+department = new AccountingDepartment(); // 允许对一个抽象子类进行实例化和赋值
+department.printName();
+department.printMeeting();
+department.generateReports(); // 错误: 方法在声明的抽象类中不存在
+```
+
+### 高级技巧
+
+#### 构造函数
+
+当你在TypeScript里声明了一个类的时候，实际上同时声明了很多东西。 首先就是类的 *实例*的类型。
+
+```ts
+class Greeter {
+    greeting: string;
+    constructor(message: string) {
+        this.greeting = message;
+    }
+    greet() {
+        return "Hello, " + this.greeting;
+    }
+}
+
+let greeter: Greeter;
+greeter = new Greeter("world");
+console.log(greeter.greet());
+```
+
+
+
+这里，我们写了 `let greeter: Greeter`，意思是 `Greeter`类的实例的类型是 `Greeter`。 这对于用过其它面向对象语言的程序员来讲已经是老习惯了。
+
+我们也创建了一个叫做 *构造函数*的值。 这个函数会在我们使用 `new`创建类实例的时候被调用。 下面我们来看看，上面的代码被编译成JavaScript后是什么样子的：
+
+```ts
+let Greeter = (function () {
+    function Greeter(message) {
+        this.greeting = message;
+    }
+    Greeter.prototype.greet = function () {
+        return "Hello, " + this.greeting;
+    };
+    return Greeter;
+})();
+
+let greeter;
+greeter = new Greeter("world");
+console.log(greeter.greet());
+```
+
+上面的代码里， `let Greeter`将被赋值为构造函数。 当我们调用 `new`并执行了这个函数后，便会得到一个类的实例。 这个构造函数也包含了类的所有静态属性。 换个角度说，我们可以认为类具有 *实例部分*与 *静态部分*这两个部分。
+
+让我们稍微改写一下这个例子，看看它们之间的区别：
+
+```ts
+class Greeter {
+    static standardGreeting = "Hello, there";
+    greeting: string;
+    greet() {
+        if (this.greeting) {
+            return "Hello, " + this.greeting;
+        }
+        else {
+            return Greeter.standardGreeting;
+        }
+    }
+}
+
+let greeter1: Greeter;
+greeter1 = new Greeter();
+console.log(greeter1.greet());
+
+let greeterMaker: typeof Greeter = Greeter;
+greeterMaker.standardGreeting = "Hey there!";
+
+let greeter2: Greeter = new greeterMaker();
+console.log(greeter2.greet());
+```
+
+这个例子里， `greeter1`与之前看到的一样。 我们实例化 `Greeter`类，并使用这个对象。 与我们之前看到的一样。
+
+再之后，我们直接使用类。 我们创建了一个叫做 `greeterMaker`的变量。 这个变量保存了这个类或者说保存了类构造函数。 然后我们使用 `typeof Greeter`，意思是取Greeter类的类型，而不是实例的类型。 或者更确切的说，"告诉我 `Greeter`标识符的类型"，也就是构造函数的类型。 这个类型包含了类的所有静态成员和构造函数。 之后，就和前面一样，我们在 `greeterMaker`上使用 `new`，创建 `Greeter`的实例。
+
+#### 把类当做接口使用
+
+如上一节里所讲的，类定义会创建两个东西：类的实例类型和一个构造函数。 因为类可以创建出类型，所以你能够在允许使用接口的地方使用类。
+
+```ts
+class Point {
+    x: number;
+    y: number;
+}
+
+interface Point3d extends Point {
+    z: number;
+}
+
+let point3d: Point3d = {x: 1, y: 2, z: 3};
+```
+
+## 函数
+
+### 介绍
+
+函数是JavaScript应用程序的基础。 它帮助你实现抽象层，模拟类，信息隐藏和模块。 在TypeScript里，虽然已经支持类，命名空间和模块，但函数仍然是主要的定义 *行为*的地方。 TypeScript为JavaScript函数添加了额外的功能，让我们可以更容易地使用。
+
+### 函数
+
+和JavaScript一样，TypeScript函数可以创建有名字的函数和匿名函数。 你可以随意选择适合应用程序的方式，不论是定义一系列API函数还是只使用一次的函数。
+
+通过下面的例子可以迅速回想起这两种JavaScript中的函数：
+
+```ts
+// Named function
+function add(x, y) {
+    return x + y;
+}
+
+// Anonymous function
+let myAdd = function(x, y) { return x + y; };
+```
+
+在JavaScript里，函数可以使用函数体外部的变量。 当函数这么做时，我们说它‘捕获’了这些变量。 至于为什么可以这样做以及其中的利弊超出了本文的范围，但是深刻理解这个机制对学习JavaScript和TypeScript会很有帮助。
+
+```ts
+let z = 100;
+
+function addToZ(x, y) {
+    return x + y + z;
+}
+```
+
+### 函数类型
+
+#### 为函数定义类型
+
+让我们为上面那个函数添加类型：
+
+```ts
+function add(x: number, y: number): number {
+    return x + y;
+}
+
+let myAdd = function(x: number, y: number): number { return x + y; };
+```
+
+我们可以给每个参数添加类型之后再为函数本身添加返回值类型。 TypeScript能够根据返回语句自动推断出返回值类型，因此我们通常省略它。
+
+#### 书写完整函数类型
+
+现在我们已经为函数指定了类型，下面让我们写出函数的完整类型。
+
+```ts
+let myAdd: (x: number, y: number) => number =
+    function(x: number, y: number): number { return x + y; };
+```
+
+函数类型包含两部分：参数类型和返回值类型。 当写出完整函数类型的时候，这两部分都是需要的。 我们以参数列表的形式写出参数类型，为每个参数指定一个名字和类型。 这个名字只是为了增加可读性。 我们也可以这么写：
+
+```ts
+let myAdd: (baseValue: number, increment: number) => number =
+    function(x: number, y: number): number { return x + y; };
+```
+
+只要参数类型是匹配的，那么就认为它是有效的函数类型，而不在乎参数名是否正确。
+
+第二部分是返回值类型。 对于返回值，我们在函数和返回值类型之前使用( `=>`)符号，使之清晰明了。 如之前提到的，返回值类型是函数类型的必要部分，如果函数没有返回任何值，你也必须指定返回值类型为 `void`而不能留空。
+
+函数的类型只是由参数类型和返回值组成的。 函数中使用的捕获变量不会体现在类型里。 实际上，这些变量是函数的隐藏状态并不是组成API的一部分。
+
+#### 推断类型
+
+尝试这个例子的时候，你会发现如果你在赋值语句的一边指定了类型但是另一边没有类型的话，TypeScript编译器会自动识别出类型：
+
+```ts
+// myAdd has the full function type
+let myAdd = function(x: number, y: number): number { return x + y; };
+
+// The parameters `x` and `y` have the type number
+let myAdd: (baseValue: number, increment: number) => number =
+    function(x, y) { return x + y; };
+```
+
+这叫做“按上下文归类”，是类型推论的一种。 它帮助我们更好地为程序指定类型。
+
+#### 可选参数和默认参数
+
+TypeScript里的每个函数参数都是必须的。 这不是指不能传递 `null`或`undefined`作为参数，而是说编译器检查用户是否为每个参数都传入了值。 编译器还会假设只有这些参数会被传递进函数。 简短地说，传递给一个函数的参数个数必须与函数期望的参数个数一致。
+
+```ts
+function buildName(firstName: string, lastName: string) {
+    return firstName + " " + lastName;
+}
+
+let result1 = buildName("Bob");                  // error, too few parameters
+let result2 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
+let result3 = buildName("Bob", "Adams");         // ah, just right
+```
+
+JavaScript里，每个参数都是可选的，可传可不传。 没传参的时候，它的值就是undefined。 在TypeScript里我们可以在参数名旁使用 `?`实现可选参数的功能。 比如，我们想让last name是可选的：
+
+```ts
+function buildName(firstName: string, lastName?: string) {
+    if (lastName)
+        return firstName + " " + lastName;
+    else
+        return firstName;
+}
+
+let result1 = buildName("Bob");  // works correctly now
+let result2 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
+let result3 = buildName("Bob", "Adams");  // ah, just right
+```
+
+可选参数必须跟在必须参数后面。 如果上例我们想让first name是可选的，那么就必须调整它们的位置，把first name放在后面。
+
+在TypeScript里，我们也可以为参数提供一个默认值当用户没有传递这个参数或传递的值是`undefined`时。 它们叫做有默认初始化值的参数。 让我们修改上例，把last name的默认值设置为`"Smith"`。
+
+```ts
+function buildName(firstName: string, lastName = "Smith") {
+    return firstName + " " + lastName;
+}
+
+let result1 = buildName("Bob");                  // works correctly now, returns "Bob Smith"
+let result2 = buildName("Bob", undefined);       // still works, also returns "Bob Smith"
+let result3 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
+let result4 = buildName("Bob", "Adams");         // ah, just right
+```
+
+在所有必须参数后面的带默认初始化的参数都是可选的，与可选参数一样，在调用函数的时候可以省略。 也就是说可选参数与末尾的默认参数共享参数类型。
+
+```ts
+function buildName(firstName: string, lastName?: string) {
+    // ...
+}
+```
+
+和
+
+```ts
+function buildName(firstName: string, lastName = "Smith") {
+    // ...
+}
+```
+
+共享同样的类型`(firstName: string, lastName?: string) => string`。 默认参数的默认值消失了，只保留了它是一个可选参数的信息。
+
+与普通可选参数不同的是，带默认值的参数不需要放在必须参数的后面。 如果带默认值的参数出现在必须参数前面，用户必须明确的传入 `undefined`值来获得默认值。 例如，我们重写最后一个例子，让 `firstName`是带默认值的参数：
+
+```ts
+function buildName(firstName = "Will", lastName: string) {
+    return firstName + " " + lastName;
+}
+
+let result1 = buildName("Bob");                  // error, too few parameters
+let result2 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
+let result3 = buildName("Bob", "Adams");         // okay and returns "Bob Adams"
+let result4 = buildName(undefined, "Adams");     // okay and returns "Will Adams"
+```
+
+#### 剩余参数
+
+必要参数，默认参数和可选参数有个共同点：它们表示某一个参数。 有时，你想同时操作多个参数，或者你并不知道会有多少参数传递进来。 在JavaScript里，你可以使用 `arguments`来访问所有传入的参数。
+
+在TypeScript里，你可以把所有参数收集到一个变量里：
+
+```ts
+function buildName(firstName: string, ...restOfName: string[]) {
+  return firstName + " " + restOfName.join(" ");
+}
+
+let employeeName = buildName("Joseph", "Samuel", "Lucas", "MacKinzie");
+```
+
+剩余参数会被当做个数不限的可选参数。 可以一个都没有，同样也可以有任意个。 编译器创建参数数组，名字是你在省略号（ `...`）后面给定的名字，你可以在函数体内使用这个数组。
+
+这个省略号也会在带有剩余参数的函数类型定义上使用到：
+
+```ts
+function buildName(firstName: string, ...restOfName: string[]) {
+  return firstName + " " + restOfName.join(" ");
+}
+
+let buildNameFun: (fname: string, ...rest: string[]) => string = buildName;
+```
+
+### `this`
+
+学习如何在JavaScript里正确使用`this`就好比一场成年礼。 由于TypeScript是JavaScript的超集，TypeScript程序员也需要弄清 `this`工作机制并且当有bug的时候能够找出错误所在。 幸运的是，TypeScript能通知你错误地使用了 `this`的地方。 如果你想了解JavaScript里的 `this`是如何工作的，那么首先阅读Yehuda Katz写的[Understanding JavaScript Function Invocation and "this"](http://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/)。 Yehuda的文章详细的阐述了 `this`的内部工作原理，因此我们这里只做简单介绍。
+
+### `this`和箭头函数
+
+JavaScript里，`this`的值在函数被调用的时候才会指定。 这是个既强大又灵活的特点，但是你需要花点时间弄清楚函数调用的上下文是什么。 但众所周知，这不是一件很简单的事，尤其是在返回一个函数或将函数当做参数传递的时候。
+
+下面看一个例子：
+
+```ts
+let deck = {
+    suits: ["hearts", "spades", "clubs", "diamonds"],
+    cards: Array(52),
+    createCardPicker: function() {
+        return function() {
+            let pickedCard = Math.floor(Math.random() * 52);
+            let pickedSuit = Math.floor(pickedCard / 13);
+
+            return {suit: this.suits[pickedSuit], card: pickedCard % 13};
+        }
+    }
+}
+
+let cardPicker = deck.createCardPicker();
+let pickedCard = cardPicker();
+
+alert("card: " + pickedCard.card + " of " + pickedCard.suit);
+```
+
+可以看到`createCardPicker`是个函数，并且它又返回了一个函数。 如果我们尝试运行这个程序，会发现它并没有弹出对话框而是报错了。 因为 `createCardPicker`返回的函数里的`this`被设置成了`window`而不是`deck`对象。 因为我们只是独立的调用了 `cardPicker()`。 顶级的非方法式调用会将 `this`视为`window`。 （注意：在严格模式下， `this`为`undefined`而不是`window`）。
+
+为了解决这个问题，我们可以在函数被返回时就绑好正确的`this`。 这样的话，无论之后怎么使用它，都会引用绑定的‘deck’对象。 我们需要改变函数表达式来使用ECMAScript 6箭头语法。 箭头函数能保存函数创建时的 `this`值，而不是调用时的值：
+
+```ts
+let deck = {
+    suits: ["hearts", "spades", "clubs", "diamonds"],
+    cards: Array(52),
+    createCardPicker: function() {
+        // NOTE: the line below is now an arrow function, allowing us to capture 'this' right here
+        return () => {
+            let pickedCard = Math.floor(Math.random() * 52);
+            let pickedSuit = Math.floor(pickedCard / 13);
+
+            return {suit: this.suits[pickedSuit], card: pickedCard % 13};
+        }
+    }
+}
+
+let cardPicker = deck.createCardPicker();
+let pickedCard = cardPicker();
+
+alert("card: " + pickedCard.card + " of " + pickedCard.suit);
+```
+
+更好事情是，TypeScript会警告你犯了一个错误，如果你给编译器设置了`--noImplicitThis`标记。 它会指出 `this.suits[pickedSuit]`里的`this`的类型为`any`。
+
+### `this`参数
+
+不幸的是，`this.suits[pickedSuit]`的类型依旧为`any`。 这是因为 `this`来自对象字面量里的函数表达式。 修改的方法是，提供一个显式的 `this`参数。 `this`参数是个假的参数，它出现在参数列表的最前面：
+
+```ts
+function f(this: void) {
+    // make sure `this` is unusable in this standalone function
+}
+```
+
+让我们往例子里添加一些接口，`Card` 和 `Deck`，让类型重用能够变得清晰简单些：
+
+```ts
+interface Card {
+    suit: string;
+    card: number;
+}
+interface Deck {
+    suits: string[];
+    cards: number[];
+    createCardPicker(this: Deck): () => Card;
+}
+let deck: Deck = {
+    suits: ["hearts", "spades", "clubs", "diamonds"],
+    cards: Array(52),
+    // NOTE: The function now explicitly specifies that its callee must be of type Deck
+    createCardPicker: function(this: Deck) {
+        return () => {
+            let pickedCard = Math.floor(Math.random() * 52);
+            let pickedSuit = Math.floor(pickedCard / 13);
+
+            return {suit: this.suits[pickedSuit], card: pickedCard % 13};
+        }
+    }
+}
+
+let cardPicker = deck.createCardPicker();
+let pickedCard = cardPicker();
+
+alert("card: " + pickedCard.card + " of " + pickedCard.suit);
+```
+
+现在TypeScript知道`createCardPicker`期望在某个`Deck`对象上调用。 也就是说 `this`是`Deck`类型的，而非`any`，因此`--noImplicitThis`不会报错了。
+
+### `this`参数在回调函数里
+
+你可以也看到过在回调函数里的`this`报错，当你将一个函数传递到某个库函数里稍后会被调用时。 因为当回调被调用的时候，它们会被当成一个普通函数调用， `this`将为`undefined`。 稍做改动，你就可以通过 `this`参数来避免错误。 首先，库函数的作者要指定 `this`的类型：
+
+```ts
+interface UIElement {
+    addClickListener(onclick: (this: void, e: Event) => void): void;
+}
+```
+
+`this: void` means that `addClickListener` expects `onclick` to be a function that does not require a `this` type. Second, annotate your calling code with `this`:
+
+```ts
+class Handler {
+    info: string;
+    onClickBad(this: Handler, e: Event) {
+        // oops, used this here. using this callback would crash at runtime
+        this.info = e.message;
+    }
+}
+let h = new Handler();
+uiElement.addClickListener(h.onClickBad); // error!
+```
+
+指定了`this`类型后，你显式声明`onClickBad`必须在`Handler`的实例上调用。 然后TypeScript会检测到 `addClickListener`要求函数带有`this: void`。 改变 `this`类型来修复这个错误：
+
+```ts
+class Handler {
+    info: string;
+    onClickGood(this: void, e: Event) {
+        // can't use this here because it's of type void!
+        console.log('clicked!');
+    }
+}
+let h = new Handler();
+uiElement.addClickListener(h.onClickGood);
+```
+
+因为`onClickGood`指定了`this`类型为`void`，因此传递`addClickListener`是合法的。 当然了，这也意味着不能使用 `this.info`. 如果你两者都想要，你不得不使用箭头函数了：
+
+```ts
+class Handler {
+    info: string;
+    onClickGood = (e: Event) => { this.info = e.message }
+}
+```
+
+这是可行的因为箭头函数不会捕获`this`，所以你总是可以把它们传给期望`this: void`的函数。 缺点是每个 `Handler`对象都会创建一个箭头函数。 另一方面，方法只会被创建一次，添加到 `Handler`的原型链上。 它们在不同 `Handler`对象间是共享的。
+
+### 重载
+
+JavaScript本身是个动态语言。 JavaScript里函数根据传入不同的参数而返回不同类型的数据是很常见的。
+
+```ts
+let suits = ["hearts", "spades", "clubs", "diamonds"];
+
+function pickCard(x): any {
+    // Check to see if we're working with an object/array
+    // if so, they gave us the deck and we'll pick the card
+    if (typeof x == "object") {
+        let pickedCard = Math.floor(Math.random() * x.length);
+        return pickedCard;
+    }
+    // Otherwise just let them pick the card
+    else if (typeof x == "number") {
+        let pickedSuit = Math.floor(x / 13);
+        return { suit: suits[pickedSuit], card: x % 13 };
+    }
+}
+
+let myDeck = [{ suit: "diamonds", card: 2 }, { suit: "spades", card: 10 }, { suit: "hearts", card: 4 }];
+let pickedCard1 = myDeck[pickCard(myDeck)];
+alert("card: " + pickedCard1.card + " of " + pickedCard1.suit);
+
+let pickedCard2 = pickCard(15);
+alert("card: " + pickedCard2.card + " of " + pickedCard2.suit);
+```
+
+`pickCard`方法根据传入参数的不同会返回两种不同的类型。 如果传入的是代表纸牌的对象，函数作用是从中抓一张牌。 如果用户想抓牌，我们告诉他抓到了什么牌。 但是这怎么在类型系统里表示呢。
+
+方法是为同一个函数提供多个函数类型定义来进行函数重载。 编译器会根据这个列表去处理函数的调用。 下面我们来重载 `pickCard`函数。
+
+```ts
+let suits = ["hearts", "spades", "clubs", "diamonds"];
+
+function pickCard(x: {suit: string; card: number; }[]): number;
+function pickCard(x: number): {suit: string; card: number; };
+function pickCard(x): any {
+    // Check to see if we're working with an object/array
+    // if so, they gave us the deck and we'll pick the card
+    if (typeof x == "object") {
+        let pickedCard = Math.floor(Math.random() * x.length);
+        return pickedCard;
+    }
+    // Otherwise just let them pick the card
+    else if (typeof x == "number") {
+        let pickedSuit = Math.floor(x / 13);
+        return { suit: suits[pickedSuit], card: x % 13 };
+    }
+}
+
+let myDeck = [{ suit: "diamonds", card: 2 }, { suit: "spades", card: 10 }, { suit: "hearts", card: 4 }];
+let pickedCard1 = myDeck[pickCard(myDeck)];
+alert("card: " + pickedCard1.card + " of " + pickedCard1.suit);
+
+let pickedCard2 = pickCard(15);
+alert("card: " + pickedCard2.card + " of " + pickedCard2.suit);
+```
+
+这样改变后，重载的`pickCard`函数在调用的时候会进行正确的类型检查。
+
+为了让编译器能够选择正确的检查类型，它与JavaScript里的处理流程相似。 它查找重载列表，尝试使用第一个重载定义。 如果匹配的话就使用这个。 因此，在定义重载的时候，一定要把最精确的定义放在最前面。
+
+注意，`function pickCard(x): any`并不是重载列表的一部分，因此这里只有两个重载：一个是接收对象另一个接收数字。 以其它参数调用 `pickCard`会产生错误。
