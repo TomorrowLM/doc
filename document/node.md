@@ -97,6 +97,63 @@ if(err){  throw Error("改名失败");  }
 res.writeHead(200, {'content-type': 'text/html'});        res.write('<head><meta charset="utf-8"></head>');        res.end('成功');    })})
 ```
 
+## 模块
+
+1.module.exports
+
+```
+module.exports 返回的是模块对象
+```
+
+```js
+var app = {
+    name: 'app'，
+    version: '1.0.0',
+    sayName: function(name){
+        console.log(this.name);
+    }
+}
+module.exports = app;
+```
+
+这种方法可以返回全局共享的变量或者方法。
+调用方法：
+
+```js
+var app = require('./app.js');
+app.sayName('hello');//hello
+```
+
+2.exports. 	
+
+```
+exports 返回的是模块函数
+```
+
+```js
+var func1 = function() {
+   console.log("func1");
+};
+var func2 = function() {
+   console.log("func2");
+;
+exports.function1 = func1;
+exports.function2 = func2;
+
+module.exports = {
+    func1,
+    func2
+}
+```
+
+调用方法为：
+
+```js
+var functions = require("./functions");
+functions.function1();
+functions.function2();
+```
+
 # express
 
 ## 安装

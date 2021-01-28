@@ -400,17 +400,22 @@ Aaa.components={
 
 **prop 的大小写**
 
-- 官 ： HTML 中的特性名是大小写不敏感的，所以浏览器会把所有大写字符解释为小写字符。
+-  HTML 中的特性名是大小写不敏感的，所以浏览器会把所有大写字符解释为小写字符。
   - html 的标签和 **属性** 都是一样，忽略大小写
-  - `<H1 TITLE="哈哈">我是h1</H1>`
-- 官 ： 这意味着当你使用 DOM 中的模板时，camelCase (驼峰命名法) 的 prop 名不好使了
+  
+    `<H1 TITLE="哈哈">我是h1</H1>`
+  
+  -  这意味着当你使用 DOM 中的模板时，camelCase (驼峰命名法) 的 prop 名不好使了
+  
   - `<child ：cMsg="pmsg"></child>` 会报警告，父传子也接收不到了
   - 原因是 ： 接收的属性是：cMsg， 因为忽略大小写，已为 ： cmsg
   - 所以已经准备要读取的 是 cmsg 的值，否则要报警告
     `You should probably use "c-msg" instead of "cMsg".`
+  
 - 方式 1 ： 全用小写，不要使用驼峰命名 **(不推荐)**
   - 接收 ： `cmsg`
   - props/读取 ：`cmsg`
+  
 - 方式 2 官 ： 需要使用其等价的 kebab-case (短横线分隔命名) 命名： **(推荐)**
   - 接收 ： `：c-msg='pmsg'`
   - props/读取 ： `cMsg / this.cMsg`
