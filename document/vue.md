@@ -1,6 +1,90 @@
-# 创建实例
+# 项目搭建
 
-## 核心概念
+## vue脚手架
+
+帮你提供构建项目结构
+
+1. webpack本身集成很多项目模板:
+   	   simple		个人觉得一点用都没有
+     	 webpack	可以使用(大型项目)
+     	 Eslint 			检查代码规范
+     	 webpack-simple	个人推荐使用, 没有代码检查, 没有vue-router的中间件 
+2. browserify	
+   browserify-simple
+
+--------------------------------------------
+
+基本使用流程:
+
+1. npm install vue-cli -g	安装 vue命令环境
+   验证安装ok?
+   	vue --version
+2. 生成项目模板
+   vue init <模板名> 本地文件夹名称
+3. 进入到生成目录里面
+   cd xxx
+   npm install
+4. npm run dev
+
+## 项目目录
+
+![img](https://images2018.cnblogs.com/blog/1389839/201805/1389839-20180502113321132-349982802.png)
+
+- build：构建脚本目录
+
+　　　　1）build.js  ==> 生产环境构建脚本；
+
+　　　　2）check-versions.js  ==> 检查npm，node.js版本；
+
+　　　　3）utils.js  ==> 构建相关工具方法；
+
+　　　　4）vue-loader.conf.js  ==> 配置了css加载器以及编译css之后自动添加前缀；
+
+　　　　5）webpack.base.conf.js  ==> webpack基本配置；
+
+　　　　6）webpack.dev.conf.js  ==> webpack开发环境配置；
+
+　　　　7）webpack.prod.conf.js  ==> webpack生产环境配置；
+
+- config：项目配置
+
+　　　　1）dev.env.js  ==> 开发环境变量；
+
+　　　　2）index.js  ==> 项目配置文件；
+
+　　　　3）prod.env.js  ==> 生产环境变量；
+
+- node_modules：npm 加载的项目依赖模块
+
+- src：这里是我们要开发的目录，基本上要做的事情都在这个目录里。里面包含了几个目录及文件：
+
+　　　　1）assets：资源目录，放置一些图片或者公共js、公共css。这里的资源会被webpack构建；
+
+　　　　2）components：组件目录，我们写的组件就放在这个目录里面；
+
+　　　　3）router：前端路由，我们需要配置的路由路径写在index.js里面；
+
+　　　　4）App.vue：根组件；
+
+　　　　5）main.js：入口js文件；
+
+- static：静态资源目录，如图片、字体等。不会被webpack构建
+
+- index.html：首页入口文件，可以添加一些 meta 信息等
+
+- package.json：npm包配置文件，定义了项目的npm脚本，依赖包等信息``
+
+- README.md：项目的说明文档，markdown 格式
+
+- .xxxx文件：这些是一些配置文件，包括语法配置，git配置等
+
+## 依赖
+
+[Vue Router](https://router.vuejs.org/zh/)
+
+# 基本概念
+
+## 创建实例
 
 ```js
 var vm=new Vue({
@@ -23,7 +107,9 @@ var vm=new Vue({
 ​    });
 ```
 
-- 绑定数据：
+## 标签数据
+
+- **绑定数据**
 
 1. {{msg}} , msg也可以是js表达式，但只能包含单个表达式
 
@@ -41,127 +127,16 @@ var vm=new Vue({
    <span v-once>这个将不会改变: {{ msg }}</span>
    ```
 
-- 编译html元素  {{{msg}}} 	v-html	
-
+- 编译html元素  
+  - {{{msg}}} 	
+  - v-html	
 - v-text
 
-- 循环
+## 标签属性
 
-  ```
-  循环：<li v-for="value in json">{{value}} </li>
-       <li v-for="(k,v) in json">{{k}}   {{v}}  </li>
-       track-by="$index"
-  //vue2.0	v-for="(val,index) in array"
-  每次更改数组数据，全部的数据都会重新渲染，添加key值，从而只渲染更改的数据
-  :key="index"如果数据项的顺序被改变，Vue 将不会移动 DOM 元素来匹配数据项的顺序，而是就地更新每个元素，并且确保它们在每个索引位置正确渲染。为了给 Vue 一个提示，以便它能跟踪每个节点的身份，从而重用和重新排序现有元素，你需要为每项提供一个唯一 key attribute：
-  ```
-
-- 判断
-
-  ```
-  v-if 指令用于条件性地渲染一块内容。这块内容只会在指令的表达式返回 truthy 值的时候被渲染。
-  <h1 v-if="awesome">Vue is awesome!</h1>
-  也可以用 v-else 添加一个“else 块”：	
-  <h1 v-else>Oh no 😢</h1>
-  
-  在 <template> 元素上使用 v-if 条件渲染分组
-  <template v-if="loginType === 'username'">
-    <label>Username</label>
-    <input placeholder="Enter your username">
-  </template>
-  <template v-else>
-    <label>Email</label>
-    <input placeholder="Enter your email address">
-  </template>
-  切换按钮将不会清除用户已经输入的内容。因为两个模板使用了相同的元素，<input> 不会被替换掉——仅仅是替换了它的 placeholder（替换成用户已经输入的内容）。
-  ```
-
-- 当它们处于同一节点，`v-for` 的优先级比 `v-if` 更高，这意味着 `v-if` 将分别重复运行于每个 `v-for` 循环中。当你只想为*部分*项渲染节点时，这种优先级的机制会十分有用，如下：
-
-  ```
-  <li v-for="todo in todos" v-if="!todo.isComplete">
-    {{ todo }}
-  </li>
-  ```
-
-- 事件：
-
-  ```
-  <!-- 完整语法 -->
-  <a v-on:click="doSomething">...</a>
-  
-  <!-- 缩写 -->
-  <a @click="doSomething">...</a>
-  
-  <!-- 动态参数的缩写 (2.6.0+) -->
-  <a @[event]="doSomething"> ... </a>
-  ```
-
-  - v-show
-
-    ```
-     <div v-show="a"> 
-     v-show="a"//a是布尔值， 切换元素的 CSS property `display`
-    ```
-
-  - 修饰符
-
-    @click.stop="show1()"   stop防止事件冒泡  
-
-    ```
-    阻止冒泡:  
-    			a). ev.cancelBubble=true;
-    			b). @click.stop	推荐
-    			c). event.stopPropagation();
-    ```
-
-    
-
-    ```
-    prevent(调用 event.preventDefault()
-    <form v-on:submit.prevent></form>//<!-- 可以只有修饰符 -->
-    
-    <!-- 修饰符可以串联 -->
-    <a v-on:click.stop.prevent="doThat"></a>
-    
-    <!-- 添加事件监听器时使用事件捕获模式 -->
-    <!-- 即内部元素触发的事件先在此处理，然后才交由内部元素进行处理 -->
-    <div v-on:click.capture="doThis">...</div>
-    
-    <!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
-    <!-- 即事件不是从内部元素触发的 -->
-    <div v-on:click.self="doThat">...</div>
-    
-    <!-- 点击事件将只会触发一次 -->
-    <a v-on:click.once="doThis"></a>
-    ```
-
-- 键盘: `keyCode` 的事件用法[已经被废弃了](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode)并可能不会被最新的浏览器支持。 
-  @keydown	$event	ev.keyCode
-
-  ```
-  常用键:
-  		回车
-  			a). @keyup.13
-  			b). @keyup.enter
-  		上、下、左、右
-  			@keyup/keydown.left
-  			@keyup/keydown.right
-  			@keyup/keydown.up
-  			@keyup/keydown.down
-  自定义键盘信息:
-  	Vue.directive('on').keyCodes.ctrl=17;
-  //vue2.0	
-  通过全局 config.keyCodes 对象自定义按键修饰符别名：
-  Vue.config.keyCodes.ctrl=17;
-  @keyup.ctrl="fn()"
-  ```
-
-- 属性：
-
-  ```
+  ```vue
   url=''
-  
+
   <img src="{{url}}" alt="">
   <img v-bind:src="url"  >
   <img v-bind:style="{color:'',fontsize:data+'px'}">
@@ -172,7 +147,7 @@ var vm=new Vue({
   <img v-bind:[]="url"  >
   ```
 
-  ```
+  ```vue
   a:'red',
   b:'blue',
   json:{
@@ -186,27 +161,40 @@ var vm=new Vue({
   <strong :class="json">文字。。</strong>
   ```
 
-  计算属性的使用: 对于任何复杂逻辑，你都应当使用**计算属性**。 
+##  watch和computed
 
-  ```js
+### **计算属性**
+
+```js
   computed:{
   		b:function(){	//默认调用get
   			return 值
   		}
   	}
-  	--------------------------
+
+--------------------------
+
   computed:{
   		b:{
   			get:function(){return val;}
   			set:
   		}
   	}
-  computed里面可以放置一些业务逻辑代码，一定记得return
-  ```
+      //computed里面可以放置一些业务逻辑代码，一定记得return
+```
 
-  监听数据变化: 计算属性在大多数情况下更合适，但有时也需要一个自定义的侦听器 
+- 
+  支持缓存，只有依赖数据发生改变，才会重新进行计算
 
-  ```js
+- 不支持异步，当computed内有异步操作时无效，无法监听数据的变化
+
+- computed 属性值会默认走缓存，计算属性是基于它们的响应式依赖进行缓存的。如其中的任意一个值未发生变化，它调用的就是上一次 计算缓存的数据，因此提高了程序的性能。而methods中每调用一次就会重新计算一次，为了进行不必要的资源消耗，选择用计算属性
+
+- 如果一个属性是由其他属性计算而来的，这个属性**依赖**其他属性，是一个多对一或者一对一，一般用computed
+
+###   侦听器 **watch**
+
+```js
   var vm = new Vue({
   	data: {
       question: '',
@@ -220,42 +208,195 @@ var vm=new Vue({
       }
     },
   })
-  
+
   vm.$watch(name,fnCb);  //浅度
   vm.$watch(name,fnCb,{deep:true});  //深度监视 
-  ```
+```
 
-- filter:
+- 不支持缓存，数据变，直接会触发相应的操作；
+
+- **watch支持异步**；
+
+- 监听的函数接收两个参数，第一个参数是最新的值；第二个参数是输入之前的值；
+
+-  当一个属性发生变化时，需要执行对应的操作；一对多；
+
+- 监听数据必须是data中声明过或者父组件传递过来的props中的数据，当数据变化时，触发其他操作，函数有两个参数
+  - immediate：组件加载立即触发回调函数执行，
+  - deep: 深度监听，为了发现**对象内部值**的变化，复杂类型的数据时使用，例如数组中的对象内容的改变，注意监听数组的变动不需要这么做。注意：deep无法监听到数组的变动和对象的新增
+
+### 使用场景区别
+
+- computed 适合 多个数据变化影响一个数据
+- watch 适合一个数据的变动影响多个数据或者复杂的运算
+
+## 循环和判断
+
+### 循环
+
+```js
+//vue1.0
+<li v-for="value in json">{{value}} </li>
+     <li v-for="(k,v) in json">{{k}}   {{v}}  </li>
+track-by="$index"
+
+//vue2.0	v-for="(val,index) in array"
+//:key="index"
+//每次更改数组数据，全部的数据都会重新渲染，添加key值，从而只渲染更改的数据.这是因为每一个列表渲染的元素加上了唯一标识符，编译器通过标识符渲染指定列表，高效渲染虚拟DOM树
+```
+
+![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy80OTI3MDM1LTk2MGYyZDg1NmI1ZWM5YzMuanBn?x-oss-process=image/format,png)
+
+vue和react的虚拟DOM的Diff算法大致相同
+
+<img src="https://upload-images.jianshu.io/upload_images/3973616-cbe6ef9bad920f51.png?imageMogr2/auto-orient/strip|imageView2/2/w/576/format/webp" alt="img" style="zoom:50%;" />
+
+- 如果dom树有三层，在没加ID的情况下。
+
+  先比较第一层。比较一次
+
+  再比较第二层。比较第一层第一个节点和第二层第一个节点，第一层第一个节点和第二层第二个节点，比较第一层第一个节点和第二层两个节点。比较了四次。
+
+  算法复杂度，2的n次方。
+
+- 如果加上ID。
+
+  比较第一个节点。再比较第二个节点。再比较第三个节点。再比较第四个节点。再比较第五个节点。一直比到第n个节点。
+
+  算法复杂度为n。
+
+### 判断
+
+```js
+v-if 指令用于条件性地渲染一块内容。这块内容只会在指令的表达式返回 truthy 值的时候被渲染。
+<h1 v-if="awesome">Vue is awesome!</h1>
+也可以用 v-else 添加一个“else 块”：	
+<h1 v-else>Oh no 😢</h1>
+
+在 <template> 元素上使用 v-if 条件渲染分组
+<template v-if="loginType === 'username'">
+  <label>Username</label>
+  <input placeholder="Enter your username">
+</template>
+<template v-else>
+  <label>Email</label>
+  <input placeholder="Enter your email address">
+</template>
+切换按钮将不会清除用户已经输入的内容。因为两个模板使用了相同的元素，<input> 不会被替换掉——仅仅是替换了它的 placeholder（替换成用户已经输入的内容）。
+```
+
+当它们处于同一节点，`v-for` 的优先级比 `v-if` 更高，这意味着 `v-if` 将分别重复运行于每个 `v-for` 循环中。当你只想为*部分*项渲染节点时，这种优先级的机制会十分有用，如下：
+
+```js
+<li v-for="todo in todos" v-if="!todo.isComplete">
+  {{ todo }}
+</li>
+```
+
+ ## 事件
 
   ```js
-  <p>1.msg|filterA</p>
-  {{'welcome'|uppercase}}  
-  <p>2.msg|filterA</p>
-  {{'WELCOME'|lowercase|capitalize}}
-  ```
-
-   数据配合使用过滤器:
-  		limitBy	限制几个
-  		limitBy   参数(取几个)
-  		limitBy 取几个  从哪开始
-
-  ```
-  	filterBy	过滤数据
-  	filterBy ‘谁’
+  <!-- 完整语法 -->
+  <a v-on:click="doSomething">...</a>
   
-  	orderBy	排序
-  	orderBy 谁 1/-1
-  		1  -> 正序
-  		2  -> 倒序
+  <!-- 缩写 -->
+  <a @click="doSomething">...</a>
   
-  自定义过滤器:  model ->过滤 -> view
-  	Vue.filter(name,function(msg,[a,b]){
-  		
-  	});
-  {{msg | name([a,b])}}
+  <!-- 动态参数的缩写 -->
+  <a @[event]="doSomething"> ... </a>
   ```
 
-自定义指令:
+v-show
+
+```js
+ <div v-show="a"> 
+ v-show="a"//a是布尔值， 切换元素的 CSS property `display`
+```
+
+### 修饰符
+
+@click.stop="show1()"   stop防止事件冒泡  
+
+```
+阻止冒泡:  
+			a). ev.cancelBubble=true;
+			b). @click.stop	推荐
+			c). event.stopPropagation();
+```
+
+```
+prevent(调用 event.preventDefault()
+<form v-on:submit.prevent></form>//<!-- 可以只有修饰符 -->
+
+<!-- 修饰符可以串联 -->
+<a v-on:click.stop.prevent="doThat"></a>
+
+<!-- 添加事件监听器时使用事件捕获模式 -->
+<!-- 即内部元素触发的事件先在此处理，然后才交由内部元素进行处理 -->
+<div v-on:click.capture="doThis">...</div>
+
+<!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
+<!-- 即事件不是从内部元素触发的 -->
+<div v-on:click.self="doThat">...</div>
+
+<!-- 点击事件将只会触发一次 -->
+<a v-on:click.once="doThis"></a>
+```
+
+### 键盘
+
+`keyCode` 的事件用法[已经被废弃了](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode)并可能不会被最新的浏览器支持。 
+@keydown	$event	ev.keyCode
+
+```
+常用键:
+		回车
+			a). @keyup.13
+			b). @keyup.enter
+		上、下、左、右
+			@keyup/keydown.left
+			@keyup/keydown.right
+			@keyup/keydown.up
+			@keyup/keydown.down
+自定义键盘信息:
+	Vue.directive('on').keyCodes.ctrl=17;
+//vue2.0	
+通过全局 config.keyCodes 对象自定义按键修饰符别名：
+Vue.config.keyCodes.ctrl=17;
+@keyup.ctrl="fn()"
+```
+
+## filter
+
+```js
+<p>1.msg|filterA</p>
+{{'welcome'|uppercase}}  
+<p>2.msg|filterA</p>
+{{'WELCOME'|lowercase|capitalize}}
+```
+
+ 数据配合使用过滤器:
+		limitBy	限制几个
+		limitBy   参数(取几个)
+		limitBy 取几个  从哪开始
+
+```
+	filterBy	过滤数据
+	filterBy ‘谁’
+
+	orderBy	排序
+	orderBy 谁 1/-1
+		1  -> 正序
+		2  -> 倒序
+
+自定义过滤器:  model ->过滤 -> view
+	Vue.filter(name,function(msg,[a,b]){
+		
+	});
+{{msg | name([a,b])}}
+```
+
+## 自定义指令
 
 	Vue.directive(指令名称,function(参数){
 		this.el	-> 原生DOM元素
@@ -267,47 +408,19 @@ var vm=new Vue({
 
 交互：vue-resource.js
 
-## vue生命周期:
-
-Vue 实例在被创建时都要经过一系列的初始化过程 ， 编译模板、将实例挂载到 DOM 并在数据变化时更新 DOM 等 。 在这个过程中也会运行一些叫做**生命周期钩子**的函数，这给了用户在不同阶段添加自己的代码的机会。 
-
-​	//vue1.0
-
-	created	->   实例已经创建	√
-	beforeCompile	->   编译之前
-	compiled	->   编译之后
-	ready		->   插入到文档中	√
-	
-	beforeDestroy	->   销毁之前
-	destroyed	->   销毁之后
-​	//vue2.0
-
-```
-beforeCreate	组件实例刚刚被创建,属性都没有
-created			实例已经创建完成，属性已经绑定
-beforeMount		模板编译之前
-mounted			模板编译之后，代替之前ready  
-beforeUpdate	组件更新之前
-updated			组件更新完毕	
-beforeDestroy	组件销毁前
-destroyed		组件销毁后
-```
-
-**不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this`** ,this指向调用它的VUE实例
-
- 比如 `created: () => console.log(this.a)` 或 `vm.$watch('a', newValue => this.myMethod())` 
-
 ## vue实例简单方法
 
+```
 vm= new Vue({})
 
-	vm.$el	->  获取Vue实例关联的DOM元素
-	vm.$data  ->  就是data
-	vm.$mount ->  手动挂在vue程序
-	vm.$options	->   获取自定义属性
-	vm.$destroy()	->   销毁对象
-	vm.$log();	->  查看现在数据的状态
-	vm.$refs  ->  获取页面中所有含有ref属性的DOM元素（如vm.$refs.hello，获取页面中含有属性ref = “hello”的DOM元素，如果有多个元素，那么只返回最后一个）
+vm.$el	->  获取Vue实例关联的DOM元素
+vm.$data  ->  就是data
+vm.$mount ->  手动挂在vue程序
+vm.$options	->   获取自定义属性
+vm.$destroy()	->   销毁对象
+vm.$log();	->  查看现在数据的状态
+vm.$refs  ->  获取页面中所有含有ref属性的DOM元素（如vm.$refs.hello，获取页面中含有属性ref = “hello”的DOM元素，如果有多个元素，那么只返回最后一个）
+```
 
 ```js
  var vm=new Vue({
@@ -325,7 +438,66 @@ console.log(vm.$options.aa);//获取自定义属性
 vm.$options.show();
 ```
 
-## 组件
+# vue生命周期
+
+## 背景
+
+Vue 实例在被创建时都要经过一系列的初始化过程 ， 编译模板、将实例挂载到 DOM 并在数据变化时更新 DOM 等 。 在这个过程中也会运行一些叫做**生命周期钩子**的函数，这给了用户在不同阶段添加自己的代码的机会。 
+
+## 生命周期函数	
+
+- vue1.0
+
+```js
+created	->   实例已经创建	√
+beforeCompile	->   编译之前
+compiled	->   编译之后
+ready		->   插入到文档中	√
+beforeDestroy	->   销毁之前
+destroyed	->   销毁之后
+```
+- vue2.0
+
+
+```
+beforeCreate	组件实例刚刚被创建,属性都没有，组件的el和data都未被创建
+created			实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
+beforeMount		模板编译之前,组件的el会被创建，render 函数首次被调用。但是值得注意的是：虽然数据data早已经被创建好，但是它还未被应用到真是的DOM元素中。
+mounted			模板编译之后，组件的el,data都已经全部被创建好，并且data也已经被正确的应用到DOM元素中
+beforeUpdate	组件更新之前
+updated			组件更新完毕	
+beforeDestroy	组件销毁前
+destroyed		组件销毁后
+
+activated	keep-alive 组件激活时调用。
+deactivated	keep-alive 组件停用时调用。
+```
+
+**不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this`** ,this指向调用它的VUE实例
+
+ 比如 `created: () => console.log(this.a)` 或 `vm.$watch('a', newValue => this.myMethod())` 
+
+<img src="https://upload-images.jianshu.io/upload_images/7414631-6af6e3bd7fe52a94.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt="img" style="zoom:50%;" />
+
+# keep-alive
+
+## 背景
+
+Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa,再点击Aaa，会出现1的内容。这是因为你每次切换新标签的时候，Vue 都创建了一个新的 **currentTabComponent** 实例。
+
+当在这些组件之间切换的时候，你有时会想保持这些组件的状态，以避免反复重渲染导致的性能问题。
+用一个 <keep-alive> 元素将其动态组件包裹起来，**组件将会被缓存**
+
+## keep-alive
+
+<keep-alive>包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 <transition> 相似，<keep-alive> 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在组件的父组件链中。
+当组件在 <keep-alive> 内被切换，它的 activated 和deactivated这两个生命周期钩子函数将会被对应执行。
+
+- 页面第一次进入，钩子的触发顺序created-> mounted-> activated
+- 退出时触发deactivated
+- 当再次进入（前进或者后退）时，只触发activated。
+
+# 组件
 
 模板：
 
@@ -337,11 +509,9 @@ vm.$options.show();
 
 动态组件：<component :is="Aaa"></component>
 
-```
-当在这些组件之间切换的时候，你有时会想保持这些组件的状态，以避免反复重渲染导致的性能问题
-eg:Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa,再点击Aaa，会出现1的内容。这是因为你每次切换新标签的时候，Vue 都创建了一个新的 currentTabComponent 实例。
-用一个 <keep-alive> 元素将其动态组件包裹起来。组件将会被缓存
-```
+
+
+
 
 定义组件
 
@@ -665,32 +835,6 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
 	<router-view></router-view>
 ```
 
-​	
-
-# 脚手架
-
-vue-cli——vue脚手架
-帮你提供好基本项目结构
-
-1. webpack本身集成很多项目模板:
-   		   simple		个人觉得一点用都没有
-      	 webpack	可以使用(大型项目)
-      	 Eslint 			检查代码规范
-      	 webpack-simple	个人推荐使用, 没有代码检查, 没有vue-router的中间件 
-2. browserify	
-    browserify-simple
-
---------------------------------------------
-基本使用流程:
-1. npm install vue-cli -g	安装 vue命令环境
-	验证安装ok?
-		vue --version
-2. 生成项目模板
-	vue init <模板名> 本地文件夹名称
-3. 进入到生成目录里面
-	cd xxx
-	npm install
-4. npm run dev
 --------------------------------------------
 
 # vuex

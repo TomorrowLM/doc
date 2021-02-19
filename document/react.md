@@ -303,7 +303,7 @@ https://reactrouter.com/web/api/Hooks/usehistory
 
 ### React Routers三类组件
 
-#### 路由器
+#### 路由器Router
 
 `<BrowserRouter>`和`<HashRouter>`
 
@@ -322,7 +322,7 @@ https://reactrouter.com/web/api/Hooks/usehistory
 
 - `<HashRouter>`将当前位置存储在[URL](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHyperlinkElementUtils/hash)[的`hash`一部分中](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHyperlinkElementUtils/hash)，因此URL看起来像`http://example.com/#/your/page`。由于哈希从不发送到服务器，因此这意味着不需要特殊的服务器配置(**刷新不会找不到网址**)。
 
-#### 路线匹配器
+#### 路线匹配器Route
 
 `<Route>`和`<Switch>`
 
@@ -334,6 +334,8 @@ https://reactrouter.com/web/api/Hooks/usehistory
 		
 		//  会把没有匹配的路径直接重定向到 /login
 		<Redirect to="/login" />
+            {/* 从 /inbox/messages/:id 跳转到 /messages/:id */}
+      	<Redirect from="messages/:id" to="/messages/:id" />
  </Switch>
 ```
 
@@ -355,44 +357,89 @@ https://reactrouter.com/web/api/Hooks/usehistory
 
       `children` function 类型，比 `render` 多了 `match参数`，可以根据 match参数来决定匹配的时候渲染什么，不匹配的时候渲染什么
 
-  - Route 经常用的是 exact、path 以及 component 属性
-
   - `exact` 是否进行精确匹配，路由 `/a` 可以和 `/a/、/a` 匹配
+
   - `strict` 是否进行严格匹配，指明路径只匹配以斜线结尾的路径，路由`/a`可以和`/a`匹配，不能和`/a/`匹配，相比 `exact` 会更严格些
-  - `path (string)` 标识路由的路径，没有 path 属性的 Route 总是会匹配
+  
+  - `path (string)` 标识路由的路径,`path`属性可以使用通配符。
+  
+    > ```js
+    > <Route path="/hello/:name">
+  > // 匹配 /hello/michael
+    > // 匹配 /hello/ryan
+  > 
+    > <Route path="/hello(/:name)">
+    > // 匹配 /hello
+    > // 匹配 /hello/michael
+  > // 匹配 /hello/ryan
+    > 
+    > <Route path="/files/*.*">
+    > // 匹配 /files/hello.jpg
+    > // 匹配 /files/hello.html
+    > 
+    > <Route path="/files/*">
+    > // 匹配 /files/ 
+    > // 匹配 /files/a
+    > // 匹配 /files/a/b
+    > 
+    > <Route path="/**/*.jpg">
+    > // 匹配 /files/hello.jpg
+    > // 匹配 /files/path/to/file.jpg
+    > ```
+  
+    通配符的规则如下。
+  
+    > **（1）`:paramName`**
+    >
+    > `:paramName`匹配URL的一个部分，直到遇到下一个`/`、`?`、`#`为止。这个路径参数可以通过`this.props.params.paramName`取出。
+    >
+    > **（2）`()`**
+    >
+    > `()`表示URL的这个部分是可选的。
+    >
+    > **（3）`\*`**
+    >
+    > `*`匹配任意字符，直到模式里面的下一个字符为止。匹配方式是非贪婪模式。
+    >
+    > **（4） `\**`**
+    >
+    > `**` 匹配任意字符，直到下一个`/`、`?`、`#`为止。匹配方式是贪婪模式。
+  
   - `component` 表示路径对应显示的组件
+  
   - `location (object)` 除了通过 path 传递路由路径，也可以通过传递 location 对象可以匹配
+  
   - `sensitive (boolean)` 匹配路径时，是否区分大小写
-
+  
   - Route  组件都接收 
-
+  
     ```
     location、history、match
     ```
-
+  
     - 三个 props 比较常用的是 match，通过 match.params 可以取到动态参数的值
-
-| 所属     | 属性                   | 类型     | 含义                                              |
-| -------- | ---------------------- | -------- | ------------------------------------------------- |
-| history  | length                 | number   | 表示history堆栈的数量                             |
-|          | action                 | string   | 表示当前的动作。比如pop、replace或push            |
-|          | location               | object   | 表示当前的位置                                    |
-|          | push(path, [state])    | function | 在history堆栈顶加入一个新的条目                   |
-|          | replace(path, [state]) | function | 替换在history堆栈中的当前条目                     |
-|          | go(n)                  | function | 将history堆栈中的指针向前移动                     |
-|          | goBack()               | function | 等同于go(-1)                                      |
-|          | goForward()            | function | 等同于go(1)                                       |
-|          | block(promt)           | function | 阻止跳转                                          |
-|          |                        |          |                                                   |
-| match    | params                 | object   | 表示路径参数，通过解析URL中动态的部分获得的键值对 |
-|          | isExact                | boolean  | 为true时，表示精确匹配                            |
-|          | path                   | string   | 用来做匹配的路径格式                              |
-|          | url                    | string   | URL匹配的部分                                     |
-|          |                        |          |                                                   |
-| location | pathname               | string   | URL路径                                           |
-|          | search                 | string   | URl中查询字符串                                   |
-|          | hash                   | string   | URL的hash分段                                     |
-|          | state                  | string   | 表示location中的状态                              |
+    
+    | 所属     | 属性                   | 类型     | 含义                                              |
+    | -------- | ---------------------- | -------- | ------------------------------------------------- |
+    | history  | length                 | number   | 表示history堆栈的数量                             |
+    |          | action                 | string   | 表示当前的动作。比如pop、replace或push            |
+    |          | location               | object   | 表示当前的位置                                    |
+    |          | push(path, [state])    | function | 在history堆栈顶加入一个新的条目                   |
+    |          | replace(path, [state]) | function | 替换在history堆栈中的当前条目                     |
+    |          | go(n)                  | function | 将history堆栈中的指针向前移动                     |
+    |          | goBack()               | function | 等同于go(-1)                                      |
+    |          | goForward()            | function | 等同于go(1)                                       |
+    |          | block(promt)           | function | 阻止跳转                                          |
+    |          |                        |          |                                                   |
+    | match    | params                 | object   | 表示路径参数，通过解析URL中动态的部分获得的键值对 |
+    |          | isExact                | boolean  | 为true时，表示精确匹配                            |
+    |          | path                   | string   | 用来做匹配的路径格式                              |
+    |          | url                    | string   | URL匹配的部分                                     |
+    |          |                        |          |                                                   |
+    | location | pathname               | string   | URL路径                                           |
+    |          | search                 | string   | URl中查询字符串                                   |
+    |          | hash                   | string   | URL的hash分段                                     |
+    |          | state                  | string   | 表示location中的状态                              |
 
 - `Swtich` 就近匹配路由，仅渲染一个路由，路由的默认行为是匹配了就直接渲染，大部分场景下这个逻辑是没有问题的，但考虑下面的场景
 
@@ -407,7 +454,7 @@ https://reactrouter.com/web/api/Hooks/usehistory
 </Switch>
 ```
 
-#### 导航
+#### 导航Link
 
 `<Link>`，`<NavLink>`
 
@@ -445,8 +492,6 @@ https://reactrouter.com/web/api/Hooks/usehistory
 
 
 - 其他还有 `<MemoryRouter>  内存路由组件`、`<NativeRouter>  Native的路由组件`、`<StaticRouter> 静态路由组件`这些路由组件，其中 MemoryRouter 主要用在 ReactNative 这种非浏览器的环境中，因此直接将 URL 的 history 保存在了内容中。StaticRouter 主要用于服务器端渲染
-
-
 
 
 ### API

@@ -638,7 +638,7 @@ ES6允许直接写入变量和函数，作为对象的属性和方法。这样�
 ```javascript
 var foo = 'bar';
 var baz = {foo};
-baz // {foo: "bar"}
+ // {foo: "bar"}
 
 // 等同于
 var baz = {foo: foo};
@@ -2161,7 +2161,7 @@ typeof Point // "function"
 Point === Point.prototype.constructor // true
 ```
 
-上面代码表明，类的数据类型就是函数，类本身就指向构造函数。
+上面代码表明，**类的数据类型就是函数，类本身就指向构造函数。**
 
 构造函数的`prototype`属性，在ES6的“类”上面继续存在。事实上，类的所有方法都定义在类的`prototype`属性上面。
 
@@ -2966,9 +2966,10 @@ storage.getAvatar('jake').then(…);
 const foo = async () => {};
 ```
 
- `async`函数返回的 Promise 对象
+-  `async`函数返回的 Promise 对象
 
-`async`函数内部`return`语句返回的值，会成为`then`方法回调函数的参数。
+
+- `async`函数内部`return`语句返回的值，会成为`then`方法回调函数的参数。
 
 ```js
 async function f() {
@@ -2978,6 +2979,20 @@ async function f() {
 f().then(v => console.log(v))
 // "hello world"
 ```
+
+- `async`函数内部抛出错误，会导致返回的Promise对象变为`reject`状态。抛出的错误对象会被`catch`方法回调函数接收到。
+
+  ```javascript
+  async function f() {
+    throw new Error('出错了');
+  }
+  
+  f().then(
+    v => console.log(v),
+    e => console.log(e)
+  )
+  // Error: 出错了
+  ```
 
 ### Promise对象的状态变化
 
@@ -2996,7 +3011,16 @@ getTitle('https://tc39.github.io/ecma262/').then(console.log)
 
 ### await 命令
 
-正常情况下，`await`命令后面是一个 Promise 对象，返回该对象的结果。如果不是 Promise 对象，就直接返回对应的值。
+正常情况下，`await`命令后面是一个 Promise 对象，返回该对象的结果。如果不是 Promise 对象，会被转成一个立即`resolve`的Promise对象。
+
+```javascript
+async function f() {
+  return await 123;
+}
+
+f().then(v => console.log(v))
+// 123
+```
 
 `await`命令后面的 Promise 对象如果变为`reject`状态，则`reject`的参数会被`catch`方法的回调函数接收到。
 
@@ -3019,14 +3043,14 @@ f()
 
 ```javascript
 async function f() {
-  await new Promise(function (resolve, reject) {
-    throw new Error('出错了');
-  });
+  await Promise.reject('出错了');
+  await Promise.resolve('hello world'); // 不会执行
 }
 
 f()
 .then(v => console.log(v))
 .catch(e => console.log(e))
+//出错了
 ```
 
 防止出错的方法，也是将其放在`try...catch`代码块之中。
