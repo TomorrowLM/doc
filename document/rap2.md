@@ -1,28 +1,4 @@
-## rap2
-
-http://rap2.taobao.org/account/login
-
-**请求参数**
-
-| **类型** | **生成规则** | **初始值** | **简介**                                                     |
-| -------- | ------------ | ---------- | ------------------------------------------------------------ |
-| number   |              |            | 分页的参数，开始的id，默认值为0, 正常会传递(当前页-1)*limit， 比如，要请求第5页的数据，每页10条，那么这里应该传入(5 - 1) * 10 |
-| number   |              | 10         | 每页条数                                                     |
-| string   |              | updatedAt  | 排序的字段<br/>["companyName",<br/>"updatedAt"<br/>]         |
-| string   |              | DESC       | 'DESC'或'ASC'                                                |
-| string   |              |            | 搜索关键字                                                   |
-|          |              |            |                                                              |
-
-**响应内容**
-
-| **名称** | **类型** | **生成规则** | **初始值** | **简介** |
-| -------- | -------- | ------------ | ---------- | -------- |
-| code     | number   |              | 200        |          |
-| message  | string   |              | success    |          |
-| array    | Array    | 10           |            |          |
-| id       | string   |              | @id        |          |
-
-### mock
+## mock
 
 https://github.com/nuysoft/Mock/wiki/Syntax-Specification
 
@@ -199,7 +175,59 @@ name---@first @last @name
 
 @url	@email	@id
 
+## 规范
 
+### rap2示例
+
+http://rap2.taobao.org/account/login
+
+**请求参数**
+
+| **类型** | **生成规则** | **初始值** | **简介**                                                     |
+| -------- | ------------ | ---------- | ------------------------------------------------------------ |
+| number   |              |            | 分页的参数，开始的id，默认值为0, 正常会传递(当前页-1)*limit， 比如，要请求第5页的数据，每页10条，那么这里应该传入(5 - 1) * 10 |
+| number   |              | 10         | 每页条数                                                     |
+| string   |              | updatedAt  | 排序的字段<br/>["companyName",<br/>"updatedAt"<br/>]         |
+| string   |              | DESC       | 'DESC'或'ASC'                                                |
+| string   |              |            | 搜索关键字                                                   |
+|          |              |            |                                                              |
+
+**响应内容**
+
+| **名称** | **类型** | **生成规则** | **初始值** | **简介** |
+| -------- | -------- | ------------ | ---------- | -------- |
+| code     | number   |              | 200        |          |
+| message  | string   |              | success    |          |
+| array    | Array    | 10           |            |          |
+| id       | string   |              | @id        |          |
+
+### 请求类型
+
+增post删delete改put查get
+
+### 参数规范
+
+1. url资源名一般都是复数
+
+2. createdAt - 创建时间
+
+   updatedAt  更新时间
+
+   这是针对response
+
+   request中时间筛选用beginDateAt和endDateAt
+
+   sorBy按什么字段排序
+
+   orderBy排序（正向，反向）
+
+   groupBy按什么字段聚合
+
+3. invoice csv export可以全量导出，也可以筛选导出，因此应该有筛选参数
+
+4. 枚举字段和表示True or False的字段我们统一用数字，所以在rap2中是number类型；不是string或array或Boolen
+
+5. Response中的data字段究竟是array还是object需要再仔细检查，一般获取列表的接口返回array，获取详细的接口返回object
 
 
 

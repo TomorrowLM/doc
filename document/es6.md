@@ -2427,7 +2427,7 @@ Bar.classMethod();
 
 #  Promise对象
 
- Promise 是异步编程的一种解决方案，比传统的解决方案——回调函数和事件——更合理和更强大。  所谓`Promise`，简单说就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果。 
+ Promise 是异步编程的一种解决方案，所谓`Promise`，简单说就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果。 
 
  `Promise`对象有以下两个特点 ：
 
@@ -2439,7 +2439,7 @@ Bar.classMethod();
 
 缺点： 无法取消`Promise`  其次，如果不设置回调函数，`Promise`内部抛出的错误，不会反应到外部。如果没有使用`catch()`方法指定错误处理的回调函数，Promise 对象抛出的错误不会传递到外层代码，即不会有任何反应。 Promise 内部的错误不会影响到 Promise 外部的代码，通俗的说法就是“Promise 会吃掉错误”。    
 
-## 1.基本用法
+## 基本用法
 
  `Promise`对象是一个构造函数，用来生成`Promise`实例。 
 
@@ -2627,7 +2627,7 @@ promise
 
  在执行完`then`或`catch`指定的回调函数以后，都会执行`finally`方法指定的回调函数。  
 
-### Promise.prototype.all
+### Promise.prototype.all()
 
 `Promise.all()`方法用于将多个 Promise 实例，包装成一个新的 Promise 实例。
 
@@ -2635,7 +2635,7 @@ promise
 const p = Promise.all([p1, p2, p3]);
 ```
 
- `Promise.all()`方法接受一个数组作为参数，`p1`、`p2`、`p3`都是 Promise 实例，如果不是，就会先调用下面讲到的`Promise.resolve`方法，将参数转为 Promise 实例，再进一步处理。另外，`Promise.all()`方法的参数可以不是数组，但必须具有 Iterator 接口，且返回的每个成员都是 Promise 实例。 
+ `Promise.all()`方法接受一个数组作为参数，`p1`、`p2`、`p3`都是 Promise 实例，**如果不是，就会先调用下面讲到的`Promise.resolve`方法，将参数转为 Promise 实例，再进一步处理**。另外，`Promise.all()`方法的参数可以不是数组，但**必须具有 Iterator 接口**，且返回的每个成员都是 Promise 实例。 
 
 `p`的状态由`p1`、`p2`、`p3`决定，分成两种情况。
 
@@ -2643,14 +2643,25 @@ const p = Promise.all([p1, p2, p3]);
 
 （2）只要`p1`、`p2`、`p3`之中有一个被`rejected`，`p`的状态就变成`rejected`，此时第一个被`reject`的实例的返回值，会传递给`p`的回调函数。
 
-### Promise.resolve reject 
+### Promise.resolve/reject 
 
-有时需要将现有对象转为 Promise 对象，`Promise.resolve()`方法就起到这个作用。
+有时需要将**现有对象转为 Promise 对象**，`Promise.resolve()`方法就起到这个作用。
 
 ```javascript
-const jsPromise = Promise.resolve($.ajax('/whatever.json'));
+var original = Promise.resolve('我在第二行');
+//Promise.resolve('foo')
 // 等价于
-new Promise(resolve => resolve($.ajax('/whatever.json')))
+//new Promise(resolve => resolve('foo'))
+var cast = Promise.resolve(original);
+//参数original是一个 Promise 实例
+//那么Promise.resolve将不做任何修改、原封不动地返回这个实例。
+cast.then(function(value) {
+  console.log('value: ' + value);
+});
+console.log('original === cast ? ' + (original === cast));
+
+// "original === cast ? true"
+// "value: 我在第二行"
 ```
 
 # Iterator和for...of循环

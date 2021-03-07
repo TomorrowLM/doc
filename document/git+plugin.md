@@ -149,7 +149,7 @@ git pull orgin 分支名									           拉取并合并分支
 pull= fetch + merge
 git rebase 分支														合并分支
 git push orgin dev 										         上传分支到dev上
-
+git branch -vv                                                         查看关联关系
 git checkout -b paynicorn2-repay-notice origin/paynicorn2-repay-notice	直接拉取远程的分支，创建为本地的分支
 
 如果您想要为此分支创建跟踪信息，您可以执行：
@@ -232,9 +232,38 @@ git stash list
 git stash apply stash@{}
 ```
 
-### git冲突
+### git rebase 
 
+https://www.cnblogs.com/tian874540961/p/12172900.html
 
+https://blog.csdn.net/hudashi/article/details/7664631/
+
+https://www.cnblogs.com/hujunzheng/p/9732936.html
+
+<img src="https://qboshi.oss-cn-hangzhou.aliyuncs.com/pic/086ccdee-4f40-4a8c-99c8-886bc672f0d8.jpg" alt="img" style="zoom:50%;" />
+
+当我开发完D后，准备push到远端master时，git会进行检查：**远端master的最新节点是否是节点D的基点，即检查远端master的基点是否是节点C**，如果是，则可以直接push，如果不是，也就是上图的情况：在你push之前远端master已经被他人提交了E和F节点，这时可以执行`git pull -r`
+
+<img src="https://qboshi.oss-cn-hangzhou.aliyuncs.com/pic/88729b51-5f43-42a5-bd69-9c39f863ab92.jpg" alt="img" style="zoom:50%;" />
+
+git会以F节点作为新的基点，与D节点的代码进行融合，如果此时出现**冲突**，那么你就会被移到临时解冲突的分支，需要人工解冲突，解完后执行`git add -A`保存操作，再执行`git rebase --continue`继续后续操作，你可能会遗漏某一处冲突，这个完全不同担心，`git rebase --continue`会帮你检查是否解决完成，如果没有完成则不会让你回到正常分支。
+
+<img src="https://qboshi.oss-cn-hangzhou.aliyuncs.com/pic/beb6433f-49e8-4b42-b821-32a7350f2cc7.jpg" alt="img" style="zoom:50%;" />
+
+此时我再执行`git push`，就可以顺利将D节点提交到远端master上去了：
+
+<img src="https://qboshi.oss-cn-hangzhou.aliyuncs.com/pic/469b4e16-c88d-4f71-9dde-c7eb432b7a78.jpg" alt="img" style="zoom:50%;" />
+
+这同理本地基于master分支创建dev分支，master拉取远程代码后(其他人push了代码到远程master)，本地的master领先与dev分支，所以需要rebase，不然会污染了 commit 记录
+
+```
+git rebase --edit-todo
+git rebase —abort 都可以用 --abort 参数来终止 rebase 的行动，并且分支会回到 rebase 开始前的状态。
+```
+
+- #### **危险操作**
+
+  你的同事也在 相同分支 上开发，那么当他 pull 远程 master 的时候，就会有丢失提交纪录。
 
 ## Tips
 
