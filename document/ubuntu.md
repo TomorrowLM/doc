@@ -533,14 +533,16 @@ docker安装教程：菜鸟教程
 
    ```
    sudo docker-compose restart
+   
+docker-compose start 容器名
    ```
 
    查看容器状态
-
+   
    ```
-   sudo docker container ls -a
+sudo docker container ls -a
    ```
-
+   
    
 
 ## magento部署

@@ -2,6 +2,8 @@
 
 http://caibaojian.com/es6/
 
+1.    *// "jstree": "vakata/jstree",*
+
 # **let和const**
 
 `let`和`const`。其中，`let`完全可以取代`var`，因为两者语义相同，而且`let`没有副作用。在`let`和`const`之间，建议优先使用`const`，尤其是在全局环境，不应该设置变量，只应设置常量。同时JavaScript 编译器会对`const`进行优化，所以多使用`const`，有利于提高程序的运行效率 
@@ -475,8 +477,6 @@ Math.sign()  // NaN
 Math.sign(undefined)  // NaN
 3.Math.cbrt()方法用于计算一个数的立方根。对于非数值，Math.cbrt()方法内部也是先使用Number()方法将其转为数值。
 ```
-
-
 
 # 数组的扩展
 

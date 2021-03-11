@@ -6,9 +6,9 @@
 
 1. webpack本身集成很多项目模板:
    	   simple		个人觉得一点用都没有
-     	 webpack	可以使用(大型项目)
-     	 Eslint 			检查代码规范
-     	 webpack-simple	个人推荐使用, 没有代码检查, 没有vue-router的中间件 
+          	 webpack	可以使用(大型项目)
+          	 Eslint 			检查代码规范
+          	 webpack-simple	个人推荐使用, 没有代码检查, 没有vue-router的中间件 
 2. browserify	
    browserify-simple
 
@@ -135,7 +135,6 @@ var vm=new Vue({
 ## 标签属性
 
   ```vue
-  url=''
 
   <img src="{{url}}" alt="">
   <img v-bind:src="url"  >
@@ -163,7 +162,7 @@ var vm=new Vue({
 
 ##  watch和computed
 
-### **计算属性**
+### **计算属性computed**
 
 ```js
   computed:{
@@ -183,14 +182,17 @@ var vm=new Vue({
       //computed里面可以放置一些业务逻辑代码，一定记得return
 ```
 
-- 
-  支持缓存，只有依赖数据发生改变，才会重新进行计算
-
+- **支持缓存**，只有依赖数据发生改变，才会重新进行计算
+  
 - 不支持异步，当computed内有异步操作时无效，无法监听数据的变化
 
 - computed 属性值会默认走缓存，计算属性是基于它们的响应式依赖进行缓存的。如其中的任意一个值未发生变化，它调用的就是上一次 计算缓存的数据，因此提高了程序的性能。而methods中每调用一次就会重新计算一次，为了进行不必要的资源消耗，选择用计算属性
 
 - 如果一个属性是由其他属性计算而来的，这个属性**依赖**其他属性，是一个多对一或者一对一，一般用computed
+
+- 在模版中放入太多声明式的逻辑会让模板本身过重，尤其当在页面中使用大量复杂的逻辑表达式处理数据时，会对页面的可维护性造成很大的影响
+
+  而且计算属性如果依赖不变的话，它就会变成缓存，computed 的值就不会重新计算
 
 ###   侦听器 **watch**
 
@@ -224,11 +226,21 @@ var vm=new Vue({
 - 监听数据必须是data中声明过或者父组件传递过来的props中的数据，当数据变化时，触发其他操作，函数有两个参数
   - immediate：组件加载立即触发回调函数执行，
   - deep: 深度监听，为了发现**对象内部值**的变化，复杂类型的数据时使用，例如数组中的对象内容的改变，注意监听数组的变动不需要这么做。注意：deep无法监听到数组的变动和对象的新增
+- **不应该使用箭头函数来定义 watcher 函数**，因为箭头函数没有 this，它的 this 会继承它的父级函数，但是它的父级函数是 window，导致箭头函数的 this 指向 window，而不是 Vue 实例
 
 ### 使用场景区别
 
-- computed 适合 多个数据变化影响一个数据
-- watch 适合一个数据的变动影响多个数据或者复杂的运算
+- computed 
+
+  - 适合 当一个属性受多个属性影响的时候就需要用到computed
+
+  　　最典型的例子： 购物车商品结算的时候
+
+- watch 
+
+  - 适合当一条数据影响多条数据的时候就需要用watch
+
+    搜索数据
 
 ## 循环和判断
 
@@ -499,7 +511,7 @@ Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa,�
 
 # 组件
 
-模板：
+- **模板**
 
 ```
 <template id="Aaa">
@@ -507,15 +519,16 @@ Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa,�
 </template>
 ```
 
-动态组件：<component :is="Aaa"></component>
+- **动态组件**
 
+  <component :is="Aaa"></component>
 
-
-
-
-定义组件
+- **定义组件**
 
 ```js
+<template id="Aaa">
+	<h1 @click="change">{{msg}}</h1>
+</template>
 var Aaa=Vue.extend({
         //必须以函数的形式返回
         data(){
@@ -529,9 +542,9 @@ var Aaa=Vue.extend({
             }
         },
         template:'<h1 @click="change">{{msg}}</h1>'
-        //或者template:'#aaa';
+        //或者template:'#Aaa';
         components:{
-        
+        	//组件里面还可以嵌套一个组件
         }
     });
     
@@ -541,10 +554,9 @@ var Aaa={
 	};
 ```
 
+- **声明组件**
 
-声明组件
-
-```
+```js
 必须有根元素，包裹住所有的代码
 Vue.component('aaa',Aaa);//全局组件
 var vm=new Vue({
@@ -558,7 +570,7 @@ var vm=new Vue({
 
 ### 子组件获取父组件的数据
 
-```
+```js
 在父组件中声明子组件
 Aaa.components={
 	'bbb':{

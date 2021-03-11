@@ -138,6 +138,8 @@ test:     Adding missing tests or correcting existing tests
 
 ### 分支的操作
 
+分支规范https://zhuanlan.zhihu.com/p/108385922
+
 ```
 git checkout -b dev 或者git switch -c dev    创建并切换该分支
 git branch dev 												           创建分支
@@ -150,10 +152,16 @@ pull= fetch + merge
 git rebase 分支														合并分支
 git push orgin dev 										         上传分支到dev上
 git branch -vv                                                         查看关联关系
-git checkout -b paynicorn2-repay-notice origin/paynicorn2-repay-notice	直接拉取远程的分支，创建为本地的分支
+
+git checkout -b dev origin/dev	直接拉取远程的分支，创建为本地的分支
 
 如果您想要为此分支创建跟踪信息，您可以执行：
 git branch --set-upstream-to=origin/<分支> master
+
+git branch					查看本地分支
+git branch -r			   查看远程分支
+git branch -a 			  查看所有分支（包括远程分支和本地分支）
+git branch -a | grep paynicorn2-repay-notice 查询指定分支(本地和远程的)
 ```
 
 ### 远程的操作
@@ -162,6 +170,9 @@ git branch --set-upstream-to=origin/<分支> master
 远程分支的移除
  git remote rm paul				
  git push origin --delete main
+ 
+删除本地分支，git branch -a,还是可以看到远程的分支
+git remote prune origin 
  
  pb 重命名为 paul
  git remote rename pb paul       
@@ -191,13 +202,8 @@ git log							查看提交日志，每一次提交都有对应的 commit id 和 
 git log  -p					  用来显示每次提交的内容差异									  
 git reflog					  记录操作记录(包括已经被删除的 commit 记录和 reset 的操作)
 
-git branch					查看本地分支
-git branch -r			   查看远程分支
-git branch -a 			  查看所有分支（包括远程分支和本地分支）
-git branch -a | grep paynicorn2-repay-notice 查询指定分支(本地和远程的)
-
 git remote -v				查看关联的远程仓库url
-cat .git/HEAD			查看当前 HEAD 指向
+cat .git/HEAD			   查看当前 HEAD 指向
 ```
 
 ### 回退系列
@@ -264,6 +270,13 @@ git rebase —abort 都可以用 --abort 参数来终止 rebase 的行动，并�
 - #### **危险操作**
 
   你的同事也在 相同分支 上开发，那么当他 pull 远程 master 的时候，就会有丢失提交纪录。
+  
+- 合并多个提交
+
+  ```
+  git rebase -i HEAD~2
+  将第二行的 pick 改为 s “s” 为 “squash” 的缩写
+  ```
 
 ## Tips
 
@@ -322,6 +335,13 @@ git rebase —abort 都可以用 --abort 参数来终止 rebase 的行动，并�
   为推送当前分支并建立与远程上游的跟踪，使用
 
       git push --set-upstream origin master
+
+- 无法连接到仓库,尝试重新连接
+
+  ```
+  git remote rm origin删除远程origin
+  git remote add origin git@git.hub.bundle:bibo72/bundleb2b-v3.0-storefront.git
+  ```
 
 # npm
 
