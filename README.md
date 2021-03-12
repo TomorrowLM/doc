@@ -2,7 +2,6 @@
   + [document](#document)
   + [gulp+webpack](#gulp+webpack)
   + [js](#js)
-  + [note](#note)
 ## document
   + **bootstrap**
     + [05-bootstrap1](document/document/bootstrap/05-bootstrap1.md)
@@ -165,8 +164,6 @@
     + [object](document/js/types/object.md)
     + [string](document/js/types/string.md)
   + [preface](document/js/preface.md)
-## note
-  + [magento](document/note/magento.md)
 + [README](document/README.md)
 + [code片段](document/code片段.md)
 + [es6](document/es6.md)
