@@ -534,6 +534,8 @@ docker安装教程：菜鸟教程
    ```
    sudo docker-compose restart
    
+   ```
+
 docker-compose start 容器名
    ```
 
@@ -547,7 +549,7 @@ sudo docker container ls -a
 
 ## magento部署
 
-```
+   ```
 mv m234/    ~/git/alpine-dnmp/www/
 docker container ls -a
 //进入msql容器
@@ -710,7 +712,7 @@ update core_config_data set value = 'http://infinixpk.mez100.cn/static/' where v
 
   docker环境下，要进入docker的php容器中才能执行下面的命令
 
-  ```
+```
   //在php7.1中执行(可在core/conf/nginx/conf/conf.d/global.conf中选择php版本)
   docker exec -it php71 sh
   ```
@@ -718,10 +720,10 @@ update core_config_data set value = 'http://infinixpk.mez100.cn/static/' where v
   ```
   // 1.编译模块文件(可能会报缺失文件，可以在其他项目中拷贝)
   php bin/magento setup:upgrade && php bin/magento setup:di:compile
-  
+
   // 2.编译静态资源文件
   php bin/magento setup:static-content:deploy -f
-  
+
   // 3.清楚缓存
   php bin/magento c:c
   ```
@@ -736,7 +738,7 @@ update core_config_data set value = 'http://infinixpk.mez100.cn/static/' where v
 
 ### 创建admin账号
 
-```
+  ```
 php bin/magento admin:user:create --admin-firstname=li --admin-lastname=ming --admin-email=tom.li@example.com --admin-user=tom.li --admin-password=123456tom
 ```
 
@@ -758,7 +760,7 @@ php bin/magento admin:user:create --admin-firstname=li --admin-lastname=ming --a
 
 - `docker-compose ps`查看是否环境都已经启动
 
-  ```
+```
   docker-compose start 容器名
   ```
 
@@ -781,10 +783,10 @@ var下的文件
   ```
   // 1.编译模块文件(可能会报缺失文件，可以在其他项目中拷贝)
   php bin/magento setup:upgrade && php bin/magento setup:di:compile
-  
+
   // 2.编译静态资源文件
   php bin/magento setup:static-content:deploy -f
-  
+
   // 3.清楚缓存
   php bin/magento c:c
   ```
@@ -833,7 +835,7 @@ var下的文件
 
     - 将项目根目录下的bbs/config/config_ucenter.php文件中
 
-      ```
+  ```
       define('UC_APPID', '23'); 改为
       define('UC_APPID', '17');
       
