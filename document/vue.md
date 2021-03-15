@@ -605,11 +605,12 @@ Aaa.components={
 组件数据传递:
 
 1. 子组件bbb想获取父组件msg
+
 	父组件template调用子组件：
 		<bbb :data="父组件的msg"></bbb>
-
-	子组件之内:props:['data']
 	
+	子组件之内:props:['data']
+
 
 **vue.2.0**
 
@@ -628,7 +629,9 @@ Aaa.components={
 
 ### 父组件获取子组件的数据
 
-组件通信: 实现子组件向父组件通信。 
+组件通信: 实现子组件向父组件通信
+
+父组件监听子组件的触发的事件，从而处理事件
 
 ```
 	<div id="box">
@@ -791,7 +794,7 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
 3. Vue.use(VueRouter);  `Vue.use()` 使用插件 
 
 4. 配置路由router.config.js
-	
+
 	**//vue1.0**
 	
 	'/home':{
@@ -806,17 +809,17 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
 		}
 	**//vue2.0**
 	     const routes=[
-         {path:'/home', component:Home},
-            {
-                path:'/user',
-                component:User,
-                children:[
-                    {path:'username', component:UserDetail}
-                ]
-            },
-            {path:'*', redirect:'/home'}  //404
-        ];
-   
+	     {path:'/home', component:Home},
+	        {
+	            path:'/user',
+	            component:User,
+	            children:[
+	                {path:'username', component:UserDetail}
+	            ]
+	        },
+	        {path:'*', redirect:'/home'}  //404
+	    ];
+
 5. ```
    //生成路由实例
    var router=new VueRouter();
@@ -833,6 +836,7 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
    
 
 5. 挂到vue上
+
 	router.start(App,'#app');
 
 ```
