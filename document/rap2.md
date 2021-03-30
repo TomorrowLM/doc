@@ -13,7 +13,7 @@ https://www.freesion.com/article/74291291096/#RAP2_214
 'name|rule': value
 ```
 
-*生成规则* 有 7 种格式：
+*生成规则* 有 7 种格式：    "dev": "cross-env APP_CLIENT_ID=npjs1ubfnbxqqhmjxazbfy0cosfq4s4 API_BASE_URL=https://rap2.mez100.com/rapserver/app/mock/17 webpack-dev-server --config scripts/webpack.config.dev.js",
 
 1. `'name|min-max': value`
 2. `'name|count': value`

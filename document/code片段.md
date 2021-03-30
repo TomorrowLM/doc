@@ -3,18 +3,40 @@
 ## **async**
 
 ```js
-let a = async function(){
-    console.log(1) 
-    let b = await 2;
-    console.log(b)
-    let c = await 3;
-    console.log(c)
-    return 5
+
+let a = async ()=>{
+    let b =await new Promise((resolve,reject)=>{
+        console.log(1)
+        setTimeout(()=>{ console.log(5); resolve(1)},100)
+    })
+    console.log(2)
+    return 6
 }
-a().then((index)=>{
-    console.log(index)
+a().then((value)=>{
+console.log(value)
 })
-console.log(4)
+console.log(3)
+
+//在async中将异步的代码同步执行
+1 ​​​​​at ​quokka.js:5:8​
+
+3 ​​​​​at ​quokka.js:14:0​
+
+5 ​​​​​at ​quokka.js:6:8​
+
+2 ​​​​​at ​quokka.js:8:4​
+
+6 ​​​​​at ​​​value​​​ ​quokka.js:12:0​
+//没有await
+1 ​​​​​at ​quokka.js:5:8​
+
+2 ​​​​​at ​quokka.js:8:4​
+
+3 ​​​​​at ​quokka.js:14:0​
+
+6 ​​​​​at ​​​value​​​ ​quokka.js:12:0​
+
+5 ​​​​​at ​quokka.js:6:8​
 ```
 
 ```
