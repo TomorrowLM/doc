@@ -1,5 +1,7 @@
 # 项目搭建
 
+
+
 ## vue脚手架
 
 帮你提供构建项目结构
@@ -180,6 +182,25 @@ var vm=new Vue({
   		}
   	}
       //computed里面可以放置一些业务逻辑代码，一定记得return
+      
+      
+computed: {
+    updateMessage: {
+      get: function() {
+        console.log('计算属性', this.message)
+        return this.message
+      },
+      set: function(newVal) {
+        this.message = newVal
+        console.log('newVal', newVal)
+      }
+    }
+  },
+ mounted () {
+    this.updateMessage = '222'
+    console.log('测试：', this)
+ },
+     //只有当计算属性中的属性被直接赋值的时候，才会走setter函数，而且，setter函数和getter函数是相互独立的，不是说，走setter函数，就必须走getter函数。
 ```
 
 - **支持缓存**，只有依赖数据发生改变，才会重新进行计算
@@ -240,7 +261,15 @@ var vm=new Vue({
 
   - 适合当一条数据影响多条数据的时候就需要用watch
 
-    搜索数据
+    搜索数
+
+### 同步数据
+
+https://zhuanlan.zhihu.com/p/53217382
+
+ **组件内data的数据和prop传递过来的数据能同步双向绑定和更新视图** 
+
+ **vuex 中store的数据需要放到computed 里面才能同步更新视图** 
 
 ## 循环和判断
 
