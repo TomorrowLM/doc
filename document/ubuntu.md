@@ -221,6 +221,8 @@ sudo apt-get install flameshot
 
 #### 2.zsh（终端）
 
+windows下好用的终端: consolez, [babun](https://github.com/babun/babun) +cmder,wsl
+
 1.安装zsh
 2.在根目录下的.zshrc文件中可以添加插件
 

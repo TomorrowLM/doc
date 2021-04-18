@@ -179,6 +179,7 @@
 + [ubuntu](document/ubuntu.md)
 + [vue](document/vue.md)
 + [webpack+gulp](document/webpack+gulp.md)
++ [windows](document/windows.md)
 + [常识](document/常识.md)
 + [总结](document/总结.md)
 + [正则表达式](document/正则表达式.md)

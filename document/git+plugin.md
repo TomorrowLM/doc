@@ -171,6 +171,7 @@ git branch -a | grep paynicorn2-repay-notice 查询指定分支(本地和远程�
  git remote rm paul				
  git push origin --delete main
  
+ //https://blog.csdn.net/wangqingpei557/article/details/53147086
 删除本地分支，git branch -a,还是可以看到远程的分支
 git remote prune origin 
  

@@ -479,6 +479,10 @@ console.log(vm.$options.aa);//获取自定义属性
 vm.$options.show();
 ```
 
+## nextTick
+
+https://www.jianshu.com/p/a7550c0e164f
+
 # vue生命周期
 
 ## 背景
@@ -499,10 +503,12 @@ destroyed	->   销毁之后
 ```
 - vue2.0
 
+  https://zhuanlan.zhihu.com/p/53039906
+
 
 ```
 beforeCreate	组件实例刚刚被创建,属性都没有，组件的el和data都未被创建
-created			实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
+created			     实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
 beforeMount		模板编译之前,组件的el会被创建，render 函数首次被调用。但是值得注意的是：虽然数据data早已经被创建好，但是它还未被应用到真是的DOM元素中。
 mounted			模板编译之后，组件的el,data都已经全部被创建好，并且data也已经被正确的应用到DOM元素中
 beforeUpdate	组件更新之前
@@ -514,7 +520,9 @@ activated	keep-alive 组件激活时调用。
 deactivated	keep-alive 组件停用时调用。
 ```
 
-**不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this`** ,this指向调用它的VUE实例
+ ![f847b38a-63fe-11e6-9c29-38e58d46f036.png](https://segmentfault.com/img/bVEs9x?w=847&h=572) 
+
+不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this`** ,this指向调用它的VUE实例
 
  比如 `created: () => console.log(this.a)` 或 `vm.$watch('a', newValue => this.myMethod())` 
 
