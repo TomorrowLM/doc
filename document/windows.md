@@ -91,4 +91,7 @@ https://blog.csdn.net/weixin_42595232/article/details/106012575?spm=1001.2014.30
   chmod 755  /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
   ```
 
-  
+
+## nvm
+
+https://my.oschina.net/u/1440971/blog/3023276
