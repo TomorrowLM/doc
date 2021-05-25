@@ -1,7 +1,7 @@
 ## Table of contents
   + [document](#document)
-  + [gulp+webpack](#gulp+webpack)
   + [js](#js)
+  + [微信](#微信)
 ## document
   + **bootstrap**
     + [05-bootstrap1](document/document/bootstrap/05-bootstrap1.md)
@@ -38,6 +38,12 @@
     + [reflect](document/document/es6/reflect.md)
     + [set-map](document/document/es6/set-map.md)
     + [symbol](document/document/es6/symbol.md)
+  + **gulp+webpack**
+    + [01-Gulp快速入门教程](document/document/gulp+webpack/01-Gulp快速入门教程.md)
+    + [02-Grunt快速入门教程](document/document/gulp+webpack/02-Grunt快速入门教程.md)
+    + [Webpack入门教程](document/document/gulp+webpack/Webpack入门教程.md)
+    + [webpack3入门教程](document/document/gulp+webpack/webpack3入门教程.md)
+    + [webpack高级](document/document/gulp+webpack/webpack高级.md)
   + **jQuery**
     + [04-jQuery](document/document/jQuery/04-jQuery.md)
     + [04-jQuery三天复习](document/document/jQuery/04-jQuery三天复习.md)
@@ -60,16 +66,6 @@
       + [day6](document/document/vue/新建文件夹/day6.md)
       + [day7](document/document/vue/新建文件夹/day7.md)
       + [day8](document/document/vue/新建文件夹/day8.md)
-  + **微信**
-    + [伸缩布局](document/document/微信/伸缩布局.md)
-    + [微信](document/document/微信/微信.md)
-    + [微信小程序基本组件总结](document/document/微信/微信小程序基本组件总结.md)
-## gulp+webpack
-  + [01-Gulp快速入门教程](document/gulp+webpack/01-Gulp快速入门教程.md)
-  + [02-Grunt快速入门教程](document/gulp+webpack/02-Grunt快速入门教程.md)
-  + [Webpack入门教程](document/gulp+webpack/Webpack入门教程.md)
-  + [webpack3入门教程](document/gulp+webpack/webpack3入门教程.md)
-  + [webpack高级](document/gulp+webpack/webpack高级.md)
 ## js
   + **async**
     + [general](document/js/async/general.md)
@@ -164,6 +160,10 @@
     + [object](document/js/types/object.md)
     + [string](document/js/types/string.md)
   + [preface](document/js/preface.md)
+## 微信
+  + [伸缩布局](document/微信/伸缩布局.md)
+  + [微信](document/微信/微信.md)
+  + [微信小程序基本组件总结](document/微信/微信小程序基本组件总结.md)
 + [code片段](document/code片段.md)
 + [es6](document/es6.md)
 + [eslint](document/eslint.md)
