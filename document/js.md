@@ -1158,5 +1158,5 @@ console.log(box.innerText);获取内容的时候，如果内容中有标签，�
 console.log(box.textContent);如果内容中有标签，会把标签过滤掉,不会把前后的换行和空白都去掉
 ```
 
-## 
+
 

@@ -171,6 +171,8 @@ rm -rf generated/*
 $ sudo chmod +x /usr/local/bin/docker-compose
 ```
 
+ls -al查看文件读写权限
+
 ## **软件**
 
 ### 安装
@@ -461,22 +463,28 @@ vim 文件
 
 # nvm
 
-```
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.4/install.sh | bash
-```
+https://blog.csdn.net/henryhu712/article/details/85217165
 
-可能域名污染：
+https://blog.csdn.net/geol200709/article/details/82117103
 
-```
-sudo vim /etc/hosts
-199.232.68.133    raw.githubusercontent.com
-```
+cd ~/ - -切到主目录
+git clone https://github.com/creationix/nvm.git .nvm - -克隆代码到文件夹 .nvm
+cd ~/.nvm - -进入nvm代码目录
+git checkout v0.33.11 - -切换到v0.33.11版本
 
 执行以下命令
 
 ```javascript
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+```
+
+或者
+
+```js
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 ```
 
 查看可供安装的版本
