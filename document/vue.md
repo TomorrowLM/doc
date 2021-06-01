@@ -507,7 +507,7 @@ destroyed	->   销毁之后
 
 
 ```
-beforeCreate	组件实例刚刚被创建,属性都没有，组件的el和data都未被创建
+beforeCreate	组件实例刚刚被创建,属性都没有，组件的el（Vue实例挂载的元素节点）和data都未被创建
 created			     实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
 beforeMount		模板编译之前,组件的el会被创建，render 函数首次被调用。但是值得注意的是：虽然数据data早已经被创建好，但是它还未被应用到真是的DOM元素中。
 mounted			模板编译之后，组件的el,data都已经全部被创建好，并且data也已经被正确的应用到DOM元素中
