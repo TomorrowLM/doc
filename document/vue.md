@@ -22,7 +22,7 @@
    验证安装ok?
    	vue --version
 2. 生成项目模板
-   vue init <模板名> 本地文件夹名称
+   vue create 本地文件夹名称
 3. 进入到生成目录里面
    cd xxx
    npm install
