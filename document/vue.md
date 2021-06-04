@@ -857,71 +857,65 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
 	</template>
 ```
 
-# vue-router	路由
+# vue-router路由
 
-1. 下载vue-router模块  cnpm install vue-router@0.7.13
+## 创建路由
 
-2. import VueRouter from 'vue-router'
+1. 下载vue-router模块  
 
-3. Vue.use(VueRouter);  `Vue.use()` 使用插件 
-
-4. 配置路由router.config.js
-
-	**//vue1.0**
-	
-	'/home':{
-	component:Home,
-	subRoutes:{
-			'login':{
-				component:Login
-			},
-			'reg':{
-				component:Reg
-			}
-		}
-	**//vue2.0**
-	     const routes=[
-	     {path:'/home', component:Home},
-	        {
-	            path:'/user',
-	            component:User,
-	            children:[
-	                {path:'username', component:UserDetail}
-	            ]
-	        },
-	        {path:'*', redirect:'/home'}  //404
-	    ];
-
-5. ```
-   //生成路由实例
-   var router=new VueRouter();
-   router.map({
-   	router.config.js
-   })
-   
-   //vue2.0
-   const router=new VueRouter({
-       routes
-   });
+   ```
+   npm install vue-router
    ```
 
+2. 创建文件夹，存放路由配置
+
+   ```
+   import Vue from "vue";
+   import VueRouter from "vue-router";
+   import login from "../components/login.vue";
+   import register from "../components/register.vue"
    
+   Vue.use(VueRouter);
+   
+   const routes = [
+     {
+       path: "/",
+       component: login,
+     },
+     {
+       path: "/register",
+       component: register,
+     },
+   ];
+   
+   const router = new VueRouter({
+     mode: "history",
+     base: process.env.BASE_URL,
+     routes,
+   });
+   
+   export default router;
+   
+   ```
 
-5. 挂到vue上
+3. main.js文件中引入router
 
-	router.start(App,'#app');
+   ```
+   import Vue from "vue";
+   import App from "./App.vue";
+   import VueRouter from "vue-router";
+   import router from "./router/index";
+   
+   Vue.config.productionTip = false;
+   
+   Vue.use(VueRouter);
+   new Vue({
+     router: router,
+     render: (h) => h(App),
+   }).$mount("#app");
+   ```
 
-```
-//vue2.0
-     new Vue({
-       	router,
-     	el: '#app',
-	    render: h => h(App)
-	   })
-	
-	<a v-link="{path:'/home'}">主页</a>
-	<router-view></router-view>
-```
+
 
 --------------------------------------------
 
