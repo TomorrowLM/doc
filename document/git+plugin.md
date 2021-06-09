@@ -142,18 +142,18 @@ test:     Adding missing tests or correcting existing tests
 
 ```
 git checkout -b dev 或者git switch -c dev    创建并切换该分支
-git branch dev 												           创建分支
-git branch -d dev											         删除分支
-git branch -D dev										            强行删除一个没有合并的分支    
-git checkout master									            切换分支
+git branch dev 								创建分支
+git branch -d dev							删除分支
+git branch -D dev							强行删除一个没有合并的分支    
+git checkout master							切换分支
                                                                                                   
-git pull orgin 分支名									           拉取并合并分支
+git pull orgin 分支名						拉取并合并分支
 pull= fetch + merge
-git rebase 分支														合并分支
-git push orgin dev 										         上传分支到dev上
-git branch -vv                                                         查看关联关系
+git rebase 分支							合并分支
+git push orgin dev 						 传分支到dev上
+git branch -vv                           查看关联关系
 
-git checkout -b dev origin/dev	直接拉取远程的分支，创建为本地的分支
+git checkout -b dev origin/dev	        直接拉取远程的分支，创建为本地的分支
 
 如果您想要为此分支创建跟踪信息，您可以执行：
 git branch --set-upstream-to=origin/<分支> master
@@ -351,6 +351,8 @@ npm list --depth 0
 
 查看全局安装过的依赖模块
 npm list -g --depth 0
+
+
 
 
 
