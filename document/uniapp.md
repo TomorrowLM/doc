@@ -51,7 +51,7 @@ vue ui
 
 # 环境配置
 
-## 1.webpack
+## webpack
 
 越来越多的网站已经从网页模式进化到了 Webapp 模式。它们运行在现代的高级浏览器里，使用 HTML5、 CSS3、 ES6 等更新的技术来开发丰富的功能，网页已经不仅仅是完成浏览的基本需求，并且webapp通常是一个单页面应用，每一个视图通过异步的方式加载，这导致页面初始化和使用过程中会加载越来越多的 JavaScript 代码，这给前端开发的流程和资源组织带来了巨大的挑战。
 
@@ -212,7 +212,39 @@ Webpack 是一个模块打包器。它将根据模块的依赖关系进行静态
 
 - 本地背景图片/字体文件的引用路径推荐使用以 ~@ 开头的绝对路径。
 
-  
+## 页面样式与布局
+
+`uni-app` 支持的通用 css 单位包括 px、rpx
+
+- px 即屏幕像素
+
+- rpx 即响应式px，一种根据屏幕宽度自适应的动态单位。以750宽的屏幕为基准，750rpx恰好为屏幕宽度。屏幕变宽，rpx 实际显示效果会等比放大，但在 App 端和 H5 端屏幕宽度达到 960px 时，默认将按照 375px 的屏幕宽度进行计算，
+
+  ```
+  {
+    "globalStyle": {
+      "rpxCalcMaxDeviceWidth": 960, // rpx 计算所支持的最大设备宽度，单位 px，默认值为 960
+      "rpxCalcBaseDeviceWidth": 375, // rpx 计算使用的基准设备宽度，设备实际宽度超出 rpx 计算所支持的最大设备宽度时将按基准宽度计算，单位 px，默认值为 375
+      "rpxCalcIncludeWidth": 750 // rpx 计算特殊处理的值，始终按实际的设备宽度计算，单位 rpx，默认值为 750
+    },
+  }
+  ```
+
+  - match-media组件  为组件指定一组 media query 媒体查询规则
+
+vue页面支持下面这些普通H5单位，但在nvue里不支持：
+
+- rem 根字体大小可以通过 [page-meta](https://uniapp.dcloud.io/component/page-meta?id=page-meta) 配置
+- vh viewpoint height，视窗高度，1vh等于视窗高度的1%
+- vw viewpoint width，视窗宽度，1vw等于视窗宽度的1%
+
+```
+若设计稿宽度为 750px，元素 A 在设计稿上的宽度为 100px，那么元素 A 在 uni-app 里面的宽度应该设为：750 * 100 / 750，结果为：100rpx。
+```
+
+**tip:**
+
+- rpx不支持动态横竖屏切换计算，使用rpx建议锁定屏幕方向
 
 ## 生命周期
 
