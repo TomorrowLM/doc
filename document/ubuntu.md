@@ -444,22 +444,34 @@ ls
 ll(文件详细信息)
 ```
 
+```
+ du -sh *  	查看文件列表和大小
+--------
+217M	@tarojs
+5.0M	autocannon
+ 58M	cnpm
+ 53M	commitizen
+  0B	cw-tool
+ 65M	elasticdump
+```
+
+
+
 ## vim
 
 ```
 vim 文件
-插入模式：i
 
-正常模式:esc
+1.插入模式：i
+
+2.正常模式:esc
 复制一行/N行			yy /Nyy
 粘贴			p
 剪切一行/N行			dd/Ndd
 撤销		u
 
-命令模式：shift+：
+3.命令模式：shift+：
 ```
-
-
 
 # nvm
 

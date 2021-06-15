@@ -18,9 +18,7 @@
 
 基本使用流程:
 
-1. npm install vue-cli -g	安装 vue命令环境
-   验证安装ok?
-   	vue --version
+1. npm install -g @vue/cli	
 2. 生成项目模板
    vue create 本地文件夹名称
 3. 进入到生成目录里面
@@ -100,7 +98,7 @@
 
   可以使用 /deep/ 或 ::v-deep 操作符取而代之——两者都是 >>> 的别名，同样可以正常工作。
   
-- UI
+- UI使用
 
   Muse https://www.cnblogs.com/randomlee/p/10782710.html
 
@@ -864,6 +862,8 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
 # vue-router路由
 
 ## 创建路由
+
+直接`vue add router`,或者
 
 1. 下载vue-router模块  
 
