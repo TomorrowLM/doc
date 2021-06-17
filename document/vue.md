@@ -106,6 +106,8 @@
 
 ## 响应式
 
+https://zhuanlan.zhihu.com/p/53217382
+
 数据发生改变的时候，视图会重新渲染，匹配更新为最新的值
 
 **Object.defineProperty**可以为对象中的每一个属性，设置 get 和 set 方法
@@ -132,8 +134,6 @@ Object.defineProperty(obj,"name",{
 
 当我为 obj.name 赋值时，obj.name = 5，会打印 ' set 被触发 '
 
-https://zhuanlan.zhihu.com/p/53217382
-
 ## 创建实例
 
 ```js
@@ -157,11 +157,13 @@ var vm=new Vue({
 ​    });
 ```
 
+
+
 ## 标签数据
 
 - **绑定数据**
 
-1. {{msg}} , msg也可以是js表达式，但只能包含单个表达式
+1. {{msg}} , msg也可以是js表达式，但只能包含**单个**表达式
 
    ```
    一个表达式会产生一个值,它可以放在任何需要一个值的地方
@@ -488,10 +490,28 @@ Vue.config.keyCodes.ctrl=17;
 
 ## vue实例简单方法
 
+```js
+var data = { a: 1 }
+var vm = new Vue({
+  el: '#example',
+  data: data
+})
+
+vm.$data === data // => true
+vm.$el === document.getElementById('example') // => true
+
+// $watch 是一个实例方法
+vm.$watch('a', function (newValue, oldValue) {
+  // 这个回调将在 `vm.a` 改变后调用
+})
+```
+
+
+
 ```
 vm= new Vue({})
 
-vm.$el	->  获取Vue实例关联的DOM元素
+vm.$el	->  获取Vue实例挂载的元素节点
 vm.$data  ->  就是data
 vm.$mount ->  手动挂在vue程序
 vm.$options	->   获取自定义属性
@@ -544,10 +564,18 @@ destroyed	->   销毁之后
 
 
 ```
-beforeCreate	组件实例刚刚被创建,属性都没有，组件的el（Vue实例挂载的元素节点）和data都未被创建
-created			     实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
-beforeMount		模板编译之前,组件的el会被创建，render 函数首次被调用。但是值得注意的是：虽然数据data早已经被创建好，但是它还未被应用到真是的DOM元素中。
-mounted			模板编译之后，组件的el,data都已经全部被创建好，并且data也已经被正确的应用到DOM元素中
+beforeCreate	
+组件实例刚刚被创建,属性都没有，组件的el（Vue实例挂载的元素节点）和data都未被创建
+
+created			     
+实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
+
+beforeMount		
+模板编译之前,组件的el会被创建，render 函数首次被调用。但是值得注意的是：虽然数据data早已经被创建好，但是它还未被应用到真实的DOM元素中,而是render将data中的数据和vue声明的模板template编译成浏览器可读的HTML挂载到对应虚拟dom触发的钩子。
+
+mounted			
+模板编译之后，组件的el,data都已经全部被创建好，触发虚拟dom的钩子将编译好的HTML替换掉el属性所指的dom，应用到真实DOM元素中。
+
 beforeUpdate	组件更新之前
 updated			组件更新完毕	
 beforeDestroy	组件销毁前
@@ -559,7 +587,7 @@ deactivated	keep-alive 组件停用时调用。
 
  ![f847b38a-63fe-11e6-9c29-38e58d46f036.png](https://segmentfault.com/img/bVEs9x?w=847&h=572) 
 
-不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this`** ,this指向调用它的VUE实例
+不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this` ,this指向调用它的VUE实例
 
  比如 `created: () => console.log(this.a)` 或 `vm.$watch('a', newValue => this.myMethod())` 
 
@@ -584,6 +612,8 @@ Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa,�
 - 当再次进入（前进或者后退）时，只触发activated。
 
 # 组件
+
+在 Vue 里，一个组件本质上是一个拥有预定义选项的一个 Vue 实例。
 
 - **模板**
 
