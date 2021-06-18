@@ -1,33 +1,15 @@
-tom.li@bundleb2b.net 
-thaebahtiepoixo
+uniapp:
 
+tab閫夐」鍗★紝婊戝姩鍒囨崲
 
-team@bundleb2b.com hz7HkT4Ln3JFQo&
-bigcommerce
+椤甸潰璺宠浆鍔ㄧ敾
 
-kido.zhao@bundleb2b.net test123456
+vue:
 
-leo.zhou@bundleb2b.net
-12345@bundle.support
-这个是bitbucket和github通用的账户
+缁勪欢閫氫俊
 
+婊氬姩
 
-hmuat/go4uat
-hm
+css:
 
-liumaosen121@gmail.com / 123456
-ie-app
-
-am-touch dental
-maintex
-invoice
-
-leo.zhou@bundleb2b.net
-密码是12345@bundle.support
-
-bundle_salesrep@test.com
-silk_2020
-
-jenkinsom / fP0Gg@h192JRnUk 
-http://54.201.75.122:8080/
-
+sass

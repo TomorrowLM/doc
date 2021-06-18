@@ -308,18 +308,43 @@ https://uniapp.dcloud.io/collocation/frame/lifecycle?id=%e5%ba%94%e7%94%a8%e7%94
 
 ## 路由
 
-- ### [页面栈](https://uniapp.dcloud.io/frame?id=页面栈)
+### API
 
-  框架以栈的形式管理当前所有页面， 当发生路由切换的时候，页面栈的表现如下：
+框架以栈的形式管理当前所有页面， 当发生路由切换的时候，页面栈的表现如下：
 
-  | 路由方式   | 页面栈表现                        | 触发时机                                                     |
-  | ---------- | --------------------------------- | ------------------------------------------------------------ |
-  | 初始化     | 新页面入栈                        | uni-app 打开的第一个页面                                     |
-  | 打开新页面 | 新页面入栈                        | 调用 API  [uni.navigateTo](https://uniapp.dcloud.io/api/router?id=navigateto) 、使用组件  [](https://uniapp.dcloud.io/component/navigator?id=navigator) |
-  | 页面重定向 | 当前页面出栈，新页面入栈          | 调用 API  [uni.redirectTo](https://uniapp.dcloud.io/api/router?id=redirectto) 、使用组件 [](https://uniapp.dcloud.io/component/navigator?id=navigator) |
-  | 页面返回   | 页面不断出栈，直到目标返回页      | 调用 API  [uni.navigateBack](https://uniapp.dcloud.io/api/router?id=navigateback)  、使用组件 [](https://uniapp.dcloud.io/component/navigator?id=navigator) 、用户按左上角返回按钮、安卓用户点击物理back按键 |
-  | Tab 切换   | 页面全部出栈，只留下新的 Tab 页面 | 调用 API  [uni.switchTab](https://uniapp.dcloud.io/api/router?id=switchtab) 、使用组件 [](https://uniapp.dcloud.io/component/navigator?id=navigator) 、用户切换 Tab |
-  | 重加载     | 页面全部出栈，只留下新的页面      | 调用 API  [uni.reLaunch](https://uniapp.dcloud.io/api/router?id=relaunch) 、使用组件  [](https://uniapp.dcloud.io/component/navigator?id=navigator) |
+| 路由方式   | 页面栈表现                        | 触发时机                                                     |
+| ---------- | --------------------------------- | ------------------------------------------------------------ |
+| 初始化     | 新页面入栈                        | uni-app 打开的第一个页面                                     |
+| 打开新页面 | 新页面入栈                        | 调用 API  [uni.navigateTo](https://uniapp.dcloud.io/api/router?id=navigateto) 、使用组件  [](https://uniapp.dcloud.io/component/navigator?id=navigator) |
+| 页面重定向 | 当前页面出栈，新页面入栈          | 调用 API  [uni.redirectTo](https://uniapp.dcloud.io/api/router?id=redirectto) 、使用组件 [](https://uniapp.dcloud.io/component/navigator?id=navigator) |
+| 页面返回   | 页面不断出栈，直到目标返回页      | 调用 API  [uni.navigateBack](https://uniapp.dcloud.io/api/router?id=navigateback)  、使用组件 [](https://uniapp.dcloud.io/component/navigator?id=navigator) 、用户按左上角返回按钮、安卓用户点击物理back按键 |
+| Tab 切换   | 页面全部出栈，只留下新的 Tab 页面 | 调用 API  [uni.switchTab](https://uniapp.dcloud.io/api/router?id=switchtab) 、使用组件 [](https://uniapp.dcloud.io/component/navigator?id=navigator) 、用户切换 Tab |
+| 重加载     | 页面全部出栈，只留下新的页面      | 调用 API  [uni.reLaunch](https://uniapp.dcloud.io/api/router?id=relaunch) 、使用组件  [](https://uniapp.dcloud.io/component/navigator?id=navigator) |
+
+### 传参
+
+#### navigateBack
+
+```
+//page-A
+let pages = getCurrentPages();
+let currPage = pages[pages.length - 1]; // 当前页的实例
+this.cityCul = currPage.$vm.cityCul
+		       
+//page-B
+let pages = getCurrentPages()
+let nowPage = pages[pages.length - 1]; //当前页页面实例
+let prevPage = pages[pages.length - 2]; //上一页页面实例
+prevPage.$vm.cityCul = this.CityCul
+uni.navigateBack({
+		url: "../index/index?city=" + this.CityCul
+
+});
+```
+
+### Tips:
+
+- **目前页面路径最多只能十层。**
 
 ## 运行环境判断
 
@@ -535,9 +560,9 @@ uni-app是逻辑和渲染分离的，渲染层在**app端**提供了两套排版
 
 # API
 
-## 页面
+## 页面实例
 
-### [getApp()](https://uniapp.dcloud.io/collocation/frame/window?id=getapp)
+### getApp
 
 `getApp()` 函数用于获取当前应用实例，一般用于获取globalData 。
 
@@ -556,7 +581,7 @@ console.log(app.globalData)
 
 ### [getCurrentPages()](https://uniapp.dcloud.io/collocation/frame/window?id=getcurrentpages)
 
-`getCurrentPages()` 函数用于获取当前页面栈的实例，以数组形式按栈的顺序给出，第一个元素为首页，最后一个元素为当前页面。
+`getCurrentPages()` 函数用于获取当前**页面栈的实例**，以数组形式按栈的顺序给出，第一个元素为首页，最后一个元素为当前页面。
 
 **注意：** `getCurrentPages()`仅用于展示页面栈的情况，请勿修改页面栈，以免造成页面状态错误。
 
@@ -568,8 +593,11 @@ console.log(app.globalData)
 | page.route            | 获取当前页面的路由            |          |
 
 ```js
-var pages = getCurrentPages();
-console.log(pages[0].route)
+let pages = getCurrentPages()
+let nowPage = pages[pages.length - 1]; //当前页页面实例
+let prevPage = pages[pages.length - 2]; //上一页页面实例
+console.log(prevPage)
+prevPage.$vm.cityCul = this.CityCul //给上一个页面实例添加一个data
 ```
 
 Tips：
@@ -622,6 +650,14 @@ console.log(currentWebview.isVisible());//查询当前webview是否可见
 );
 // #endif
 ```
+
+# 事件
+
+1、@touchstart ：触摸开始；
+2、@touchmove：手指滑动的过程；
+3、@touchend：触摸结束，手指离开屏幕。
+
+
 
 # mysql
 
