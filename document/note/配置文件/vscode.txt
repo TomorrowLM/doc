@@ -1,0 +1,42 @@
+{
+    "workbench.activityBar.visible": true,
+   // "terminal.integrated.shell.windows": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.8.1521.0_x64__8wekyb3d8bbwe\\wt.exe",
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\wsl.exe",
+    "workbench.colorTheme": "Visual Studio Dark",
+    "terminal.integrated.automationShell.windows": "",
+    "htmltagwrap.tag": "div",
+    "[html]": {
+        "editor.defaultFormatter": "HookyQR.beautify"
+    },
+    "liveServer.settings.donotShowInfoMsg": true,
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "XXX",
+        "[ ]",
+        "[x]"
+    ],
+    "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
+    "settingsSync.ignoredExtensions": [
+
+    
+    ],
+    "powermode.enabled": true,
+    // “particles”, “fireworks”, “flames”, “magic”, “clippy”, “simple-rift”, “exploding-rift”.
+    "powermode.presets": "flames",
+    "settingsSync.ignoredSettings": [
+    
+    ]
+}
+
+
+
+
+
+
+
+
+
+

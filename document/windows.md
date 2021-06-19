@@ -41,6 +41,8 @@ vscode配置babun
 
 https://blog.csdn.net/weixin_42595232/article/details/106012575?spm=1001.2014.3001.5506
 
+https://blog.csdn.net/zaoandly/article/details/104806001/
+
 - 创建命令行数据文件夹
 
   ```
@@ -89,6 +91,12 @@ https://blog.csdn.net/weixin_42595232/article/details/106012575?spm=1001.2014.30
 
   ```
   chmod 755  /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+  ```
+
+- vscode
+
+  ```
+  "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\wsl.exe",
   ```
 
 

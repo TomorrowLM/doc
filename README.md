@@ -2,6 +2,7 @@
   + [document](#document)
   + [js](#js)
   + [微信](#微信)
+  + [项目构建工具](#项目构建工具)
 ## document
   + **bootstrap**
     + [05-bootstrap1](document/document/bootstrap/05-bootstrap1.md)
@@ -38,16 +39,6 @@
     + [reflect](document/document/es6/reflect.md)
     + [set-map](document/document/es6/set-map.md)
     + [symbol](document/document/es6/symbol.md)
-  + **gulp+webpack**
-    + [01-Gulp快速入门教程](document/document/gulp+webpack/01-Gulp快速入门教程.md)
-    + [02-Grunt快速入门教程](document/document/gulp+webpack/02-Grunt快速入门教程.md)
-    + [Webpack入门教程](document/document/gulp+webpack/Webpack入门教程.md)
-    + [webpack3入门教程](document/document/gulp+webpack/webpack3入门教程.md)
-    + [webpack高级](document/document/gulp+webpack/webpack高级.md)
-  + **jQuery**
-    + [04-jQuery](document/document/jQuery/04-jQuery.md)
-    + [04-jQuery三天复习](document/document/jQuery/04-jQuery三天复习.md)
-    + [jQuery三天复习](document/document/jQuery/jQuery三天复习.md)
   + **js**
     + **01-JavaScript基础**
       + [01-JavaScript基础](document/document/js/01-JavaScript基础/01-JavaScript基础.md)
@@ -55,17 +46,9 @@
       + [02-Web API](document/document/js/02-JavaScript-API/02-Web API.md)
     + **03-JavaScript高级**
       + [03-JavaScript高级](document/document/js/03-JavaScript高级/03-JavaScript高级.md)
-  + **vue**
-    + **新建文件夹**
-      + [day1](document/document/vue/新建文件夹/day1.md)
-      + [day10](document/document/vue/新建文件夹/day10.md)
-      + [day2](document/document/vue/新建文件夹/day2.md)
-      + [day3](document/document/vue/新建文件夹/day3.md)
-      + [day4](document/document/vue/新建文件夹/day4.md)
-      + [day5](document/document/vue/新建文件夹/day5.md)
-      + [day6](document/document/vue/新建文件夹/day6.md)
-      + [day7](document/document/vue/新建文件夹/day7.md)
-      + [day8](document/document/vue/新建文件夹/day8.md)
+  + [jQuery三天复习](document/document/jQuery三天复习.md)
+  + [mysql](document/document/mysql.md)
+  + [rap2](document/document/rap2.md)
 ## js
   + **async**
     + [general](document/js/async/general.md)
@@ -164,21 +147,26 @@
   + [伸缩布局](document/微信/伸缩布局.md)
   + [微信](document/微信/微信.md)
   + [微信小程序基本组件总结](document/微信/微信小程序基本组件总结.md)
+## 项目构建工具
+  + **gulp+webpack**
+    + [01-Gulp快速入门教程](document/项目构建工具/gulp+webpack/01-Gulp快速入门教程.md)
+    + [02-Grunt快速入门教程](document/项目构建工具/gulp+webpack/02-Grunt快速入门教程.md)
+    + [Webpack入门教程](document/项目构建工具/gulp+webpack/Webpack入门教程.md)
+    + [webpack3入门教程](document/项目构建工具/gulp+webpack/webpack3入门教程.md)
+    + [webpack高级](document/项目构建工具/gulp+webpack/webpack高级.md)
+  + [eslint](document/项目构建工具/eslint.md)
+  + [webpack+gulp](document/项目构建工具/webpack+gulp.md)
+  + [构建工具](document/项目构建工具/构建工具.md)
 + [code片段](document/code片段.md)
 + [es6](document/es6.md)
-+ [eslint](document/eslint.md)
-+ [git+plugin](document/git+plugin.md)
 + [h5+](document/h5+.md)
 + [http](document/http.md)
 + [js](document/js.md)
-+ [mysql](document/mysql.md)
 + [node](document/node.md)
-+ [rap2](document/rap2.md)
 + [react](document/react.md)
 + [ubuntu](document/ubuntu.md)
 + [uniapp](document/uniapp.md)
 + [vue](document/vue.md)
-+ [webpack+gulp](document/webpack+gulp.md)
 + [windows](document/windows.md)
 + [常识](document/常识.md)
 + [总结](document/总结.md)
