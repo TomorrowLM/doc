@@ -215,28 +215,36 @@ data.a // => 2
 
 ```vue
 <div id="app">
-{{ changewords }} // 渲染 不用写()
+{{ changewords }} 
+//通过在表达式中调用方法来达到同样的效果
+//{{changewords()}}
+//不同的是计算属性是基于它们的响应式依赖进行缓存的。只在相关响应式依赖发生改变时它们才会重新求值。这就意味着只要 message 还没有发生改变，多次访问 reversedMessage 计算属性会立即返回之前的计算结果，而不必再次执行函数。
 </div>
 <script>
 var vm = newVue({
 		el: "#app",
 		data:{},
-		computed:{
-		changewords(){
-			return
-			this.myname.substring(0,1).toUpperCase() + this.myname.substring(1)
-		}
-            
-            //完整写法
-            changewords:{
-             	get: function() {
-        			return  //一定要return
-      			},
-     		 	set: function(newVal) {
-      			}
+   		method:{
+            changewords(){
+            	return
+				this.myname.substring(0,1).toUpperCase() + this.myname.substring(1)
         	}
+        }
+		computed:{
+			changewords(){
+				return
+				this.myname.substring(0,1).toUpperCase() + this.myname.substring(1)
+			}
+       		 //完整写法
+       		 changewords:{
+             		get: function() {
+        				return  //一定要return
+      				},
+     		 		set: function(newVal) {
+      				}
+        	 }
     		//
-		}
+	}
 })
 </script>
 
@@ -348,6 +356,8 @@ v-if 指令用于条件性地渲染一块内容。这块内容只会在指令的
 
  ## 事件
 
+### 使用方法
+
   ```js
   <!-- 完整语法 -->
   <a v-on:click="doSomething">...</a>
@@ -359,7 +369,7 @@ v-if 指令用于条件性地渲染一块内容。这块内容只会在指令的
   <a @[event]="doSomething"> ... </a>
   ```
 
-v-show
+### v-show
 
 ```js
  <div v-show="a"> 
@@ -414,7 +424,7 @@ this.$set(this.arr,index,!this.arr[index]);
 <div v-on:scroll.passive="onScroll">...</div>
 ```
 
-## 键盘
+### 键盘
 
 @keydown	$event	ev.keyCode
 
@@ -429,7 +439,7 @@ this.$set(this.arr,index,!this.arr[index]);
 			@keyup/keydown.up
 			@keyup/keydown.down
 自定义键盘信息:
-	Vue.directive('on').keyCodes.ctrl=17;
+Vue.directive('on').keyCodes.ctrl=17;
 //vue2.0	
 通过全局 config.keyCodes 对象自定义按键修饰符别名：
 Vue.config.keyCodes.ctrl=17;
@@ -491,7 +501,7 @@ Vue.config.keyCodes.ctrl=17;
 
 交互：vue-resource.js
 
-## vue实例简单方法
+## vue实例vm
 
 ```js
 var data = { a: 1 }
@@ -542,6 +552,78 @@ vm.$options.show();
 ## nextTick
 
 https://www.jianshu.com/p/a7550c0e164f
+
+在下次 DOM 更新循环结束之后执行延迟回调。
+
+```js
+// 修改数据
+vm.msg = 'Hello'
+// DOM 还没有更新
+Vue.nextTick(function () {
+  // DOM 更新了
+})
+
+// 作为一个 Promise 使用 (2.1.0 起新增，详见接下来的提示)
+Vue.nextTick()
+  .then(function () {
+    // DOM 更新了
+  })
+```
+
+
+
+## 单元素/组件的过渡动画
+
+https://cn.vuejs.org/v2/guide/transitions.html
+
+Vue 提供了 `transition` 的封装组件，在下列情形中，可以给任何元素和组件添加进入/离开过渡
+
+- 条件渲染 (使用 `v-if`)
+- 条件展示 (使用 `v-show`)
+- 动态组件
+- 组件根节点
+
+在进入/离开的过渡中，会有 6 个 class 切换。
+
+1. `v-enter`：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。
+2. `v-enter-active`：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
+3. `v-enter-to`：**2.1.8 版及以上**定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 `v-enter` 被移除)，在过渡/动画完成之后移除。
+4. `v-leave`：定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。
+5. `v-leave-active`：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
+6. `v-leave-to`：**2.1.8 版及以上**定义离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 `v-leave` 被删除)，在过渡/动画完成之后移除。
+
+![Transition Diagram](https://cn.vuejs.org/images/transition.png)
+
+**实例**
+
+```vue
+<div id="demo">
+  <button v-on:click="show = !show">
+    Toggle
+  </button>
+  <transition name="fade">
+    <p v-if="show">hello</p>
+  </transition>
+</div>
+
+new Vue({
+  el: '#demo',
+  data: {
+    show: true
+  }
+})
+
+<style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>>
+```
+
+
 
 # vue生命周期
 
@@ -620,17 +702,14 @@ Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa,�
 
 在 Vue 里，一个组件本质上是一个拥有预定义选项的一个 Vue 实例。
 
-- **模板**
+- **组件模板**
 
-```
+```js
 <template id="Aaa">
+//必须有根元素，包裹住所有的代码
 	<h1 @click="change">{{msg}}</h1>
 </template>
 ```
-
-- **动态组件**
-
-  <component :is="Aaa"></component>
 
 - **定义组件**
 
@@ -666,75 +745,87 @@ var Aaa={
 - **声明组件**
 
 ```js
-必须有根元素，包裹住所有的代码
-Vue.component('aaa',Aaa);//全局组件
+//全局组件
+Vue.component('aaa',Aaa);
+//局部组件
 var vm=new Vue({
-		components:{ //局部组件
+		components:{ 
 			'aaa':Aaa
 		}
 	});
 ```
 
-## 父组件和子组件通信:
+- **组件名大小写**
+
+  - #### kebab-case(短横线分隔命名) 
+
+    ```
+    Vue.component('my-component-name', { /* ... */ })
+    ```
+
+    当使用 kebab-case 定义一个组件时，你也必须在引用这个自定义元素时使用 kebab-case，例如 `<my-component-name>`。
+
+  - #### PascalCase  (首字母大写命名)    
+
+    ```
+    Vue.component('MyComponentName', { /* ... */ })
+    ```
+
+    当使用 PascalCase定义 一个组件时，你在引用这个自定义元素时两种命名法都可以使用。也就是说 `<my-component-name>` 和 `<MyComponentName>` 都是可接受的
+
+- **动态组件**
+
+  <component :is="componentArr[i]"></component>
+
+  componentArr=[component1,component2]
+
+## props
+
+```vue
+<!-- 在 HTML 中是 kebab-case(短横线分隔命名)  的 -->
+<blog-post post-title="hello!"></blog-post>
+<!-- 在 HTML 中是 的 camelCase (小驼峰)-->
+<blog-post postTitle="hello!"></blog-post>、
+//都可以用postTitle来获取
+Vue.component('blog-post', {T
+  // 在 JavaScript 中是 camelCase 的
+  props: ['postTitle'],
+  template: '<h3>{{ postTitle }}</h3>'
+})
+```
+
+- ​	每个 prop 都可以指定的值类型
+
+  ```json
+  props: {
+    title: String,
+    likes: Number,
+    isPublished: Boolean,
+    commentIds: Array,
+    author: Object,
+    callback: Function,
+    contactsPromise: Promise // or any other constructor
+  }
+  ```
+
+- 所有的 prop 都使得其父子 prop 之间形成了一个**单向下行绑定**：父级 prop 的更新会向下流动到子组件中，但是反过来则不行。这样会防止从子组件意外变更父级组件的状态，从而导致你的应用的数据流向难以理解。每次父级组件发生变更时，子组件中所有的 prop 都将会刷新为最新的值。
+
+## 组件通信
+
+https://segmentfault.com/a/1190000019208626
 
 ### 子组件获取父组件的数据
 
 ```js
-在父组件中声明子组件
-Aaa.components={
-	'bbb':{
-		template:'<h3>我是Aaa的子组件</h3>',
-		props:['msg']
-	}
+父级 prop 的更新会向下流动到子组件中，但是反过来则不行。这样会防止从子组件意外变更父级组件的状态，从而导致你的应用的数据流向难以理解。
+子组件中使用mounted编译完成，将父组件数据赋值给子组件的数据，而直接不使用父组件数据
+mounted(){
+            console.log(this.msg)
+             this.b=this.msg;
+       //   vue2.0不允许直接给父级的数据做赋值操作
+       //若父组件每次传一个对象给子组件，则可以赋值
 }
 ```
-
-**prop 的大小写**
-
--  HTML 中的特性名是大小写不敏感的，所以浏览器会把所有大写字符解释为小写字符。
-  - html 的标签和 **属性** 都是一样，忽略大小写
-  
-    `<H1 TITLE="哈哈">我是h1</H1>`
-  
-  -  这意味着当你使用 DOM 中的模板时，camelCase (驼峰命名法) 的 prop 名不好使了
-  
-  - `<child ：cMsg="pmsg"></child>` 会报警告，父传子也接收不到了
-  - 原因是 ： 接收的属性是：cMsg， 因为忽略大小写，已为 ： cmsg
-  - 所以已经准备要读取的 是 cmsg 的值，否则要报警告
-    `You should probably use "c-msg" instead of "cMsg".`
-  
-- 方式 1 ： 全用小写，不要使用驼峰命名 **(不推荐)**
-  - 接收 ： `cmsg`
-  - props/读取 ：`cmsg`
-  
-- 方式 2 官 ： 需要使用其等价的 kebab-case (短横线分隔命名) 命名： **(推荐)**
-  - 接收 ： `：c-msg='pmsg'`
-  - props/读取 ： `cMsg / this.cMsg`
-
-组件数据传递:
-
-1. 子组件bbb想获取父组件msg
-
-	父组件template调用子组件：
-		<bbb :data="父组件的msg"></bbb>
-	
-	子组件之内:props:['data']
-
-
-**vue.2.0**
-
-	子组件想要拿到父组件数据:通过  props
-	之前，子组件child-com可以更改父组件信息，可以是同步  sync
-	<child-com :msg.sync="父组件的msg"></child-com>msg.sync同步更改父级组件数据
-	 
-	现在，父级 prop 的更新会向下流动到子组件中，但是反过来则不行。这样会防止从子组件意外变更父级组件的状态，从而导致你的应用的数据流向难以理解。但是msg是个对象也可以变更父级组件的状态
-	子组件中使用mounted编译完成，将父组件数据赋值给子组件的数据，而直接不使用父组件数据
-	mounted(){
-	            console.log(this.msg)
-	             this.b=this.msg;
-	       //   vue2.0不允许直接给父级的数据做赋值操作
-	       //若父组件每次传一个对象给子组件，则可以赋值
-	}
 
 ### 父组件获取子组件的数据
 
@@ -747,13 +838,11 @@ Aaa.components={
 		<aaa>
 		</aaa>
 	</div>
-
+	
 	<template id="aaa">
 		<span>我是父级 -> {{msg}}</span>
-		<span>11</span>
 		<bbb @child-msg="get"></bbb>
 	</template>
-
 	<template id="bbb">
 		<h3>子组件-> {{a}}</h3>
 		<input type="button" value="send" @click="send">
@@ -802,7 +891,9 @@ Aaa.components={
 	</script>
 ```
 
-### 同级组件下数据的传递
+### 中央事件总线
+
+**这种方法通过一个空的Vue实例作为中央事件总线（事件中心），用它来触发事件和监听事件,巧妙而轻量地实现了任何组件间的通信，包括父子、兄弟、跨级**。当我们的项目比较大时，可以选择更好的状态管理解决方案vuex。
 
 ```
 var Event = new Vue();　　　　　　相当于又new了一个vue实例，Event中含有vue的全部方法；
@@ -811,12 +902,6 @@ Event.$emit('msg',this.msg);　　　   发送数据，第一个参数是发送�
 
 Event.$on('msg',function(msg){　　接收数据，第一个参数是数据的名字，与发送时的名字对应，第二个参数是一个方法，要对数据的操作
 
-//在vue1.0中
-vm.$dispatch(事件名,数据)	子级向父级发送数据
-vm.$broadcast(事件名,数据)	父级向子级广播数据
-//在vue2.0中
-对于中大型的项目来说，一开始就把vuex的使用计划在内是明智的选择。
-然而在一些小型的项目，或者说像我这样写到一半才发现vue2.0用不了.broadcast和.broadcast和dispatch的人来说，就需要一个比较便捷的解决方法。那么，eventBus的作用就体现出来了
 事件总线eventBus主要是在要相互通信的两个Vue页面之中，都引入一个新的vue实例，然后通过分别调用这个实例的事件触发和监听来实现通信和参数传递。
 ```
 
@@ -862,11 +947,67 @@ vm.$broadcast(事件名,数据)	父级向子级广播数据
         };
 ```
 
-## 异步组件
+### provide/inject
 
- 在大型应用中，我们可能需要将应用分割成小一些的代码块，并且只在需要的时候才从服务器加载一个模块。 
+**允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效**。
 
-## 插槽：slot
+一言而蔽之：祖先组件中通过provider来提供变量，然后在子孙组件中通过inject来注入变量。
+
+**provide / inject API 主要解决了跨级组件间的通信问题，不过它的使用场景，主要是子组件获取上级组件的状态，跨级组件间建立了一种主动提供与依赖注入的关系**。
+
+### `$parent` / `$children`与 `ref`
+
+- `ref`：如果在普通的 DOM 元素上使用，引用指向的就是 DOM 元素；如果用在子组件上，引用就指向组件实例
+- `$parent` / `$children`：访问父 / 子实例
+- **这两种方法的弊端是，无法在跨级或兄弟间通信**。
+
+```js
+// component-a 子组件
+export default {
+  data () {
+    return {
+      title: 'Vue.js'
+    }
+  },
+  methods: {
+    sayHello () {
+      window.alert('Hello');
+    }
+  }
+}
+```
+
+```js
+// 父组件
+<template>
+  <component-a ref="comA"></component-a>
+</template>
+<script>
+  export default {
+    mounted () {
+      const comA = this.$refs.comA;
+      console.log(comA.title);  // Vue.js
+      comA.sayHello();  // 弹窗
+    }
+  }
+</script>
+```
+
+### 使用场景
+
+- 父子通信：
+
+父向子传递数据是通过 props，子向父是通过 events（`$emit`）；通过父链 / 子链也可以通信（`$parent` / `$children`）；ref 也可以访问组件实例；provide / inject API；`$attrs/$listeners`
+
+- 兄弟通信：
+
+Bus；Vuex
+
+- 跨级通信：
+
+Bus；Vuex；provide / inject API、`$attrs/$listeners`
+
+# 插槽：slot
 
 组件里所有标签赋值给slot标签
 

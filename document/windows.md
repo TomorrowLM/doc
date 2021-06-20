@@ -4,11 +4,11 @@ https://sspai.com/post/35133
 
 ## 桌面
 
+https://www.zhihu.com/question/45120814
+
 软媒桌面
 
 TranslucentTB
-
-~~rainmeter~~
 
 ## 录屏工具
 
@@ -18,7 +18,7 @@ LICEcap
 
 snipaste
 
-### 软件清除工具
+## 软件清除工具
 
  **Revo Uninstaller Pro** ， **Geek Uninstaller** 
 
@@ -100,6 +100,6 @@ https://blog.csdn.net/zaoandly/article/details/104806001/
   ```
 
 
-## nvm
+### nvm
 
 https://my.oschina.net/u/1440971/blog/3023276

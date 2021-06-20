@@ -175,7 +175,7 @@ ls -al查看文件读写权限
 
 ## **软件**
 
-### 安装
+### 安装指令
 
 输入`dpkg --list` ,按下Enter键，终端输出以下内容，显示的是你电脑上安装的所有软件。 
 
@@ -207,7 +207,7 @@ apt-get dist-upgrade # ———升级系统
 apt-get check #——-检查是否有损坏的依赖
 ```
 
-#### 1.截图软件flameshot
+### 1.截图软件flameshot
 
 ```
 sudo apt-get install flameshot
@@ -221,7 +221,7 @@ sudo apt-get install flameshot
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20190710114019202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmd5dWFua2wxMjM=,size_16,color_FFFFFF,t_70)
 
-#### 2.zsh（终端）
+### 2.zsh（终端）
 
 windows下好用的终端: consolez, [babun](https://github.com/babun/babun) +cmder,wsl
 
@@ -273,11 +273,11 @@ alias proxy="export all_proxy=socks5://127.0.0.1:1089"
 alias unproxy="unset all_proxy"
 ```
 
-#### 3.dingding
+### 3.dingding
 
 - https://github.com/nashaofu/dingtalk
 
-#### 4.压缩和解压
+### 4.压缩和解压
 
 **rar**
 
@@ -324,36 +324,17 @@ sudo apt-get install unrar
 
 压缩：zip FileName.zip DirName
 
-#### 5.snap
+### 5.snap
 
 https://snapcraft.io/install/qv2ray/ubuntu#install
 
-#### 6.Synaptic Package Manager 
+### 6.Synaptic Package Manager 
 
 是基于APT的图形化包管理工具，它不仅能列出ubuntu系统中所有已经安装的程序，还可以用于安装、卸载、升级软件。系统默认没有此工具，因此需要先通过命令行来安装它。
 1、运行命令行
 2、sudo apt update
 3、sudo apt install synaptic
 4、运行Synaptic
-
-### ubuntu环境下软件出错问题
-
-#### 1.vscode
-
-```
-1.Visual Studio Code无法监视此大工作空间中的文件更改
-查看当前限制：
-cat /proc/sys/fs/inotify/max_user_watches
-可以通过编辑/etc/sysctl.conf,并将此行添加到文件末尾来将限制增加到最大。
-
-fs.inotify.max_user_watches=524288
-然后可以通过运行加载新值sudo sysctl -p。
-
-524,288是可以查看的最大文件数，但是，如果您的环境特别受内存限制，则可能希望减少文件数。每个文件监视占用1080个字节，因此假设所有524,288个监视都被消耗，则导致大约540 MiB的上限。
-
-```
-
-
 
 ## **ps进程指令**
 
@@ -518,14 +499,6 @@ nvm ls
 ```
 
 
-
-# docker
-
-docker安装教程：菜鸟教程
-
-**docker images** 来列出本地主机上的镜像。
-
-**docker ps** 可以看到容器端口
 
 # magento
 
