@@ -369,6 +369,18 @@ v-if 指令用于条件性地渲染一块内容。这块内容只会在指令的
   <a @[event]="doSomething"> ... </a>
   ```
 
+```js
+//使用原生的事件
+mounted() {
+    		//不能直接定义事件，需要从methods中引入this.handleScroll
+    		//TODO,是否是this指向的问题
+			window.addEventListener('scroll', this.handleScroll, true)
+			this.boxTop = this.$refs.tabList.offsetTop;
+},
+```
+
+
+
 ### v-show
 
 ```js
