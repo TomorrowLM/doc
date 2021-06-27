@@ -49,6 +49,7 @@
   + [jQuery三天复习](document/document/jQuery三天复习.md)
   + [mysql](document/document/mysql.md)
   + [rap2](document/document/rap2.md)
+  + [ubuntu](document/document/ubuntu.md)
 ## js
   + **async**
     + [general](document/js/async/general.md)
@@ -144,9 +145,7 @@
     + [string](document/js/types/string.md)
   + [preface](document/js/preface.md)
 ## 微信
-  + [伸缩布局](document/微信/伸缩布局.md)
   + [微信](document/微信/微信.md)
-  + [微信小程序基本组件总结](document/微信/微信小程序基本组件总结.md)
 ## 项目构建工具
   + **gulp+webpack**
     + [01-Gulp快速入门教程](document/项目构建工具/gulp+webpack/01-Gulp快速入门教程.md)
@@ -162,12 +161,11 @@
 + [h5+](document/h5+.md)
 + [http](document/http.md)
 + [js](document/js.md)
++ [learn-tip](document/learn-tip.md)
 + [node](document/node.md)
 + [react](document/react.md)
-+ [ubuntu](document/ubuntu.md)
 + [uniapp](document/uniapp.md)
 + [vue](document/vue.md)
-+ [windows](document/windows.md)
 + [常识](document/常识.md)
 + [总结](document/总结.md)
 + [正则表达式](document/正则表达式.md)
