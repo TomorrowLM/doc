@@ -1320,7 +1320,7 @@ Object.getPrototypeOf({ __proto__: null })
 // null
 ```
 
-### Object.setPrototypeOf()
+### setPrototypeOf()
 
 `Object.setPrototypeOf`方法的作用与`__proto__`相同，用来设置一个对象的`prototype`对象。它是ES6正式推荐的设置原型对象的方法。
 
@@ -1358,7 +1358,7 @@ obj.z // 40
 
 上面代码将proto对象设为obj对象的原型，所以从obj对象可以读取proto对象的属性。
 
-### Object.getPrototypeOf()
+### getPrototypeOf()
 
 该方法与setPrototypeOf方法配套，用于读取一个对象的prototype对象。
 
@@ -1414,7 +1414,7 @@ o.hasOwnProperty('toString');         // 返回 false
 o.hasOwnProperty('hasOwnProperty');   // 返回 false
 ```
 
-### Object.defineProperties()
+### defineProperties()
 
 在一个对象上定义新的属性或修改现有属性，并返回该对象。
 
