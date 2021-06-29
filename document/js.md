@@ -1,6 +1,6 @@
 https://wangdoc.com/javascript/index.html
 
-## 什么是 JavaScript 语言？
+# 什么是 JavaScript 语言？
 
  JavaScript 是一种轻量级的脚本语言。所谓“脚本语言”（script language），指的是它不具备开发操作系统的能力，而是只用来编写控制其他大型应用程序（比如浏览器）的“脚本”。 
 
@@ -12,7 +12,7 @@ JavaScript 的核心语法部分相当精简，只包括两个部分：基本的
 - DOM 类：操作网页的各种元素
 - Web 类：实现互联网的各种功能。操作系统的 API，比如文件操作 API、网络通信 API等等
 
-#### 使用领域
+## 使用领域
 
  **（1）浏览器的平台化**  
 
@@ -30,7 +30,7 @@ JavaScript 的核心语法部分相当精简，只包括两个部分：基本的
 
  **（6）跨平台的桌面应用程序** 
 
-#### 强大的性能
+## 强大的性能
 
 **（1）灵活的语法，表达力强。**
 
@@ -44,9 +44,9 @@ JavaScript 语言本身，虽然是一种解释型语言，但是在现代浏览
 
 JavaScript 程序可以采用事件驱动（event-driven）和非阻塞式（non-blocking）设计，在服务器端适合高并发环境，普通的硬件就可以承受很大的访问量。
 
-## JavaScript 的基本语法
+# JavaScript 的基本语法
 
-#### 语句
+## 语句
 
  表达式是由运算符构成，并运算产生结果的语法结构。每个表达式都会产生一个值,它可以放在任何需要一个值的地方,比如,作为一个函数调用的参数：
 
@@ -54,7 +54,7 @@ JavaScript 程序可以采用事件驱动（event-driven）和非阻塞式（non
 
 语句和表达式的区别在于，前者主要为了进行某种操作，一般情况下不需要返回值；后者则是为了得到返回值，一定会返回一个值。
 
-#### 变量
+## 变量
 
 
 
@@ -75,7 +75,7 @@ JavaScript 是一种动态类型语言，也就是说，变量的类型没有限
 
 由字母、数字、下划线_、$符号组成，不能以数字开头，遵守驼峰命名法。首字母小写，后面单词的首字母需要大写。例如：userName、userPassword
 
-#### 区块
+## 区块
 
 JavaScript 使用大括号，将多个相关的语句组合在一起，称为“区块”（block）。
 
@@ -91,7 +91,7 @@ a // 1
 
 上面代码在区块内部，使用`var`命令声明并赋值了变量`a`，然后在区块外部，变量`a`依然有效，区块对于`var`命令不构成单独的作用域，与不使用区块的情况没有任何区别。
 
-#### **if 结构**
+## **if 结构**
 
 ```
 if (布尔值) 语句;
@@ -109,7 +109,7 @@ return返回null，起到中断方法执行的效果，只要不return false事�
 
 return false，事件处理函数会取消事件，不再继续向下执行。比如表单将终止提交。 
 
-#### **switch 结构**
+## **switch 结构**
 
 多个`if...else`连在一起使用的时候，可以转为使用更方便的`switch`结构。
 
@@ -130,7 +130,7 @@ switch (fruit) {
 
 需要注意的是，`switch`语句后面的表达式，与`case`语句后面的表示式比较运行结果时，采用的是严格相等运算符（`===`），而不是相等运算符（`==`），这意味着比较时不会发生**类型转换**。
 
-#### break 语句和 continue 语句
+## break 语句和 continue 语句
 
 `break`语句和`continue`语句都具有跳转作用，可以让代码不按既有的顺序执行。
 
@@ -149,7 +149,7 @@ while(i < 100) {
 //上面代码只会执行10次循环，一旦i等于10，就会跳出循环。
 ```
 
-#### 循环
+## 循环
 
 ```
 while (条件) {
@@ -162,7 +162,7 @@ while (i < 100) {
 }
 ```
 
-## 数据类型概述
+# 数据类型
 
 - 数值（number）：整数和小数（比如`1`和`3.14`）
 
@@ -200,7 +200,7 @@ while (i < 100) {
 
 - `Object.prototype.toString`方法
 
-### null, undefined 和布尔值
+## null,undefined 和布尔值
 
 ```
 undefined == null
@@ -223,7 +223,7 @@ Number(undefined) // NaN
 转换为true  	 非空字符串  非0数字  true 任何对象
 转换成false  	空字符串  0  false  null  undefined NaN
 
-### 数值
+## 数值
 
 ```javascript
 //JavaScript 语言的底层根本没有整数，所有数字都是小数
@@ -280,9 +280,9 @@ isFinite(null) // true
 isFinite(-1) // true
 ```
 
-#### **转换成数值类型**
+### **转换成数值类型**
 
-##### parseInt
+#### parseInt
 
 `parseInt`方法用于将字符串转为整数。
 
@@ -341,21 +341,21 @@ parseInt('011') // 11
 parseInt('1000', 2) // 二进制的1000，等于十进制的8
 ```
 
-##### parseFloat()    
+#### parseFloat()    
 
-##### isNaN()
+#### isNaN()
 
 `isNaN`方法可以用来判断一个值是否为`NaN`。
 
-##### isFinite()
+#### isFinite()
 
 `isFinite`方法返回一个布尔值，表示某个值是否为正常的数值。
 
-##### Number()
+#### Number()
 
 可以把任意值转换成数值，如果要转换的字符串中有一个不是数值的字符，返回NaN 2.parseInt()  字符串转为整数的时候，是一个个字符依次转换，如果遇到不能转为数字的字符，就不再进行下去，返回已经转好的部分。                                                                                                                                    
 
-### **字符串**
+## **字符串**
 
 单引号字符串的内部，可以使用双引号。双引号字符串的内部，可以使用单引号。
 
@@ -395,7 +395,7 @@ s[1] // "e"
 s[4] // "o"
 ```
 
-#### 字符集
+### 字符集
 
 JavaScript 使用 Unicode 字符集。JavaScript 引擎内部，所有字符都用 Unicode 表示。
 
@@ -403,15 +403,15 @@ JavaScript 不仅以 Unicode 储存字符，还允许直接在程序中使用 Un
 
 我们还需要知道，每个字符在 JavaScript 内部都是以16位（即2个字节）的 UTF-16 格式储存。也就是说，JavaScript 的单位字符长度固定为16位长度，即2个字节。 码点在`U+0000`到`U+FFFF`之间的字符 
 
-#### Base64 转码
+### Base64 转码
 
 有时，文本里面包含一些不可打印的符号，比如 ASCII 码0到31的符号都无法打印出来，这时可以使用 Base64 编码，将它们转成可以打印的字符。另一个场景是，有时需要以文本格式传递二进制数据，那么也可以使用 Base64 编码。
 
 所谓 Base64 就是一种编码方法，可以将任意值转成 0～9、A～Z、a-z、`+`和`/`这64个字符组成的可打印字符。使用它的主要目的，不是为了加密，而是为了不出现特殊字符，简化程序的处理。
 
-### **对象**
+## **对象**
 
-#### 定义
+### 定义
 
  对象就是一组“键值对”（key-value）的集合 
 
@@ -429,7 +429,7 @@ JavaScript 不仅以 Unicode 储存字符，还允许直接在程序中使用 Un
 //如果要解释为对象，最好在大括号前加上圆括号。因为圆括号的里面，只能是表达式，所以确保大括号只能解释为对象。
 ```
 
-#### **读取对象的属性**
+### **读取对象的属性**
 
 有两种方法，一种是使用点运算符，还有一种是使用方括号运算符， **方括号运算符内部还可以使用表达式** 。  数字键可以不加引号，因为会自动转成字符串。 
 
@@ -450,7 +450,7 @@ obj.123 // 报错
 obj[123] // "hello world"
 ```
 
-#### **对象中的this**
+### **对象中的this**
 
 ```js
 var x =5
@@ -470,7 +470,7 @@ console.log(obj.p())
 2 ​​​​​at ​​​obj.p()​​​ ​quokka.js:10:0​
 ```
 
-#### 对象的引用
+### 对象的引用
 
 如果不同的变量名指向同一个对象，那么它们都是这个对象的引用，也就是说指向同一个内存地址。修改其中一个变量，会影响到其他所有变量。
 
@@ -485,19 +485,9 @@ o2.b = 2;
 o1.b // 2
 ```
 
-#### **Object.keys**
 
-```js
-var obj = {
-  key1: 1,
-  key2: 2
-};
 
-Object.keys(obj);
-// ['key1', 'key2']
-```
-
-#### **属性的删除**
+### **属性的删除**
 
  `delete`命令用于删除对象的属性，删除成功后返回`true`。 
 
@@ -528,7 +518,7 @@ delete obj.toString // true
 obj.toString // function toString() { [native code] }
 ```
 
-#### **属性是否存在：in 运算符**
+### **属性是否存在：in 运算符**
 
 ```js
 var obj = { p: 1 };
@@ -546,7 +536,7 @@ if ('toString' in obj) {
 }
 ```
 
-#### 属性的遍历：for...in 循环
+### 属性的遍历：for...in 循环
 
 `for...in`循环用来遍历一个对象的全部属性。
 
@@ -562,7 +552,95 @@ for (var i in obj) {
 - 它遍历的是对象所有可遍历（enumerable）的属性，会跳过不可遍历的属性。
 - 它不仅遍历对象自身的属性，还遍历继承的属性。
 
-### 数组
+### 对象的静态方法
+
+#### Object.keys
+
+`Object.keys`方法的参数是一个对象，返回一个数组。该数组的成员都是该对象自身的（而不是继承的）所有属性名。
+
+```
+var obj = {
+  p1: 123,
+  p2: 456
+};
+
+Object.keys(obj) // ["p1", "p2"]
+```
+
+#### Object.getOwnPropertyNames
+
+接受一个对象作为参数，返回一个数组，包含了该对象自身的所有属性名。
+
+```
+var obj = {
+  p1: 123,
+  p2: 456
+};
+
+Object.getOwnPropertyNames(obj) // ["p1", "p2"]
+```
+
+`Object.keys`方法只返回可枚举的属性（详见《对象属性的描述对象》一章），`Object.getOwnPropertyNames`方法还返回不可枚举的属性名。
+
+```js
+var a = ['Hello', 'World'];
+Object.keys(a) // ["0", "1"]
+Object.getOwnPropertyNames(a) // ["0", "1", "length"]
+```
+
+#### Object.prototype.valueOf()
+
+`valueOf`方法的作用是返回一个对象的“值”，默认情况下返回对象本身。
+
+```
+var obj = new Object();
+obj.valueOf() === obj // true
+```
+
+```
+var obj = new Object();
+1 + obj // "1[object Object]"
+```
+
+上面代码将对象`obj`与数字`1`相加，这时 JavaScript 就会默认调用`valueOf()`方法，求出`obj`的值再与`1`相加。
+
+#### toString() 
+
+`Object.prototype.toString`方法返回对象的类型字符串，因此可以用来判断一个值的类型。
+
+```
+var obj = {};
+obj.toString() // "[object Object]"
+```
+
+返回一个字符串`object Object`，其中第二个`Object`表示该值的构造函数。
+
+由于实例对象可能会自定义`toString`方法，覆盖掉`Object.prototype.toString`方法，所以为了得到类型字符串，最好直接使用`Object.prototype.toString`方法。通过函数的`call`方法，可以在任意值上调用这个方法，帮助我们判断这个值的类型。
+
+```
+Object.prototype.toString.call(value)
+```
+
+上面代码表示对`value`这个值调用`Object.prototype.toString`方法。
+
+不同数据类型的`Object.prototype.toString`方法返回值如下。
+
+- 数值：返回`[object Number]`。
+- 字符串：返回`[object String]`。
+- 布尔值：返回`[object Boolean]`。
+- undefined：返回`[object Undefined]`。
+- null：返回`[object Null]`。
+- 数组：返回`[object Array]`。
+- arguments 对象：返回`[object Arguments]`。
+- 函数：返回`[object Function]`。
+- Error 对象：返回`[object Error]`。
+- Date 对象：返回`[object Date]`。
+- RegExp 对象：返回`[object RegExp]`。
+- 其他对象：返回`[object Object]`。
+
+https://wangdoc.com/javascript/stdlib/attributes.html
+
+## 数组
 
 任何类型的数据，都可以放入数组。
 
@@ -578,7 +656,7 @@ arr[1] // [1, 2, 3]
 arr[2] // function (){return true;}
 ```
 
-#### 数组的本质
+### 数组的本质
 
 数组属于一种特殊的对象。`typeof`运算符会返回数组的类型是`object`。
 
@@ -591,7 +669,7 @@ Object.keys(arr)
 // ["0", "1", "2"]
 ```
 
-#### in 运算符
+### in 运算符
 
 检查某个键名是否存在的运算符`in`，适用于对象，也适用于数组。
 
@@ -602,7 +680,7 @@ var arr = [ 'a', 'b', 'c' ];
 4 in arr // false
 ```
 
-#### for...in 循环和数组的遍历
+### for...in 循环和数组的遍历
 
 `for...in`循环不仅可以遍历对象，也可以遍历数组，毕竟数组只是一种特殊对象。
 
@@ -634,7 +712,7 @@ for (var key in a) {
 
 上面代码在遍历数组时，也遍历到了非整数键`foo`。所以，不推荐使用`for...in`遍历数组。
 
-#### 数组的空位
+### 数组的空位
 
 当数组的某个位置是空元素，即两个逗号之间没有任何值，我们称该数组存在空位（hole）。
 
@@ -662,7 +740,7 @@ a[1] // undefined
 a.length // 3
 ```
 
-#### 类似数组的对象
+### 类似数组的对象
 
 如果一个对象的所有键名都是正整数或零，并且有`length`属性，那么这个对象就很像数组，语法上称为“类似数组的对象”（array-like object）。
 
@@ -692,7 +770,7 @@ obj.push('d') // TypeError: obj.push is not a function
 var arr = Array.prototype.slice.call(arrayLike);
 ```
 
-### 函数
+## 函数
 
 ```js
 函数是一种数据类型	
@@ -719,7 +797,7 @@ function add(x, y) {
 
  JavaScript 引擎遇到`return`语句，就直接返回`return`后面的那个表达式的值，后面即使还有语句，也不会得到执行。 
 
-#### 函数的属性和方法
+### 函数的属性和方法
 
 1.函数的`name`属性返回函数的名字。 
 
@@ -754,7 +832,7 @@ f.toString()
 // }
 ```
 
-#### 函数本身的作用域
+### 函数本身的作用域
 
 ```js
 var a = 1;
@@ -792,7 +870,7 @@ f() // 1
 
 闭包的最大用处有两个，一个是可以读取函数内部的变量，另一个就是让这些变量始终保持在内存中，即闭包可以使得它诞生环境一直存在。 
 
-#### 参数的省略
+### 参数的省略
 
 函数参数不是必需的，JavaScript 允许省略参数。 无论提供多少个参数（或者不提供参数），JavaScript 都不会报错。 
 
@@ -808,9 +886,7 @@ f() // undefined
 f.length // 2
 ```
 
-#### arguments 对象
-
-##### **定义**
+### arguments 对象
 
 由于 JavaScript 允许函数有不定数目的参数，所以需要一种机制，可以在函数体内部读取所有参数。这就是`arguments`对象的由来。
 
@@ -835,7 +911,7 @@ var f = function(a, b) {
 f(1, 1) // 5
 ```
 
-#####  **与数组的关系** 
+####  与数组的关系
 
  虽然`arguments`很像数组，但它是一个对象 
 
@@ -851,7 +927,7 @@ for (var i = 0; i < arguments.length; i++) {
 }
 ```
 
-##### **callee 属性**
+#### **callee 属性**
 
 `arguments`对象带有一个`callee`属性，返回它所对应的原函数。
 
@@ -863,7 +939,7 @@ var f = function () {
 f() // true
 ```
 
-#### 立即调用的函数表达式
+### 立即调用的函数表达式
 
 函数定义后立即调用的解决方法，就是不要让`function`出现在行首，让引擎将其理解成一个表达式。最简单的处理，就是将其放在一个圆括号里面。
 
@@ -873,7 +949,7 @@ f() // true
 (function(){ /* code */ })();
 ```
 
-#### eval 命令
+### eval 命令
 
 `eval`命令接受一个字符串作为参数，并将这个字符串当作语句执行。
 
@@ -907,79 +983,9 @@ a // 1
 
  常情况下，`eval`最常见的场合是解析 JSON 数据的字符串，不过正确的做法应该是使用原生的`JSON.parse`方法。 
 
-#### 5.数组
-
-数组也可以先定义后赋值。
-
-```
-var arr = [];
-
-arr[0] = 'a';
-arr[1] = 'b';
-arr[2] = 'c';
-```
-
- 任何类型的数据，都可以放入数组 
-
-##### 数组的本质
-
-本质上，数组属于一种特殊的对象。`typeof`运算符会返回数组的类型是`object`。
-
-```
-typeof [1, 2, 3] // "object"
-```
-
-```
-var arr = ['a', 'b', 'c'];
-
-Object.keys(arr)
-// ["0", "1", "2"]
-arr['0'] // 'a'
-arr[0] // 'a'
-
-var a = [];
-
-a[1.00] = 6;
-a[1] // 6
-```
-
-```
-var a = [1, , 1];
-a.length // 3
-```
-
-##### 数组的空位
-
-当数组的某个位置是空元素，即两个逗号之间没有任何值，我们称该数组存在空位（hole）。
-
-```
-var a = [1, , 1];
-a.length // 3
-```
-
-使用`delete`命令删除一个数组成员，会形成空位，并且不会影响`length`属性。
-
-```
-var a = [1, 2, 3];
-delete a[1];
-
-a[1] // undefined
-a.length // 3
-```
-
- 如果是空位，使用数组的`forEach`方法、`for...in`结构、以及`Object.keys`方法进行遍历，空位都会被跳过。 
-
-```
-var a = [, , ,];
-
-a.forEach(function (x, i) {
-  console.log(i + '. ' + x);
-})
-```
 
 
-
-## 运算符
+# 运算符
 
 优先级从高到底
 
@@ -1193,7 +1199,7 @@ null === null // true
   [2] == true // false
   ```
 
-## 错误处理机制
+错误处理机制
 
 JavaScript 解析或运行时，一旦发生错误，引擎就会抛出一个错误对象。JavaScript 原生提供`Error`构造函数，所有抛出的错误都是这个构造函数的实例。
 
@@ -1326,7 +1332,7 @@ throw true;
 
 一旦发生错误，程序就中止执行了。JavaScript 提供了`try...catch`结构，允许对错误进行处理，选择是否往下执行。
 
-```
+```js
 try {
   throw new Error('出错了!');
 } catch (e) {
@@ -1341,7 +1347,7 @@ try {
 
 `try...catch`结构允许在最后添加一个`finally`代码块，表示不管是否出现错误，都必需在最后运行的语句。
 
-## 异步操作
+# 异步操作
 
 ### 单线程模型
 
@@ -1406,7 +1412,7 @@ function f1() {
 jQuery.unsubscribe('done', f2);	
 ```
 
-## 构造函数
+# 构造函数
 
 1.对象字面量
 var o = {
@@ -1448,7 +1454,7 @@ var p1 = createPerson('张三', 22, 'actor');
 }
 var p1 = new Person('张三', 22, 'actor');
 
-## 标准库
+# 标准库
 
 ### Math
 
@@ -1525,7 +1531,7 @@ arr.join('');
 
 字符串具有不可变，重新给变量赋值，原来的值仍在内存中，要获得新的值要重新定义变量
 
-## DOM和BOM
+# DOM和BOM
 
 this的几种情况
 
