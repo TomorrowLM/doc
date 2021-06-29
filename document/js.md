@@ -185,14 +185,29 @@ while (i < 100) {
 **JavaScript 有三种方法，可以确定一个值到底是什么类型。**
 
 - `typeof`运算符
+
+  - ```
+    typeof null // "object"
+    ```
+
+    `null`的类型是`object`，这是由于历史原因造成的。1995年的 JavaScript 语言第一版，只设计了五种数据类型（对象、整数、浮点数、字符串和布尔值），没考虑`null`，只把它当作`object`的一种特殊值。后来`null`独立出来，作为一种单独的数据类型，为了兼容以前的代码，`typeof null`返回`object`就没法改变了。
+
+  - ```
+    typeof {}  //object
+    typeof Array() //object
+
 - `instanceof`运算符
+
 - `Object.prototype.toString`方法
 
+### null, undefined 和布尔值
+
 ```
-typeof null // "object"
+undefined == null
+// true
 ```
 
-`null`的类型是`object`，这是由于历史原因造成的。1995年的 JavaScript 语言第一版，只设计了五种数据类型（对象、整数、浮点数、字符串和布尔值），没考虑`null`，只把它当作`object`的一种特殊值。后来`null`独立出来，作为一种单独的数据类型，为了兼容以前的代码，`typeof null`返回`object`就没法改变了。
+
 
 ```
 Number(null) // 0
@@ -201,16 +216,21 @@ Number(undefined) // NaN
 
  **`null`是一个表示“空”的对象，转为数值时为`0`**；`undefined`是一个表示"此处无定义"的原始值，转为数值时为`NaN`。 
 
+
+
 **布尔类型的隐式转换**：
 
 转换为true  	 非空字符串  非0数字  true 任何对象
 转换成false  	空字符串  0  false  null  undefined NaN
 
-#### 数值
+### 数值
 
 ```javascript
-1 === 1.0 // true	JavaScript 语言的底层根本没有整数，所有数字都是小数
-0.1 + 0.2 === 0.3// false     浮点数不是精确的值
+//JavaScript 语言的底层根本没有整数，所有数字都是小数
+1 === 1.0 // true	
+
+//浮点数不是精确的值
+0.1 + 0.2 === 0.3// false     
 0.3 / 0.1// 2.9999999999999996
 (0.3 - 0.2) === (0.2 - 0.1)// false
 
@@ -221,23 +241,36 @@ Number(undefined) // NaN
 (-0).toString() // '0'
 (+0).toString() // '0'
 (1 / +0) === (1 / -0) // false
+//上面的代码之所以出现这样结果，是因为除以正零得到+Infinity，除以负零得到-Infinity
 
 //NaN是 JavaScript 的特殊值，表示“非数字”（Not a Number），主要出现在将字符串解析成数字出错的场合。
 5 - 'x' // NaN
+//上面代码运行时，会自动将字符串x转为数值，但是由于x不是数值，所以最后得到结果为NaN，表示它是“非数字”（NaN）。
+
 0 / 0 // NaN
+
 typeof NaN // 'number'
+
+//NaN不等于任何值，包括它本身。
 NaN === NaN // false
+
 //isNaN方法可以用来判断一个值是否为NaN。isNaN只对数值有效，如果传入其他值，会被先转成数值。比如，传入字符串的时候，字符串会被先转成NaN，所以最后返回true
 isNaN('Hello') // true
 // 相当于
 isNaN(Number('Hello')) // true
 
+```
+
+ **Infinity**
+
+```js
 //Infinity表示“无穷”，用来表示两种场景。一种是一个正的数值太大，或一个负的数值太小，无法表示；另一种是非0数值除以0，得到Infinity。
 1 / 0 // Infinity
 //Infinity有正负之分，Infinity表示正的无穷，-Infinity表示负的无穷。
 Infinity === -Infinity // false
 1 / -0 // -Infinity
 -1 / -0 // Infinity
+
 //isFinite方法返回一个布尔值，表示某个值是否为正常的数值。
 isFinite(Infinity) // false
 isFinite(-Infinity) // false
@@ -247,41 +280,94 @@ isFinite(null) // true
 isFinite(-1) // true
 ```
 
- **转换成数值类型：**
+#### **转换成数值类型**
 
-1.Number()可以把任意值转换成数值，如果要转换的字符串中有一个不是数值的字符，返回NaN 2.parseInt()  字符串转为整数的时候，是一个个字符依次转换，如果遇到不能转为数字的字符，就不再进行下去，返回已经转好的部分。                                                                                                                                    
+##### parseInt
+
+`parseInt`方法用于将字符串转为整数。
+
+```
+parseInt('123') // 123
+```
+
+如果字符串头部有空格，空格会被自动去除。
+
+```
+parseInt('   81') // 81
+```
+
+如果`parseInt`的参数不是字符串，则会先转为字符串再转换。
+
+```
+parseInt(1.23) // 1
+// 等同于
+parseInt('1.23') // 1
+```
+
+字符串转为整数的时候，是一个个字符依次转换，如果遇到不能转为数字的字符，就不再进行下去，返回已经转好的部分。
 
 ```
 parseInt('8a') // 8
-//如果字符串头部有空格，空格会被自动去除
-parseInt('   81') // 81
-parseInt('+1') // 1
-parseInt('abc') // NaN
+parseInt('12**') // 12
+parseInt('12.34') // 12
+parseInt('15e2') // 15
+parseInt('15px') // 15
 ```
 
-3.parseFloat()    
+如果字符串的第一个字符不能转化为数字（后面跟着数字的正负号除外），返回`NaN`。
 
-**进制转化**
+```
+parseInt('abc') // NaN
+parseInt('.3') // NaN
+```
 
- `parseInt`方法还可以接受第二个参数（2到36之间），表示被解析的值的进制 
+如果字符串以`0x`或`0X`开头，`parseInt`会将其按照十六进制数解析。
+
+```
+parseInt('0x10') // 16
+```
+
+如果字符串以`0`开头，将其按照10进制解析。
+
+```
+parseInt('011') // 11
+```
+
+**进制转换**
+
+`parseInt`方法还可以接受第二个参数（2到36之间），表示被解析的值的进制，返回该值对应的十进制数。默认情况下，`parseInt`的第二个参数为10，即默认是十进制转十进制。
 
 ```
 parseInt('1000', 2) // 二进制的1000，等于十进制的8
 ```
 
-#### **字符串**
+##### parseFloat()    
+
+##### isNaN()
+
+`isNaN`方法可以用来判断一个值是否为`NaN`。
+
+##### isFinite()
+
+`isFinite`方法返回一个布尔值，表示某个值是否为正常的数值。
+
+##### Number()
+
+可以把任意值转换成数值，如果要转换的字符串中有一个不是数值的字符，返回NaN 2.parseInt()  字符串转为整数的时候，是一个个字符依次转换，如果遇到不能转为数字的字符，就不再进行下去，返回已经转好的部分。                                                                                                                                    
+
+### **字符串**
 
 单引号字符串的内部，可以使用双引号。双引号字符串的内部，可以使用单引号。
 
-```
+```js
 'key = "value"'
 "It's a long journey"
-如果要在单引号字符串的内部，使用单引号，就必须在内部的单引号前面加上反斜杠，用来转义。双引号字符串内部使用双引号，也是如此。
+//如果要在单引号字符串的内部，使用单引号，就必须在内部的单引号前面加上反斜杠'\'，用来转义。双引号字符串内部使用双引号，也是如此。
 ```
 
-如果长字符串必须分成多行，可以在每一行的尾部使用反斜杠。
+如果长字符串必须分成多行，可以在每一行的尾部使用反斜杠(不使用反斜杠，会报错)。但是，输出的时候还是单行，效果与写在同一行完全一样。
 
-```
+```js
 var longString = 'Long \
 long \
 long \
@@ -309,7 +395,7 @@ s[1] // "e"
 s[4] // "o"
 ```
 
-##### 字符集
+#### 字符集
 
 JavaScript 使用 Unicode 字符集。JavaScript 引擎内部，所有字符都用 Unicode 表示。
 
@@ -317,7 +403,15 @@ JavaScript 不仅以 Unicode 储存字符，还允许直接在程序中使用 Un
 
 我们还需要知道，每个字符在 JavaScript 内部都是以16位（即2个字节）的 UTF-16 格式储存。也就是说，JavaScript 的单位字符长度固定为16位长度，即2个字节。 码点在`U+0000`到`U+FFFF`之间的字符 
 
-#### **3.对象**
+#### Base64 转码
+
+有时，文本里面包含一些不可打印的符号，比如 ASCII 码0到31的符号都无法打印出来，这时可以使用 Base64 编码，将它们转成可以打印的字符。另一个场景是，有时需要以文本格式传递二进制数据，那么也可以使用 Base64 编码。
+
+所谓 Base64 就是一种编码方法，可以将任意值转成 0～9、A～Z、a-z、`+`和`/`这64个字符组成的可打印字符。使用它的主要目的，不是为了加密，而是为了不出现特殊字符，简化程序的处理。
+
+### **对象**
+
+#### 定义
 
  对象就是一组“键值对”（key-value）的集合 
 
@@ -325,19 +419,21 @@ JavaScript 不仅以 Unicode 储存字符，还允许直接在程序中使用 Un
 
  对象采用大括号表示，这导致了一个问题：如果**行首是一个大括号**，它到底是表达式还是语句？ 
 
-```
+```js
 { foo: 123 }
 { console.log(123) } // 123
 //为了避免这种歧义，JavaScript 引擎的做法是，如果遇到这种情况，无法确定是对象还是代码块，一律解释为代码块。
 
 ({ foo: 123 }) // 正确
 ({ console.log(123) }) // 报错
-如果要解释为对象，最好在大括号前加上圆括号。因为圆括号的里面，只能是表达式，所以确保大括号只能解释为对象。
+//如果要解释为对象，最好在大括号前加上圆括号。因为圆括号的里面，只能是表达式，所以确保大括号只能解释为对象。
 ```
 
-读取对象的属性，有两种方法，一种是使用点运算符，还有一种是使用方括号运算符， **方括号运算符内部还可以使用表达式** 。  数字键可以不加引号，因为会自动转成字符串。 
+#### **读取对象的属性**
 
-```
+有两种方法，一种是使用点运算符，还有一种是使用方括号运算符， **方括号运算符内部还可以使用表达式** 。  数字键可以不加引号，因为会自动转成字符串。 
+
+```js
 var p1='p'
 var obj = {
   p: 'Hello World'
@@ -354,9 +450,44 @@ obj.123 // 报错
 obj[123] // "hello world"
 ```
 
-##### **属性的查看Object.keys**
+#### **对象中的this**
 
+```js
+var x =5
+var obj = {
+    x:1,
+    p: function () {
+        console.log(this.x)
+        console.log(x)
+        return 2;
+      }
+}
+console.log(obj.p())
+1 ​​​​​at ​​​this.x​​​ ​quokka.js:5:8​
+
+5 ​​​​​at ​​​x​​​ ​quokka.js:6:8​
+
+2 ​​​​​at ​​​obj.p()​​​ ​quokka.js:10:0​
 ```
+
+#### 对象的引用
+
+如果不同的变量名指向同一个对象，那么它们都是这个对象的引用，也就是说指向同一个内存地址。修改其中一个变量，会影响到其他所有变量。
+
+```js
+var o1 = {};
+var o2 = o1;
+
+o1.a = 1;
+o2.a // 1
+
+o2.b = 2;
+o1.b // 2
+```
+
+#### **Object.keys**
+
+```js
 var obj = {
   key1: 1,
   key2: 2
@@ -366,15 +497,20 @@ Object.keys(obj);
 // ['key1', 'key2']
 ```
 
-##### **属性的删除**
+#### **属性的删除**
 
  `delete`命令用于删除对象的属性，删除成功后返回`true`。 
+
+```js
+var obj = {};
+delete obj.p // true
+```
 
  删除一个不存在的属性，`delete`不报错，而且返回`true`。 
 
  只有一种情况，`delete`命令会返回`false`，那就是该属性存在，且不得删除。 
 
-```
+```js
 var obj = Object.defineProperty({}, 'p', {
   value: 123,
   configurable: false
@@ -386,15 +522,15 @@ delete obj.p // false
 
  `delete`命令只能删除对象本身的属性，无法删除继承的属性 
 
-```
+```js
 var obj = {};
 delete obj.toString // true
 obj.toString // function toString() { [native code] }
 ```
 
-##### **属性是否存在：in 运算符**
+#### **属性是否存在：in 运算符**
 
-```
+```js
 var obj = { p: 1 };
 'p' in obj // true
 'toString' in obj // true
@@ -403,18 +539,18 @@ var obj = { p: 1 };
  `in`运算符的一个问题是，**它不能识别哪些属性是对象自身的，哪些属性是继承的。** 
  可以使用对象的`hasOwnProperty`方法判断一下，是否为对象自身的属性。 
 
-```
+```js
 var obj = {};
 if ('toString' in obj) {
   console.log(obj.hasOwnProperty('toString')) // false
 }
 ```
 
-##### 属性的遍历：for...in 循环
+#### 属性的遍历：for...in 循环
 
 `for...in`循环用来遍历一个对象的全部属性。
 
-```
+```js
 var obj = {a: 1, b: 2, c: 3};
 
 for (var i in obj) {
@@ -423,41 +559,142 @@ for (var i in obj) {
 }
 ```
 
-##### with 语句( 建议不要使用`with`语句 )**
+- 它遍历的是对象所有可遍历（enumerable）的属性，会跳过不可遍历的属性。
+- 它不仅遍历对象自身的属性，还遍历继承的属性。
 
- 它的作用是操作同一个对象的多个属性时，提供一些书写的方便。 
+### 数组
+
+任何类型的数据，都可以放入数组。
 
 ```
-// 例一
+var arr = [
+  {a: 1},
+  [1, 2, 3],
+  function() {return true;}
+];
+
+arr[0] // Object {a: 1}
+arr[1] // [1, 2, 3]
+arr[2] // function (){return true;}
+```
+
+#### 数组的本质
+
+数组属于一种特殊的对象。`typeof`运算符会返回数组的类型是`object`。
+
+数组的特殊性体现在，它的键名是按次序排列的一组整数（0，1，2...）。
+
+```
+var arr = ['a', 'b', 'c'];
+
+Object.keys(arr)
+// ["0", "1", "2"]
+```
+
+#### in 运算符
+
+检查某个键名是否存在的运算符`in`，适用于对象，也适用于数组。
+
+```js
+var arr = [ 'a', 'b', 'c' ];
+2 in arr  // true
+'2' in arr // true
+4 in arr // false
+```
+
+#### for...in 循环和数组的遍历
+
+`for...in`循环不仅可以遍历对象，也可以遍历数组，毕竟数组只是一种特殊对象。
+
+```
+var a = [1, 2, 3];
+
+for (var i in a) {
+  console.log(a[i]);
+}
+// 1
+// 2
+// 3
+```
+
+但是，`for...in`不仅会遍历数组所有的数字键，还会遍历非数字键。
+
+```
+var a = [1, 2, 3];
+a.foo = true;
+
+for (var key in a) {
+  console.log(key);
+}
+// 0
+// 1
+// 2
+// foo
+```
+
+上面代码在遍历数组时，也遍历到了非整数键`foo`。所以，不推荐使用`for...in`遍历数组。
+
+#### 数组的空位
+
+当数组的某个位置是空元素，即两个逗号之间没有任何值，我们称该数组存在空位（hole）。
+
+```
+var a = [1, , 1];
+a.length // 3
+```
+
+需要注意的是，如果最后一个元素后面有逗号，并不会产生空位。也就是说，有没有这个逗号，结果都是一样的。
+
+```
+var a = [1, 2, 3,];
+
+a.length // 3
+a // [1, 2, 3]
+```
+
+使用`delete`命令删除一个数组成员，会形成空位，并且不会影响`length`属性。
+
+```
+var a = [1, 2, 3];
+delete a[1];
+
+a[1] // undefined
+a.length // 3
+```
+
+#### 类似数组的对象
+
+如果一个对象的所有键名都是正整数或零，并且有`length`属性，那么这个对象就很像数组，语法上称为“类似数组的对象”（array-like object）。
+
+```js
 var obj = {
-  p1: 1,
-  p2: 2,
+  0: 'a',
+  1: 'b',
+  2: 'c',
+  length: 3
 };
-with (obj) {
-  p1 = 4;
-  p2 = 5;
-}
-// 等同于
-obj.p1 = 4;
-obj.p2 = 5;
+
+obj[0] // 'a'
+obj[1] // 'b'
+obj.length // 3
+obj.push('d') // TypeError: obj.push is not a function
 ```
 
- 注意，如果`with`区块内部有变量的赋值操作，必须是当前对象已经存在的属性，否则会创造一个当前作用域的全局变量。 
+上面代码中，对象`obj`就是一个类似数组的对象。但是，“类似数组的对象”并不是数组，因为它们不具备数组特有的方法。对象`obj`没有数组的`push`方法，使用该方法就会报错。
+
+“类似数组的对象”的根本特征，就是具有`length`属性。**只要有`length`属性，就可以认为这个对象类似于数组**。但是有一个问题，这种`length`属性不是动态值，不会随着成员的变化而变化。
+
+典型的“类似数组的对象”是函数的`arguments`对象，以及大多数 DOM 元素集，还有字符串。
+
+数组的`slice`方法可以将“类似数组的对象”变成真正的数组。
 
 ```
-var obj = {};
-with (obj) {
-  p1 = 4;
-  p2 = 5;
-}
-
-obj.p1 // undefined
-p1 // 4
+var arr = Array.prototype.slice.call(arrayLike);
 ```
 
-#### 4.函数
+### 函数
 
-```
+```js
 函数是一种数据类型	
 函数的定义：
 //1.function 命令
@@ -474,21 +711,52 @@ var add = new Function(
   'y',
   'return x + y'
 );
+// 等同于
+function add(x, y) {
+  return x + y;
+}
 ```
 
  JavaScript 引擎遇到`return`语句，就直接返回`return`后面的那个表达式的值，后面即使还有语句，也不会得到执行。 
 
-##### 函数的属性和方法
+#### 函数的属性和方法
 
 1.函数的`name`属性返回函数的名字。 
 
+```js
+var f2 = function () {};
+f2.name // "f2"
+var f3 = function myName() {};
+f3.name // 'myName'
+```
+
 2.函数的`length`属性返回函数预期传入的参数个数，即函数定义之中的参数个数。 
+
+```
+function f(a, b) {}
+f.length // 2
+```
 
 3.函数的`toString()`方法返回一个字符串，内容是函数的源码。 
 
-##### 函数本身的作用域
+```js
+function f() {
+  a();
+  b();
+  c();
+}
 
+f.toString()
+// function f() {
+//  a();
+//  b();
+//  c();
+// }
 ```
+
+#### 函数本身的作用域
+
+```js
 var a = 1;
 var x = function () {
   console.log(a);
@@ -506,7 +774,7 @@ f() // 1
 
 同样的，函数体内部声明的函数，作用域绑定函数体内部。
 
-```
+```js
 function foo() {
   var x = 1;
   function bar() {
@@ -524,11 +792,11 @@ f() // 1
 
 闭包的最大用处有两个，一个是可以读取函数内部的变量，另一个就是让这些变量始终保持在内存中，即闭包可以使得它诞生环境一直存在。 
 
-##### 参数的省略
+#### 参数的省略
 
 函数参数不是必需的，JavaScript 允许省略参数。 无论提供多少个参数（或者不提供参数），JavaScript 都不会报错。 
 
-```
+```js
 function f(a, b) {
   return a;
 }
@@ -540,35 +808,40 @@ f() // undefined
 f.length // 2
 ```
 
-##### arguments 对象
+#### arguments 对象
 
-**（1）定义**
+##### **定义**
 
 由于 JavaScript 允许函数有不定数目的参数，所以需要一种机制，可以在函数体内部读取所有参数。这就是`arguments`对象的由来。
 
-```
+```js
 var f = function (one) {
   console.log(arguments[0]);
   console.log(arguments[1]);
   console.log(arguments[2]);
-  //正常模式下，arguments对象可以在运行时修改。
-  arguments[0] = 3;
 }
-
 f(1, 2, 3)
 // 1
 // 2
 // 3
 
+//正常模式下，arguments对象可以在运行时修改。
+var f = function(a, b) {
+  arguments[0] = 3;
+  arguments[1] = 2;
+  return a + b;
+}
+
+f(1, 1) // 5
 ```
 
- **（2）与数组的关系** 
+#####  **与数组的关系** 
 
  虽然`arguments`很像数组，但它是一个对象 
 
 将`arguments`转为真正的数组。下面是两种常用的转换方法：`slice`方法和逐一填入新数组。
 
-```
+```js
 var args = Array.prototype.slice.call(arguments);
 
 // 或者
@@ -578,11 +851,19 @@ for (var i = 0; i < arguments.length; i++) {
 }
 ```
 
-**（3）callee 属性**
+##### **callee 属性**
 
 `arguments`对象带有一个`callee`属性，返回它所对应的原函数。
 
-##### 立即调用的函数表达式
+```js
+var f = function () {
+  console.log(arguments.callee === f);
+}
+
+f() // true
+```
+
+#### 立即调用的函数表达式
 
 函数定义后立即调用的解决方法，就是不要让`function`出现在行首，让引擎将其理解成一个表达式。最简单的处理，就是将其放在一个圆括号里面。
 
@@ -592,7 +873,7 @@ for (var i = 0; i < arguments.length; i++) {
 (function(){ /* code */ })();
 ```
 
-##### eval 命令
+#### eval 命令
 
 `eval`命令接受一个字符串作为参数，并将这个字符串当作语句执行。
 
@@ -696,6 +977,8 @@ a.forEach(function (x, i) {
 })
 ```
 
+
+
 ## 运算符
 
 优先级从高到底
@@ -721,14 +1004,17 @@ a.forEach(function (x, i) {
 - **数值运算符**： `+x`
 - **负数值运算符**：`-x`
 
-#### 加法
+#### 加法运算符
 
 JavaScript 允许非数值的相加。
 
-```
+```js
+//布尔值都会自动转成数值
 true + true // 2
 1 + true // 2
+//两个字符串相加，这时加法运算符会变成连接运算符，返回一个新的字符串，将两个原字符串连接在一起。
 'a' + 'bc' // "abc"
+//如果一个运算子是字符串，另一个运算子是非字符串，这时非字符串会转成字符串，再连接在一起。
 1 + 'a' // "1a"
 false + 'a' // "falsea"
 ```
@@ -741,9 +1027,28 @@ false + 'a' // "falsea"
 2 ** 4 // 16
 ```
 
+#### 数值运算符，负数值运算符
+
+数值运算符（`+`）同样使用加号，但它是一元运算符（只需要一个操作数），而加法运算符是二元运算符（需要两个操作数）
+
+```js
++true // 1
++[] // 0
++{} // NaN
+//非数值经过数值运算符以后，都变成了数值
+```
+
+```
+var x = 1;
+-x // -1
+-(-x) // 1
+```
+
+数值运算符号和负数值运算符，都会返回一个新的值，而不会改变原始变量的值。
+
 ### 比较运算符
 
-###### 非相等运算符：字符串的比较
+#### 字符串的比较
 
 JavaScript 引擎内部首先比较首字符的 Unicode 码点。如果相等，再比较第二个字符的 Unicode 码点，以此类推。
 
@@ -752,13 +1057,13 @@ JavaScript 引擎内部首先比较首字符的 Unicode 码点。如果相等，
 'cat' > 'catalog' // false
 ```
 
-###### 非相等运算符：非字符串的比较
+#### 非字符串的比较
 
 **（1）原始类型值**
 
 如果两个运算子都是原始类型的值，则是先转成数值再比较。
 
-```
+```js
 5 > '4' // true
 // 等同于 5 > Number('4')
 // 即 5 > 4
@@ -770,6 +1075,10 @@ true > false // true
 2 > true // true
 // 等同于 2 > Number(true)
 // 即 2 > 1
+
+//注意与NaN的比较。任何值（包括NaN本身）与NaN使用非相等运算符进行比较，返回的都是false。\
+1 > NaN // false
+1 <= NaN // false
 ```
 
 **（2）对象**
@@ -778,7 +1087,7 @@ true > false // true
 
 对象转换成原始类型的值,算法是先调用`valueOf`方法；如果返回的还是对象，再接着调用`toString`方法
 
-```
+```js
 var x = [2];
 x > '11' // true
 // 等同于 [2].valueOf().toString() > '11'
@@ -795,11 +1104,30 @@ x > '11' // false
 
 ```
 
-###### 严格相等运算符
+#### 严格相等运算符
 
 JavaScript 提供两种相等运算符：`==`和`===`。
 
 简单说，它们的区别是相等运算符（`==`）比较两个值是否相等，严格相等运算符（`===`）比较它们是否为“同一个值”。如果两个值不是同一类型，严格相等运算符（`===`）直接返回`false`，而相等运算符==会将它们转换成同一个类型，再用严格相等运算符进行比较。
+
+**不同类型的值**
+
+如果两个值的类型不同，直接返回`false`。
+
+**同一类的原始类型值**
+
+同一类型的原始类型的值（数值、字符串、布尔值）比较时，值相同就返回`true`，值不同就返回`false`。
+
+```
+1 === 0x1 // true
+```
+
+需要注意的是，`NaN`与任何值都不相等（包括自身）。另外，正`0`等于负`0`。
+
+```
+NaN === NaN  // false
++0 === -0 // true
+```
 
 **复合类型值**
 
@@ -814,13 +1142,13 @@ undefined === undefined // true
 null === null // true
 ```
 
-###### 相等运算符
+#### 相等运算符
 
-- 原始类型值
+- **原始类型值**
 
   原始类型的值会转换成数值再进行比较。
 
-  ```
+  ```js
   1 == true // true
   // 等同于 1 === Number(true)
   
@@ -852,7 +1180,7 @@ null === null // true
 
    先调用对象的`valueOf()`方法，如果得到原始类型的值 。 如果得到的还是对象，则再调用`toString()`方法 
 
-  ```
+  ```js
   // 数组与数值的比较
   [1] == 1 // true
   
@@ -878,7 +1206,9 @@ err.message // "出错了"
 - **name**：错误名称（非标准属性）
 - **stack**：错误的堆栈（非标准属性）
 
-### SyntaxError 对象
+### 原生错误类型
+
+#### SyntaxError 对象
 
 `SyntaxError`对象是解析代码时发生的语法错误。
 
@@ -892,15 +1222,15 @@ console.log 'hello');
 // Uncaught SyntaxError: Unexpected string
 ```
 
-### ReferenceError 对象
+#### ReferenceError 对象
 
 `ReferenceError`对象是引用一个不存在的变量时发生的错误。
 
-### RangeError 对象
+#### RangeError 对象
 
 `RangeError`对象是一个值超出有效范围时发生的错误。
 
-### TypeError 对象
+#### TypeError 对象
 
 `TypeError`对象是变量或参数不是预期类型时发生的错误。比如，对字符串、布尔值、数值等原始类型的值使用`new`命令，就会抛出这种错误，因为`new`命令的参数应该是一个构造函数。
 
@@ -915,13 +1245,27 @@ obj.unknownMethod()
 
 上面代码的第二种情况，调用对象不存在的方法，也会抛出`TypeError`错误，因为`obj.unknownMethod`的值是`undefined`，而不是一个函数。
 
-### URIError 对象
+#### URIError 对象
 
 `URIError`对象是 URI 相关函数的参数不正确时抛出的错误，主要涉及`encodeURI()`、`decodeURI()`、`encodeURIComponent()`、`decodeURIComponent()`、`escape()`和`unescape()`这六个函数。
 
+#### 总结
+
+以上这6种派生错误，连同原始的`Error`对象，都是构造函数。开发者可以使用它们，手动生成错误对象的实例。这些构造函数都接受一个参数，代表错误提示信息（message）。
+
+```js
+var err1 = new Error('出错了！');
+var err2 = new RangeError('出错了，变量超出有效范围！');
+var err3 = new TypeError('出错了，变量类型无效！');
+
+err1.message // "出错了！"
+err2.message // "出错了，变量超出有效范围！"
+err3.message // "出错了，变量类型无效！"
+```
+
 ### 自定义错误
 
-```
+```js
 function UserError(message) {
   this.message = message || '默认信息';
   this.name = 'UserError';
@@ -931,9 +1275,15 @@ UserError.prototype = new Error();
 UserError.prototype.constructor = UserError;
 ```
 
+上面代码自定义一个错误对象`UserError`，让它继承`Error`对象。然后，就可以生成这种自定义类型的错误了。
+
+```js
+new UserError('这是自定义的错误！');
+```
+
 ### throw 语句
 
-```
+```js
 if (x <= 0) {
   throw new Error('x 必须为正数');
 }
