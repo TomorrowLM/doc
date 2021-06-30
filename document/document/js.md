@@ -1415,6 +1415,8 @@ jQuery.unsubscribe('done', f2);
 # 构造函数
 
 1.对象字面量
+
+```js
 var o = {
 name: 'zs',
 age: 18,
@@ -1423,7 +1425,12 @@ sayHi: function () {
 	console.log(this.name);
 	}
 };   
+
+```
+
 2.new Object()创建对象
+
+```js
     var person = new Object();
     person.name = 'lisi';
     person.age = 35;
@@ -1431,7 +1438,11 @@ sayHi: function () {
     person.sayHi = function() {
     console.log('Hello,everyBody');
 }
+```
+
 3.工厂函数创建对象
+
+```js
 function createPerson(name, age, job) {
 var person = new Object();
 person.name = name;
@@ -1442,8 +1453,10 @@ console.log('Hello,everyBody');
 	}
 return person;
 }
-var p1 = createPerson('张三', 22, 'actor');
- 4.自定义构造函数，构造函数用于创建一类对象，**首字母要大写**。delete obj.name;删除对象的属性
+var p1 = createPerson('张三', 22, 'actor'); 4.自定义构造函数，构造函数用于创建一类对象，**首字母要大写**。delete obj.name;删除对象的属性
+```
+
+```js
     function Person(name, age, job){
     this.name = name;
     this.age = age;
@@ -1453,6 +1466,7 @@ var p1 = createPerson('张三', 22, 'actor');
 	}
 }
 var p1 = new Person('张三', 22, 'actor');
+```
 
 # 标准库
 
@@ -1530,23 +1544,3 @@ arr.join('');
  当调用字符串的方法时 eg：当调用s1.substring(5)的时候，先把s1包装成String类型的临时对象，再调用substring方法，最后销毁临时对象
 
 字符串具有不可变，重新给变量赋值，原来的值仍在内存中，要获得新的值要重新定义变量
-
-# DOM和BOM
-
-this的几种情况
-
-```
-1 普通函数中的this  ->  window
-2 构造函数中的this  ->  是当前构造函数创建的对象
-3 方法中的this      ->  方法所属的对象
-4 事件处理函数中的this   ->  事件源，谁调用的该事件this就指向谁
-```
-
-```
-console.log(box.innerHTML);获取内容的时候，如果内容中有标签，会把标签页获取到,原封不动把内容获取到
-console.log(box.innerText);获取内容的时候，如果内容中有标签，会把标签过滤掉,innerText 会把前后的换行和空白都去掉
-console.log(box.textContent);如果内容中有标签，会把标签过滤掉,不会把前后的换行和空白都去掉
-```
-
-
-
