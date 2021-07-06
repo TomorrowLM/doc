@@ -1896,6 +1896,10 @@ let d = mix(c).with(a, b);
 
 出于完整性的考虑，`Object.getOwnPropertyDescriptors`进入标准以后，还会有`Reflect.getOwnPropertyDescriptors`方法。
 
+#### Object.getOwnPropertyNames(obj) 
+
+该方法返回一个数组，其中包含了当前对象所有属性的名称（字符串），不论它们是否可枚举。当然，也可以用`Object.keys()`来单独返回可枚举的属性。
+
 ### 属性的遍历
 
 #### Object.keys()
@@ -2038,6 +2042,177 @@ function entries(obj) {
   return arr;
 }
 ```
+
+# Iterator循环
+
+## 定义
+
+ JavaScript表示“**集合**”的数据结构：
+
+数组（`Array`）和对象（`Object`），Map和Set
+
+若 数组的成员是`Map`，`Map`的成员是对象 ， 这样就需要一种统一的接口机制，来处理所有不同的数据结构。  
+
+遍历器（Iterator）就是这样一种机制。它是一种接口，为各种不同的数据结构**提供统一的访问机制**。 任何数据结构只要部署 Iterator 接口，就可以完成遍历操作 
+
+**Iterator 的遍历过程是这样的。**
+
+（1）创建一个指针对象，指向当前数据结构的起始位置。也就是说，**遍历器对象本质上，就是一个指针对象。**
+
+（2）第一次调用指针对象的`next`方法，可以将指针指向数据结构的第一个成员。
+
+（3）第二次调用指针对象的`next`方法，指针就指向数据结构的第二个成员。
+
+（4）不断调用指针对象的`next`方法，直到它指向数据结构的结束位置。
+
+ 每一次调用`next`方法，都会返回数据结构的当前成员的信息。具体来说，就是返回一个包含`value`和`done`两个属性的对象。其中，`value`属性是当前成员的值，`done`属性是一个布尔值，表示遍历是否结束。 
+
+模拟`next`方法返回值的例子。
+
+```javascript
+var it = makeIterator(['a', 'b']);
+
+it.next() // { value: "a", done: false }
+it.next() // { value: "b", done: false }
+it.next() // { value: undefined, done: true }
+
+function makeIterator(array) {
+  var nextIndex = 0;
+  return {
+    next: function() {
+      return nextIndex < array.length ?
+        {value: array[nextIndex++], done: false} :
+        {value: undefined, done: true};
+    }
+  };
+}
+```
+
+##  for...of 
+
+当使用`for...of`循环遍历某种数据结构时，该循环会自动去寻找 Iterator 接口。 
+
+ 默认的 Iterator 接口部署在数据结构的`Symbol.iterator`属性，或者说，一个数据结构只要具有`Symbol.iterator`属性，就可以认为是“可遍历的”（iterable）。**`Symbol.iterator`属性本身是一个函数**，就是当前数据结构默认的遍历器生成函数。  执行这个函数，就会返回一个遍历器对象。
+
+```javascript
+const obj = {
+  [Symbol.iterator] : function () {
+    return {
+      next: function () {
+        return {
+          value: 1,
+          done: true
+        };
+      }
+    };
+  }
+};
+```
+
+ 对象`obj`是可遍历的（iterable），因为具有`Symbol.iterator`属性。执行这个属性，会返回一个遍历器对象。
+
+ 一个对象如果要具备可被`for...of`循环调用的 Iterator 接口，就必须在`Symbol.iterator`的属性上部署遍历器生成方法（原型链上的对象具有该方法也可）。 如果`Symbol.iterator`方法对应的不是遍历器生成函数（即会返回一个遍历器对象），解释引擎将会报错。  
+
+ **原生具备 Iterator 接口的数据结构如下。**
+
+- Array
+- Map
+- Set
+- String
+- TypedArray
+- 函数的 arguments 对象
+- NodeList 对象
+
+```javascript
+let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+
+iter.next() // { value: 'a', done: false }
+iter.next() // { value: 'b', done: false }
+iter.next() // { value: 'c', done: false }
+iter.next() // { value: undefined, done: true }
+```
+
+ 变量`arr`是一个数组，原生就具有遍历器接口，部署在`arr`的`Symbol.iterator`属性上面。所以，调用这个属性，就得到遍历器对象。 
+
+对于原生部署 Iterator 接口的数据结构，不用自己写遍历器生成函数，`for...of`循环会自动遍历它们。除此之外，其他数据结构（主要是对象）的 Iterator 接口，都需要自己在`Symbol.iterator`属性上面部署，这样才会被`for...of`循环遍历。
+
+## 调用Iterator接口的场合
+
+### **解构赋值**
+
+对数组和 Set 结构进行解构赋值时，会默认调用`Symbol.iterator`方法。
+
+### **扩展运算符**
+
+扩展运算符（...）也会调用默认的 Iterator 接口。
+
+### **yield**
+
+`yield*`后面跟的是一个可遍历的结构，它会调用该结构的遍历器接口。
+
+```javascript
+let generator = function* () {
+  yield 1;
+  yield* [2,3,4];
+  yield 5;
+};
+
+var iterator = generator();
+
+iterator.next() // { value: 1, done: false }
+```
+
+### **其他场合**
+
+由于数组的遍历会调用遍历器接口，所以任何接受数组作为参数的场合，其实都调用了遍历器接口。下面是一些例子。
+
+- for...of
+- Array.from()
+- Map(), Set(), WeakMap(), WeakSet()（比如`new Map([['a',1],['b',2]])`）
+- Promise.all()
+- Promise.race()
+
+## 与其他遍历语法的比较
+
+1. 最原始的写法就是`for`循环。
+
+   ```javascript
+   for (var index = 0; index < myArray.length; index++) {
+     console.log(myArray[index]);
+   }
+   ```
+
+2. 数组提供内置的`forEach`方法。
+
+   ```javascript
+   myArray.forEach(function (value) {
+     console.log(value);
+   });
+   //这种写法的问题在于，无法中途跳出forEach循环，break命令或return命令都不能奏效。
+   ```
+
+3. `for...in`循环可以遍历数组的键名。 
+
+   ```javascript
+   for (var index in myArray) {
+     console.log(myArray[index]);
+   }
+   //for...in循环主要是为遍历对象而设计的，不适用于遍历数组。
+   ```
+
+4. `for...of`循环相比上面几种做法，有一些显著的优点。
+
+   ```javascript
+   for (var n of fibonacci) {
+     if (n > 1000)
+       break;
+     console.log(n);
+   }
+   //不同于forEach方法，它可以与break、continue和return配合使用。
+   ```
+
+
 
 # 函数的扩展
 
@@ -2236,6 +2411,8 @@ var getTempItem = id => ({ id: id, name: "Temp" });
 
 上面四点中，第一点尤其值得注意。`this`对象的指向是可变的，但是在箭头函数中，它是固定的。
 
+
+
 # Class
 
 ## Class基本语法
@@ -2342,7 +2519,23 @@ Object.getOwnPropertyNames(Point.prototype)
 // ["constructor","toString"]
 ```
 
+## constructor方法
 
+`constructor`方法是类的默认方法，通过`new`命令生成对象实例时，自动调用该方法。一个类必须有`constructor`方法，如果没有显式定义，一个空的`constructor`方法会被默认添加。
+
+`constructor`方法默认返回实例对象（即`this`），完全可以指定返回另外一个对象。
+
+```javascript
+class Foo {
+  constructor() {
+    return Object.create(null);
+  }
+}
+
+new Foo() instanceof Foo
+```
+
+上面代码中，`constructor`函数返回一个全新的对象，结果导致实例对象不是`Foo`类的实例。
 
 ## 类的实例对象
 
@@ -2452,6 +2645,8 @@ class ColorPoint extends Point {
 
 子类必须在`constructor`方法中调用`super`方法，否则新建实例时会报错。这是因为子类没有自己的`this`对象，而是继承父类的`this`对象，然后对其进行加工。如果不调用`super`方法，子类就得不到`this`对象。
 
+实质是先创造父类的实例对象`this`（所以必须先调用`super`方法），然后再用子类的构造函数修改`this`。
+
 `super()`在这里相当于`A.prototype.constructor.call(this)`。
 
 ### 类的prototype属性和__proto__属性
@@ -2526,6 +2721,45 @@ class Bar extends Foo {
 }
 
 Bar.classMethod();
+```
+
+## new.target属性
+
+`new`是从构造函数生成实例的命令。ES6为`new`命令引入了一个`new.target`属性，（在构造函数中）返回`new`命令作用于的那个构造函数。如果构造函数不是通过`new`命令调用的，`new.target`会返回`undefined`，因此这个属性可以用来确定构造函数是怎么调用的。
+
+```javascript
+// 另一种写法
+function Person(name) {
+  if (new.target === Person) {
+    this.name = name;
+  } else {
+    throw new Error('必须使用new生成实例');
+  }
+}
+
+var person = new Person('张三'); // 正确
+var notAPerson = Person.call(person, '张三');  // 报错
+```
+
+上面代码确保构造函数只能通过`new`命令调用。
+
+需要注意的是，子类继承父类时，`new.target`会返回子类。
+
+```javascript
+class Rectangle {
+  constructor(length, width) {
+    console.log(new.target === Rectangle);
+    // ...
+  }
+}
+
+class Square extends Rectangle {
+  constructor(length) {
+    super(length, length);
+  }
+}
+
+var obj = new Square(3); // 输出 false
 ```
 
 ## 特性
@@ -2772,175 +3006,6 @@ console.log('original === cast ? ' + (original === cast));
 // "original === cast ? true"
 // "value: 我在第二行"
 ```
-
-# Iterator循环
-
-## 定义
-
- JavaScript表示“**集合**”的数据结构：
-
-数组（`Array`）和对象（`Object`），Map和Set
-
-若 数组的成员是`Map`，`Map`的成员是对象 ， 这样就需要一种统一的接口机制，来处理所有不同的数据结构。  
-
-遍历器（Iterator）就是这样一种机制。它是一种接口，为各种不同的数据结构**提供统一的访问机制**。 任何数据结构只要部署 Iterator 接口，就可以完成遍历操作 
-
-**Iterator 的遍历过程是这样的。**
-
-（1）创建一个指针对象，指向当前数据结构的起始位置。也就是说，**遍历器对象本质上，就是一个指针对象。**
-
-（2）第一次调用指针对象的`next`方法，可以将指针指向数据结构的第一个成员。
-
-（3）第二次调用指针对象的`next`方法，指针就指向数据结构的第二个成员。
-
-（4）不断调用指针对象的`next`方法，直到它指向数据结构的结束位置。
-
- 每一次调用`next`方法，都会返回数据结构的当前成员的信息。具体来说，就是返回一个包含`value`和`done`两个属性的对象。其中，`value`属性是当前成员的值，`done`属性是一个布尔值，表示遍历是否结束。 
-
-模拟`next`方法返回值的例子。
-
-```javascript
-var it = makeIterator(['a', 'b']);
-
-it.next() // { value: "a", done: false }
-it.next() // { value: "b", done: false }
-it.next() // { value: undefined, done: true }
-
-function makeIterator(array) {
-  var nextIndex = 0;
-  return {
-    next: function() {
-      return nextIndex < array.length ?
-        {value: array[nextIndex++], done: false} :
-        {value: undefined, done: true};
-    }
-  };
-}
-```
-
-##  for...of 
-
-当使用`for...of`循环遍历某种数据结构时，该循环会自动去寻找 Iterator 接口。 
-
- 默认的 Iterator 接口部署在数据结构的`Symbol.iterator`属性，或者说，一个数据结构只要具有`Symbol.iterator`属性，就可以认为是“可遍历的”（iterable）。**`Symbol.iterator`属性本身是一个函数**，就是当前数据结构默认的遍历器生成函数。  执行这个函数，就会返回一个遍历器对象。
-
-```javascript
-const obj = {
-  [Symbol.iterator] : function () {
-    return {
-      next: function () {
-        return {
-          value: 1,
-          done: true
-        };
-      }
-    };
-  }
-};
-```
-
- 对象`obj`是可遍历的（iterable），因为具有`Symbol.iterator`属性。执行这个属性，会返回一个遍历器对象。
-
- 一个对象如果要具备可被`for...of`循环调用的 Iterator 接口，就必须在`Symbol.iterator`的属性上部署遍历器生成方法（原型链上的对象具有该方法也可）。 如果`Symbol.iterator`方法对应的不是遍历器生成函数（即会返回一个遍历器对象），解释引擎将会报错。  
-
- **原生具备 Iterator 接口的数据结构如下。**
-
-- Array
-- Map
-- Set
-- String
-- TypedArray
-- 函数的 arguments 对象
-- NodeList 对象
-
-```javascript
-let arr = ['a', 'b', 'c'];
-let iter = arr[Symbol.iterator]();
-
-iter.next() // { value: 'a', done: false }
-iter.next() // { value: 'b', done: false }
-iter.next() // { value: 'c', done: false }
-iter.next() // { value: undefined, done: true }
-```
-
- 变量`arr`是一个数组，原生就具有遍历器接口，部署在`arr`的`Symbol.iterator`属性上面。所以，调用这个属性，就得到遍历器对象。 
-
-对于原生部署 Iterator 接口的数据结构，不用自己写遍历器生成函数，`for...of`循环会自动遍历它们。除此之外，其他数据结构（主要是对象）的 Iterator 接口，都需要自己在`Symbol.iterator`属性上面部署，这样才会被`for...of`循环遍历。
-
-## 调用Iterator接口的场合
-
-### **解构赋值**
-
-对数组和 Set 结构进行解构赋值时，会默认调用`Symbol.iterator`方法。
-
-### **扩展运算符**
-
-扩展运算符（...）也会调用默认的 Iterator 接口。
-
-### **yield**
-
-`yield*`后面跟的是一个可遍历的结构，它会调用该结构的遍历器接口。
-
-```javascript
-let generator = function* () {
-  yield 1;
-  yield* [2,3,4];
-  yield 5;
-};
-
-var iterator = generator();
-
-iterator.next() // { value: 1, done: false }
-```
-
-### **其他场合**
-
-由于数组的遍历会调用遍历器接口，所以任何接受数组作为参数的场合，其实都调用了遍历器接口。下面是一些例子。
-
-- for...of
-- Array.from()
-- Map(), Set(), WeakMap(), WeakSet()（比如`new Map([['a',1],['b',2]])`）
-- Promise.all()
-- Promise.race()
-
-## 与其他遍历语法的比较
-
-1. 最原始的写法就是`for`循环。
-
-   ```javascript
-   for (var index = 0; index < myArray.length; index++) {
-     console.log(myArray[index]);
-   }
-   ```
-
-2.  数组提供内置的`forEach`方法。
-
-   ```javascript
-   myArray.forEach(function (value) {
-     console.log(value);
-   });
-   //这种写法的问题在于，无法中途跳出forEach循环，break命令或return命令都不能奏效。
-   ```
-
-3.   `for...in`循环可以遍历数组的键名。 
-
-   ```javascript
-   for (var index in myArray) {
-     console.log(myArray[index]);
-   }
-   //for...in循环主要是为遍历对象而设计的，不适用于遍历数组。
-   ```
-
-4. `for...of`循环相比上面几种做法，有一些显著的优点。
-
-   ```javascript
-   for (var n of fibonacci) {
-     if (n > 1000)
-       break;
-     console.log(n);
-   }
-   //不同于forEach方法，它可以与break、continue和return配合使用。
-   ```
 
 # async
 

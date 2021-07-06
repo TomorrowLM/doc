@@ -1,4 +1,4 @@
-# 函数集
+# 兼容性
 
 ```js
     function pauseEvent(e) {
@@ -10,7 +10,11 @@
     }
 ```
 
-
+```
+var ev = ev || window.event 
+document.documentElement.clientWidth || document.body.clientWidth 
+var target = ev.srcElement||ev.target
+```
 
 # 异步
 
