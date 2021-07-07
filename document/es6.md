@@ -1663,7 +1663,7 @@ Object.getPrototypeOf(rec) === Rectangle.prototype
 
 #### hasOwnProperty() 
 
-方法会返回一个布尔值，指示对象自身属性中是否具有指定的属性（也就是，是否有指定的键）。
+方法会返回一个布尔值，指示对象**自身属性**中是否具有指定的属性（也就是，是否有指定的键）。
 
 ```js
 const object1 = {};
@@ -1683,7 +1683,7 @@ o.propTwo = undefined;
 o.hasOwnProperty('propTwo'); // 返回 true
 ```
 
-自身属性与继承属性
+**自身属性与继承属性**
 
 ```js
 o = new Object();
@@ -1898,7 +1898,7 @@ let d = mix(c).with(a, b);
 
 #### Object.getOwnPropertyNames(obj) 
 
-该方法返回一个数组，其中包含了当前对象所有属性的名称（字符串），不论它们是否可枚举。当然，也可以用`Object.keys()`来单独返回可枚举的属性。
+该方法返回一个数组，其中包含了当前对象**所有属性**的名称（字符串），不论它们是否可枚举。当然，也可以用`Object.keys()`来单独返回可枚举的属性。
 
 ### 属性的遍历
 
@@ -2411,8 +2411,6 @@ var getTempItem = id => ({ id: id, name: "Temp" });
 
 上面四点中，第一点尤其值得注意。`this`对象的指向是可变的，但是在箭头函数中，它是固定的。
 
-
-
 # Class
 
 ## Class基本语法
@@ -2445,7 +2443,7 @@ Point === Point.prototype.constructor // true
 
 上面代码表明，**类的数据类型就是函数，类本身就指向构造函数。**
 
-构造函数的`prototype`属性，在ES6的“类”上面继续存在。事实上，类的所有方法都定义在类的`prototype`属性上面。
+构造函数的`prototype`属性，在ES6的“类”上面继续存在。事实上，**类的所有方法都定义在类的`prototype`属性上面。**
 
 ```javascript
 class Point {
@@ -2521,7 +2519,7 @@ Object.getOwnPropertyNames(Point.prototype)
 
 ## constructor方法
 
-`constructor`方法是类的默认方法，通过`new`命令生成对象实例时，自动调用该方法。一个类必须有`constructor`方法，如果没有显式定义，一个空的`constructor`方法会被默认添加。
+`constructor`方法是类的默认方法，通过`new`命令生成对象实例时，**自动调用**该方法。一个类必须有`constructor`方法，如果没有显式定义，一个空的`constructor`方法会被默认添加。
 
 `constructor`方法默认返回实例对象（即`this`），完全可以指定返回另外一个对象。
 
@@ -2529,6 +2527,7 @@ Object.getOwnPropertyNames(Point.prototype)
 class Foo {
   constructor() {
     return Object.create(null);
+    // return Object.create(this);将Foo赋值给了实例对象的原型对象
   }
 }
 
@@ -2562,14 +2561,13 @@ point.hasOwnProperty('toString') // false
 point.__proto__.hasOwnProperty('toString') // true
 ```
 
-上面代码中，`x`和`y`都是实例对象`point`自身的属性（因为定义在`this`变量上），所以`hasOwnProperty`方法返回`true`，而`toString`是原型对象的属性（因为定义在`Point`类上），所以`hasOwnProperty`方法返回`false`。这些都与ES5的行为保持一致。
+上面代码中，`x`和`y`都是实例对象`point`**自身的属性**（因为定义在`this`变量上），所以`hasOwnProperty`方法返回`true`，而`toString`是原型对象的属性（因为定义在`Point`类上），所以`hasOwnProperty`方法返回`false`。这些都与ES5的行为保持一致。
 
 与ES5一样，类的所有实例共享一个原型对象。
 
 ```javascript
 var p1 = new Point(2,3);
 var p2 = new Point(3,2);
-
 p1.__proto__ === p2.__proto__
 //true
 ```
@@ -2645,9 +2643,28 @@ class ColorPoint extends Point {
 
 子类必须在`constructor`方法中调用`super`方法，否则新建实例时会报错。这是因为子类没有自己的`this`对象，而是继承父类的`this`对象，然后对其进行加工。如果不调用`super`方法，子类就得不到`this`对象。
 
-实质是先创造父类的实例对象`this`（所以必须先调用`super`方法），然后再用子类的构造函数修改`this`。
+**实质是先创造父类的实例对象`this`（所以必须先调用`super`方法），然后再用子类的构造函数修改`this`。**`super()`在这里相当于`A.prototype.constructor.call(this)`。
 
-`super()`在这里相当于`A.prototype.constructor.call(this)`。
+```js
+class Foo {
+    constructor(name) {
+        console.log(this) //Foo1{}
+        this.name = name
+        return Object.create(this);
+    }
+    toString() {
+        console.log(1)
+    }
+}
+class Foo1 extends Foo{
+    constructor(name,age){
+        super(name)
+        console.log(this) //Foo1{}
+        this.age = age
+    }
+}
+var a = new Foo1()
+```
 
 ### 类的prototype属性和__proto__属性
 
@@ -2765,8 +2782,11 @@ var obj = new Square(3); // 输出 false
 ## 特性
 
 - 不存在变量提升
-- 类的所有实例共享一个原型对象
+- 类的所有实例共享一个原型对象（_proto_）
 - 类本身就指向构造函数
+- 类的所有方法都定义在类的`prototype`属性上面
+- 类的内部所有定义的方法，都是不可枚举的
+- 类没有自身属性，所有方法都定义在类的`prototype`属性上面。而类创造的实例，有自身属性，这是类中constructor赋值给实例的，相当于调用了类中的constructor方法，并返回给实例对象。
 
 #  Promise对象
 
@@ -3153,8 +3173,6 @@ storage.getAvatar('jake').then(…);
 const foo = async () => {};
 ```
 
--  `async`函数返回的 Promise 对象
-
 
 - `async`函数内部`return`语句返回的值，会成为`then`方法回调函数的参数。
 
@@ -3167,21 +3185,7 @@ f().then(v => console.log(v))
 // "hello world"
 ```
 
-- `async`函数内部抛出错误，会导致返回的Promise对象变为`reject`状态。抛出的错误对象会被`catch`方法回调函数接收到。
-
-  ```javascript
-  async function f() {
-    throw new Error('出错了');
-  }
-  
-  f().then(
-    v => console.log(v),
-    e => console.log(e)
-  )
-  // Error: 出错了
-  ```
-
-### Promise对象的状态变化
+### 状态变化
 
 必须等到内部所有`await`命令后面的 Promise 对象执行完，才会发生状态改变，**除非遇到`return`语句或者抛出错误**。也就是说，只有`async`函数内部的异步操作执行完，才会执行`then`方法指定的回调函数。 
 
@@ -3195,6 +3199,22 @@ getTitle('https://tc39.github.io/ecma262/').then(console.log)
 ```
 
 上面代码中，函数`getTitle`内部有三个操作：抓取网页、取出文本、匹配页面标题。只有这三个操作全部完成，才会执行`then`方法里面的`console.log`。
+
+- async`函数内部抛出错误，会导致返回的Promise对象变为`reject`状态。抛出的错误对象会被`catch`方法回调函数接收到。
+
+  ```javascript
+  async function f() {
+    throw new Error('出错了');
+  }
+  
+  f().then(
+    v => console.log(v),
+    e => console.log(e)
+  )
+  // Error: 出错了
+  ```
+
+- 异步操作出错，那么等同于`async`函数返回的Promise对象被`reject`。
 
 ### await 命令
 
@@ -3255,6 +3275,8 @@ async function f() {
 ```
 
 ### Tips
+
+`async`函数返回的 Promise 对象
 
 多个`await`命令后面的异步操作，如果不存在继发关系，最好让它们同时触发。
 
