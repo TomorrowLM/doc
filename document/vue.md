@@ -513,77 +513,6 @@ Vue.config.keyCodes.ctrl=17;
 
 交互：vue-resource.js
 
-## vue实例vm
-
-```js
-var data = { a: 1 }
-var vm = new Vue({
-  el: '#example',
-  data: data
-})
-
-vm.$data === data // => true
-vm.$el === document.getElementById('example') // => true
-
-// $watch 是一个实例方法
-vm.$watch('a', function (newValue, oldValue) {
-  // 这个回调将在 `vm.a` 改变后调用
-})
-```
-
-
-
-```
-vm= new Vue({})
-
-vm.$el	->  获取Vue实例挂载的元素节点
-vm.$data  ->  就是data
-vm.$mount ->  手动挂在vue程序
-vm.$options	->   获取自定义属性
-vm.$destroy()	->   销毁对象
-vm.$log();	->  查看现在数据的状态
-vm.$refs  ->  获取页面中所有含有ref属性的DOM元素（如vm.$refs.hello，获取页面中含有属性ref = “hello”的DOM元素，如果有多个元素，那么只返回最后一个）
-```
-
-```js
- var vm=new Vue({
-            // el:'#box',
-            aa:11,//自定义属性
-            show:function(){
-                alert(1);
-            },
-            data:{
-                a:1
-            }
-        });
-
-console.log(vm.$options.aa);//获取自定义属性
-vm.$options.show();
-```
-
-## nextTick
-
-https://www.jianshu.com/p/a7550c0e164f
-
-在下次 DOM 更新循环结束之后执行延迟回调。
-
-```js
-// 修改数据
-vm.msg = 'Hello'
-// DOM 还没有更新
-Vue.nextTick(function () {
-  // DOM 更新了
-})
-
-// 作为一个 Promise 使用 (2.1.0 起新增，详见接下来的提示)
-Vue.nextTick()
-  .then(function () {
-    // DOM 更新了
-  })
-```
-
-
-
 ## 单元素/组件的过渡动画
 
 https://cn.vuejs.org/v2/guide/transitions.html
@@ -635,78 +564,240 @@ new Vue({
 </style>>
 ```
 
+# vm实例
 
+## property
 
-# vue生命周期
+### vm.$data
 
-## 背景
-
-Vue 实例在被创建时都要经过一系列的初始化过程 ， 编译模板、将实例挂载到 DOM 并在数据变化时更新 DOM 等 。 在这个过程中也会运行一些叫做**生命周期钩子**的函数，这给了用户在不同阶段添加自己的代码的机会。 
-
-## 生命周期函数	
-
-- vue1.0
+Vue 实例观察的数据对象。Vue 实例代理了对其 data 对象 property 的访问。
 
 ```js
-created	->   实例已经创建	√
-beforeCompile	->   编译之前
-compiled	->   编译之后
-ready		->   插入到文档中	√
-beforeDestroy	->   销毁之前
-destroyed	->   销毁之后
-```
-- vue2.0
+var data = { a: 1 }
+var vm = new Vue({
+  el: '#example',
+  data: data
+})
 
-  https://zhuanlan.zhihu.com/p/53039906
+vm.$data === data // => true
+vm.$el === document.getElementById('example') // => true
 
-
-```
-beforeCreate	
-组件实例刚刚被创建,属性都没有，组件的el（Vue实例挂载的元素节点）和data都未被创建
-
-created			     
-实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
-
-beforeMount		
-模板编译之前,组件的el会被创建，render 函数首次被调用。但是值得注意的是：虽然数据data早已经被创建好，但是它还未被应用到真实的DOM元素中,而是render将data中的数据和vue声明的模板template编译成浏览器可读的HTML挂载到对应虚拟dom触发的钩子。
-
-mounted			
-模板编译之后，组件的el,data都已经全部被创建好，触发虚拟dom的钩子将编译好的HTML替换掉el属性所指的dom，应用到真实DOM元素中。
-
-beforeUpdate	组件更新之前
-updated			组件更新完毕	
-beforeDestroy	组件销毁前
-destroyed		组件销毁后
-
-activated	keep-alive 组件激活时调用。
-deactivated	keep-alive 组件停用时调用。
+// $watch 是一个实例方法
+vm.$watch('a', function (newValue, oldValue) {
+  // 这个回调将在 `vm.a` 改变后调用
+})
 ```
 
- ![f847b38a-63fe-11e6-9c29-38e58d46f036.png](https://segmentfault.com/img/bVEs9x?w=847&h=572) 
+### vm.$props
 
-不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this` ,this指向调用它的VUE实例
+当前组件接收到的 props 对象。Vue 实例代理了对其 props 对象 property 的访问。
 
- 比如 `created: () => console.log(this.a)` 或 `vm.$watch('a', newValue => this.myMethod())` 
+### vm.$el
 
-<img src="https://upload-images.jianshu.io/upload_images/7414631-6af6e3bd7fe52a94.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt="img" style="zoom:50%;" />
+获取Vue实例挂载的元素节点
 
-# keep-alive
+### vm.$options
 
-## 背景
+```js
+ var vm=new Vue({
+            // el:'#box',
+            aa:11,//自定义属性
+            show:function(){
+                alert(1);
+            },
+            data:{
+                a:1
+            }
+        });
+console.log(vm.$options.aa);//获取自定义属性
+vm.$options.show();
+```
+
+
+
+### vm.$refs
+
+一个对象，持有注册过 [`ref` attribute](https://cn.vuejs.org/v2/api/#ref) 的所有 DOM 元素和组件实例。
+
+### vm.$parent
+
+父实例，如果当前实例有的话。
+
+### vm.$children
+
+当前实例的直接子组件。**需要注意 `$children` 并不保证顺序，也不是响应式的。**如果你发现自己正在尝试使用 `$children` 来进行数据绑定，考虑使用一个数组配合 `v-for` 来生成子组件，并且使用 Array 作为真正的来源。
+
+### vm.$root
+
+当前组件树的根 Vue 实例。如果当前实例没有父实例，此实例将会是其自己。
+
+## 方法
+
+### vm.$watch
+
+vm.$watch( expOrFn, callback, [options] )
+
+观察 Vue 实例上的一个表达式或者一个函数计算结果的变化。回调函数得到的参数为新值和旧值。
+
+### vm.$set
+
+vm.$set( target, propertyName/index, value )
+
+## 生命周期
+
+### vm.$mount
+
+### vm.$forceUpdate()
+
+### nextTick
+
+https://www.jianshu.com/p/a7550c0e164f
+
+在下次 DOM 更新循环结束之后执行延迟回调。
+
+```js
+// 修改数据
+vm.msg = 'Hello'
+// DOM 还没有更新
+Vue.nextTick(function () {
+  // DOM 更新了
+})
+
+// 作为一个 Promise 使用 (2.1.0 起新增，详见接下来的提示)
+Vue.nextTick()
+  .then(function () {
+    // DOM 更新了
+  })
+```
+
+# 内置组件
+
+## 插槽：slot
+
+组件里所有标签赋值给slot标签
+
+```js
+<aaa>
+<ul slot="ul-slot">
+	<li>1111</li>
+	<li>2222</li>
+	<li>3333</li>
+</ul>
+<ol slot="ol-slot">
+	<li>111</li>
+	<li>222</li>
+	<li>333</li>
+</ol>
+</aaa>
+
+	<template id="aaa">
+		<div>
+			<h1>xxxx</h1>
+		<slot name="ol-slot">这是默认的情况</slot>
+		<p>welcome vue</p>
+		<slot name="ul-slot">这是默认的情况2</slot>
+		</div>
+	</template>
+```
+
+## keep-alive
+
+### 背景
 
 Aaa和Baa组件，Aaa中有3个Tab栏（1，2，3），点击2后，点击Baa,再点击Aaa，会出现1的内容。这是因为你每次切换新标签的时候，Vue 都创建了一个新的 **currentTabComponent** 实例。
 
 当在这些组件之间切换的时候，你有时会想保持这些组件的状态，以避免反复重渲染导致的性能问题。
 用一个 <keep-alive> 元素将其动态组件包裹起来，**组件将会被缓存**
 
-## keep-alive
+### keep-alive
 
-<keep-alive>包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 <transition> 相似，<keep-alive> 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在组件的父组件链中。
-当组件在 <keep-alive> 内被切换，它的 activated 和deactivated这两个生命周期钩子函数将会被对应执行。
+- **Props**：
 
-- 页面第一次进入，钩子的触发顺序created-> mounted-> activated
-- 退出时触发deactivated
-- 当再次进入（前进或者后退）时，只触发activated。
+  - `include` - 字符串或正则表达式。只有名称匹配的组件会被缓存。
+  - `exclude` - 字符串或正则表达式。任何名称匹配的组件都不会被缓存。
+  - `max` - 数字。最多可以缓存多少组件实例。
+
+- **用法**：
+
+  `<keep-alive>` 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 `<transition>` 相似，`<keep-alive>` 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在组件的父组件链中。
+
+  当组件在 `<keep-alive>` 内被切换，它的 `activated` 和 `deactivated` 这两个生命周期钩子函数将会被对应执行。
+
+  - 页面第一次进入，钩子的触发顺序created-> mounted-> activated
+  - 退出时触发deactivated
+  - 当再次进入（前进或者后退）时，只触发activated。
+
+## [transition](https://cn.vuejs.org/v2/api/#transition)
+
+### **Prop**
+
+- `name` - string，用于自动生成 CSS 过渡类名。例如：`name: 'fade'` 将自动拓展为 `.fade-enter`，`.fade-enter-active` 等。默认类名为 `"v"`
+- `appear` - boolean，是否在初始渲染时使用过渡。默认为 `false`。
+- `css` - boolean，是否使用 CSS 过渡类。默认为 `true`。如果设置为 `false`，将只通过组件事件触发注册的 JavaScript 钩子。
+- `type` - string，指定过渡事件类型，侦听过渡何时结束。有效值为 `"transition"` 和 `"animation"`。默认 Vue.js 将自动检测出持续时间长的为过渡事件类型。
+- `mode` - string，控制离开/进入过渡的时间序列。有效的模式有 `"out-in"` 和 `"in-out"`；默认同时进行。
+- `duration` - number | { `enter`: number, `leave`: number } 指定过渡的持续时间。默认情况下，Vue 会等待过渡所在根元素的第一个 `transitionend` 或 `animationend` 事件。
+- `enter-class` - string
+- `leave-class` - string
+- `appear-class` - string
+- `enter-to-class` - string
+- `leave-to-class` - string
+- `appear-to-class` - string
+- `enter-active-class` - string
+- `leave-active-class` - string
+- `appear-active-class` - string
+
+### 事件
+
+- `before-enter`
+- `before-leave`
+- `before-appear`
+- `enter`
+- `leave`
+- `appear`
+- `after-enter`
+- `after-leave`
+- `after-appear`
+- `enter-cancelled`
+- `leave-cancelled` (`v-show` only)
+- `appear-cancelled`
+
+### 用法
+
+`<transition>` 元素作为**单个**元素/组件的过渡效果。`<transition>` 只会把过渡效果应用到其包裹的内容上，而不会额外渲染 DOM 元素，也不会出现在可被检查的组件层级中。
+
+```
+<!-- 简单元素 -->
+<transition>
+  <div v-if="ok">toggled content</div>
+</transition>
+
+<!-- 动态组件 -->
+<transition name="fade" mode="out-in" appear>
+  <component :is="view"></component>
+</transition>
+
+<!-- 事件钩子 -->
+<div id="transition-demo">
+  <transition @after-enter="transitionComplete">
+    <div v-show="ok">toggled content</div>
+  </transition>
+</div>
+```
+
+```
+new Vue({
+  ...
+  methods: {
+    transitionComplete: function (el) {
+      // 传入 'el' 这个 DOM 元素作为参数。
+    }
+  }
+  ...
+}).$mount('#transition-demo')
+```
+
+- **参考**：[过渡：进入，离开和列表](https://cn.vuejs.org/v2/guide/transitions.html)
 
 # 组件
 
@@ -1019,33 +1110,61 @@ Bus；Vuex
 
 Bus；Vuex；provide / inject API、`$attrs/$listeners`
 
-# 插槽：slot
+# vue生命周期
 
-组件里所有标签赋值给slot标签
+## 背景
+
+Vue 实例在被创建时都要经过一系列的初始化过程 ， 编译模板、将实例挂载到 DOM 并在数据变化时更新 DOM 等 。 在这个过程中也会运行一些叫做**生命周期钩子**的函数，这给了用户在不同阶段添加自己的代码的机会。 
+
+## 生命周期函数	
+
+- vue1.0
 
 ```js
-<aaa>
-<ul slot="ul-slot">
-	<li>1111</li>
-	<li>2222</li>
-	<li>3333</li>
-</ul>
-<ol slot="ol-slot">
-	<li>111</li>
-	<li>222</li>
-	<li>333</li>
-</ol>
-</aaa>
-
-	<template id="aaa">
-		<div>
-			<h1>xxxx</h1>
-		<slot name="ol-slot">这是默认的情况</slot>
-		<p>welcome vue</p>
-		<slot name="ul-slot">这是默认的情况2</slot>
-		</div>
-	</template>
+created	->   实例已经创建	√
+beforeCompile	->   编译之前
+compiled	->   编译之后
+ready		->   插入到文档中	√
+beforeDestroy	->   销毁之前
+destroyed	->   销毁之后
 ```
+
+- vue2.0
+
+  https://zhuanlan.zhihu.com/p/53039906
+
+
+```
+beforeCreate	
+组件实例刚刚被创建,属性都没有，组件的el（Vue实例挂载的元素节点）和data都未被创建
+
+created			     
+实例已经创建完成，组件的数据data已经被创建好，但是el还处于未被创建状态。
+
+beforeMount		
+模板编译之前,组件的el会被创建，render 函数首次被调用。但是值得注意的是：虽然数据data早已经被创建好，但是它还未被应用到真实的DOM元素中,而是render将data中的数据和vue声明的模板template编译成浏览器可读的HTML挂载到对应虚拟dom触发的钩子。
+
+mounted			
+模板编译之后，组件的el,data都已经全部被创建好，触发虚拟dom的钩子将编译好的HTML替换掉el属性所指的dom，应用到真实DOM元素中。
+
+beforeUpdate	组件更新之前
+updated			组件更新完毕	
+beforeDestroy	组件销毁前
+destroyed		组件销毁后
+
+activated	keep-alive 组件激活时调用。
+deactivated	keep-alive 组件停用时调用。
+```
+
+ ![f847b38a-63fe-11e6-9c29-38e58d46f036.png](https://segmentfault.com/img/bVEs9x?w=847&h=572) 
+
+不要在生命周期函数或者回调上使用箭头函数， 因为箭头函数并没有 `this` ,this指向调用它的VUE实例
+
+ 比如 `created: () => console.log(this.a)` 或 `vm.$watch('a', newValue => this.myMethod())` 
+
+<img src="https://upload-images.jianshu.io/upload_images/7414631-6af6e3bd7fe52a94.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt="img" style="zoom:50%;" />
+
+
 
 # vue-router路由
 

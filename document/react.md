@@ -360,35 +360,36 @@ https://reactrouter.com/web/api/Hooks/usehistory
   - `exact` 是否进行精确匹配，路由 `/a` 可以和 `/a/、/a` 匹配
 
   - `strict` 是否进行严格匹配，指明路径只匹配以斜线结尾的路径，路由`/a`可以和`/a`匹配，不能和`/a/`匹配，相比 `exact` 会更严格些
-  
+
   - `path (string)` 标识路由的路径,`path`属性可以使用通配符。
-  
+
     > ```js
     > <Route path="/hello/:name">
   > // 匹配 /hello/michael
-    > // 匹配 /hello/ryan
-  > 
-    > <Route path="/hello(/:name)">
-    > // 匹配 /hello
-    > // 匹配 /hello/michael
   > // 匹配 /hello/ryan
-    > 
-    > <Route path="/files/*.*">
-    > // 匹配 /files/hello.jpg
-    > // 匹配 /files/hello.html
-    > 
-    > <Route path="/files/*">
-    > // 匹配 /files/ 
-    > // 匹配 /files/a
-    > // 匹配 /files/a/b
-    > 
-    > <Route path="/**/*.jpg">
-    > // 匹配 /files/hello.jpg
-    > // 匹配 /files/path/to/file.jpg
-    > ```
-  
+  >
+  > <Route path="/hello(/:name)">
+  > // 匹配 /hello
+  > // 匹配 /hello/michael
+  > // 匹配 /hello/ryan
+  >
+  > <Route path="/files/*.*">
+  > // 匹配 /files/hello.jpg
+  > // 匹配 /files/hello.html
+  >
+  > <Route path="/files/*">
+  > // 匹配 /files/ 
+  > // 匹配 /files/a
+  > // 匹配 /files/a/b
+  >
+  > <Route path="/**/*.jpg">
+  > // 匹配 /files/hello.jpg
+  > // 匹配 /files/path/to/file.jpg
+  >
+  > ```
+
     通配符的规则如下。
-  
+
     > **（1）`:paramName`**
     >
     > `:paramName`匹配URL的一个部分，直到遇到下一个`/`、`?`、`#`为止。这个路径参数可以通过`this.props.params.paramName`取出。
@@ -404,19 +405,19 @@ https://reactrouter.com/web/api/Hooks/usehistory
     > **（4） `\**`**
     >
     > `**` 匹配任意字符，直到下一个`/`、`?`、`#`为止。匹配方式是贪婪模式。
-  
+
   - `component` 表示路径对应显示的组件
-  
+
   - `location (object)` 除了通过 path 传递路由路径，也可以通过传递 location 对象可以匹配
-  
+
   - `sensitive (boolean)` 匹配路径时，是否区分大小写
-  
+
   - Route  组件都接收 
-  
+
     ```
     location、history、match
     ```
-  
+
     - 三个 props 比较常用的是 match，通过 match.params 可以取到动态参数的值
     
     | 所属     | 属性                   | 类型     | 含义                                              |
@@ -1974,3 +1975,98 @@ React-Redux 提供`Provider`组件，可以让容器组件拿到`state`。
 >   </Provider>
 > );
 > ```
+
+# NEXT
+
+https://www.nextjs.cn/
+
+## 背景
+
+要从头开始使用 React 构建一个完整的 Web 应用程序，需要考虑许多重要的细节：
+
+- 必须使用打包程序（例如 webpack）打包代码，并使用 Babel 等编译器进行代码转换。
+- 你需要针对生产环境进行优化，例如代码拆分。
+- 你可能需要对一些页面进行预先渲染以提高页面性能和 SEO。你可能还希望使用服务器端渲染或客户端渲染。
+- 你可能必须编写一些服务器端代码才能将 React 应用程序连接到数据存储。
+
+**Next.js：React 开发框架**
+
+- 直观的、 [基于页面](https://www.nextjs.cn/docs/basic-features/pages) 的路由系统（并支持 [动态路由](https://www.nextjs.cn/docs/routing/dynamic-routes)）
+- [预渲染](https://www.nextjs.cn/docs/basic-features/pages#pre-rendering)。支持在页面级的 [静态生成](https://www.nextjs.cn/docs/basic-features/pages#static-generation-recommended) (SSG) 和 [服务器端渲染](https://www.nextjs.cn/docs/basic-features/pages#server-side-rendering) (SSR)
+- 自动代码拆分，提升页面加载速度
+- 具有经过优化的预取功能的 [客户端路由](https://www.nextjs.cn/docs/routing/introduction#linking-between-pages)
+- [内置 CSS](https://www.nextjs.cn/docs/basic-features/built-in-css-support) 和 [Sass 的支持](https://www.nextjs.cn/docs/basic-features/built-in-css-support#sass-support)，并支持任何 [CSS-in-JS](https://www.nextjs.cn/docs/basic-features/built-in-css-support#css-in-js) 库
+- 开发环境支持 [快速刷新](https://www.nextjs.cn/docs/basic-features/fast-refresh)
+- 利用 Serverless Functions 及 [API 路由](https://www.nextjs.cn/docs/api-routes/introduction) 构建 API 功能
+- 完全可扩展
+
+## 创建
+
+```
+npx create-next-app nextjs-blog --use-npm --example "https://github.com/vercel/next-learn-starter/tree/master/learn-starter"
+```
+
+```
+cd nextjs-blog
+```
+
+```
+cd nextjs-blog
+```
+
+在浏览器中打开 [http://localhost:3000](http://localhost:3000/) 。
+
+## 页面
+
+在 Next.js 中，页面是从[`pages`目录中](https://www.nextjs.cn/docs/basic-features/pages)的文件导出的 React 组件。
+
+页面与基于其**文件名**的路由相关联。例如，在开发中：
+
+- `pages/index.js`与`/`路由相关联。
+- `pages/posts/first-post.js`与`/posts/first-post`路由相关联。
+
+**在页面之间导航**
+
+```
+import Link from 'next/link'
+```
+
+```
+Read <Link href="/posts/first-post"><a>this page!</a></Link>
+```
+
+该[`Link`](https://www.nextjs.cn/docs/api-reference/next/link)组件支持在同一个 Next.js 应用程序中的两个页面之间进行**客户端导航**。
+
+客户端导航意味着页面转换*使用 JavaScript 进行*，这比浏览器执行的默认导航更快。
+
+### 客户端导航
+
+该[`Link`](https://www.nextjs.cn/docs/api-reference/next/link)组件支持在同一个 Next.js 应用程序中的两个页面之间进行**客户端导航**。
+
+客户端导航意味着页面转换*使用 JavaScript 进行*，这比浏览器执行的默认导航更快。
+
+这是您可以验证的简单方法：
+
+- 使用浏览器的开发人员工具将`background`CSS 属性更改`<html>`为`yellow`。
+- 单击链接可在两个页面之间来回切换。
+- 您会看到黄色背景在页面转换之间持续存在。
+
+这表明浏览器*未*加载完整页面并且客户端导航正在工作。
+
+<img src="https://www.nextjs.cn/static/images/learn/navigate-between-pages/client-side.gif" alt="Links" style="zoom:50%;" />
+
+如果您使用了`<a href="…">`代替`<Link href="…">`并执行了此操作，则链接点击时背景颜色将被清除，因为浏览器会完全刷新。
+
+### 代码拆分和预取
+
+Next.js 会自动进行代码拆分，因此每个页面只加载该页面所需的内容。这意味着在呈现主页时，最初不会提供其他页面的代码。
+
+这可确保即使您添加数百个页面，主页也能快速加载。
+
+仅加载您请求的页面的代码也意味着页面变得孤立。如果某个页面抛出错误，应用程序的其余部分仍然可以工作。
+
+此外，在 Next.js 的生产版本中，每当[`Link`](https://www.nextjs.cn/docs/api-reference/next/link)组件出现在浏览器的视口中时，Next.js 都会在后台自动**预取**链接页面的代码。当您单击链接时，目标页面的代码已在后台加载，页面转换将近乎即时！
+
+## HTML
+
+`<Head>`使用 代替小写字母`<head>`。`<Head>`是一个内置于 Next.js 的 React 组件。它允许您修改`<head>`页面的名称。
