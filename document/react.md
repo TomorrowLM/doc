@@ -2011,12 +2011,14 @@ cd nextjs-blog
 ```
 
 ```
-cd nextjs-blog
+npm run dev
 ```
 
 在浏览器中打开 [http://localhost:3000](http://localhost:3000/) 。
 
 ## 页面
+
+### 客户端导航
 
 在 Next.js 中，页面是从[`pages`目录中](https://www.nextjs.cn/docs/basic-features/pages)的文件导出的 React 组件。
 
@@ -2039,7 +2041,7 @@ Read <Link href="/posts/first-post"><a>this page!</a></Link>
 
 客户端导航意味着页面转换*使用 JavaScript 进行*，这比浏览器执行的默认导航更快。
 
-### 客户端导航
+
 
 该[`Link`](https://www.nextjs.cn/docs/api-reference/next/link)组件支持在同一个 Next.js 应用程序中的两个页面之间进行**客户端导航**。
 
@@ -2067,7 +2069,57 @@ Next.js 会自动进行代码拆分，因此每个页面只加载该页面所需
 
 此外，在 Next.js 的生产版本中，每当[`Link`](https://www.nextjs.cn/docs/api-reference/next/link)组件出现在浏览器的视口中时，Next.js 都会在后台自动**预取**链接页面的代码。当您单击链接时，目标页面的代码已在后台加载，页面转换将近乎即时！
 
-## HTML
+### HTML
+
+#### html
 
 `<Head>`使用 代替小写字母`<head>`。`<Head>`是一个内置于 Next.js 的 React 组件。它允许您修改`<head>`页面的名称。
 
+```
+import Head from 'next/head'
+```
+
+
+
+```html
+<Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet="utf-8" />
+        <meta name="Description" content={props.description}></meta>
+        <title>{props.title}</title>
+</Head>
+```
+
+#### css
+
+```
+<style jsx>{`
+  …
+`}</style>
+```
+
+这是使用一个名为[styled-jsx](https://github.com/vercel/styled-jsx)的库。它是一个“CSS-in-JS”库——它允许你在 React 组件中编写 CSS，并且 CSS 样式将被*限定*（其他组件不会受到影响）。
+
+## 内置API
+
+### getStaticProps 
+
+```jsx
+export async function getStaticProps(context) {
+  return {
+    props: {}, // 将作为props传递给页面组件
+  }
+}
+```
+
+## mardown解析
+
+https://www.netlify.com/blog/2020/05/04/building-a-markdown-blog-with-next-9.4-and-netlify/
+
+[react-markdown](https://www.npmjs.com/package/react-markdown)将帮助我们解析和渲染 Markdown 文件
+
+[gray-matter](https://www.npmjs.com/package/react-markdown) 将解析我们博客的*顶部内容*。（文件顶部的部分`---` ）
+
+我们需要这样的元数据`title`，`data` 并`description`和`slug`。您可以在此处添加任何您喜欢的内容
+
+[raw-loader](https://www.npmjs.com/package/raw-loader)将帮助我们导入我们的markdown文件。
