@@ -18,6 +18,18 @@ vdom的本质:是框架中的概念，是程序员用js对象来模拟页面上�
 
 ## **diff算法**
 
+虚拟DOM（Virtual DOM）的机制：在浏览器端⽤Javascript实现了⼀套DOM API。基
+
+于React进⾏开发时所有的DOM构造都是通过虚拟DOM进⾏，每当数据变化时，React都会重新构建整
+
+个DOM树，然后React将当前整个DOM树和上⼀次的DOM树进⾏对⽐，得到DOM结构的区别，然后仅
+
+仅将需要变化的部分进⾏实际的浏览器DOM更新。⽽且React能够批处理虚拟DOM的刷新，在⼀个事
+
+件循环（Event Loop）内的两次数据变化会被合并，例如你连续的先将节点内容从A-B,B-A，React会认
+
+为A变成B，然后⼜从B变成A UI不发⽣任何变化
+
 
 
 ![img](https://user-gold-cdn.xitu.io/2020/5/2/171d3ca4cc6af69a?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
@@ -47,14 +59,51 @@ React用 三大策略 将O(n^3)复杂度 转化为 O(n)复杂度
 - 策略三（element diff）：
   对于同一层级的一组子节点，通过唯一id区分。
 
+## React的特点和优势
+
+1. 虚拟DOM
+之前您操作dom的⽅式是通过document.getElementById()的⽅式，这样的过程实际上是先去读取html
+的dom结构，将结构转换成变量，再进⾏操作
+⽽reactjs定义了⼀套变量形式的dom模型，⼀切操作和换算直接在变量中，这样减少了操作真实dom，
+性能真实相当的⾼，和主流MVC框架有本质的区别，并不和dom打交道
+2. 组件系统
+react最核⼼的思想是将⻚⾯中任何⼀个区域或者元素都可以看做⼀个组件 component
+那么什么是组件呢？
+组件指的就是同时包含了html、css、js、image元素的聚合体
+使⽤react开发的核⼼就是将⻚⾯拆分成若⼲个组件，并且react⼀个组件中同时耦合了css、js、
+image，这种模式整个颠覆了过去的传统的⽅式
+3. 单向数据流
+其实reactjs的核⼼内容就是数据绑定，所谓数据绑定指的是只要将⼀些服务端的数据和前端⻚⾯绑定
+好，开发者只关注实现业务就⾏了
+4. JSX 语法
+在vue中，我们使⽤render函数来构建组件的dom结构性能较⾼，因为省去了查找和编译模板的过程，
+但是在render中利⽤createElement创建结构的时候代码可读性较低，较为复杂，此时可以利⽤jsx语法
+来在render中创建dom，解决这个问题，但是前提是需要使⽤⼯具来编译jsx
+
 # react项目搭建
 
-前提：搭建react下的webpack环境
+## 脚⼿架create-react-app
+
+全局安装create-react-app
+
+```bash
+$ npm install -g create-react-app
+```
+
+创建⼀个项⽬
+
+```bash
+$ create-react-app your-app 注意命名⽅式
+cd  your-app
+npm i
+```
 
 ## 依赖包
 
+### react 
+
  react 这个包，是专门用来创建React组件、组件生命周期等这些东西的；
- react-dom 里面主要封装了和 DOM 操作相关的包，比如，要把 组件渲染到页面上
+ react-dom 里面主要封装了和 DOM 操作相关的包，要把组件渲染到页面上
 
 ```js
 import React from 'react'
@@ -63,99 +112,158 @@ import ReactDOM from 'react-dom'
 
 要使用 JSX 语法，必须先运行 `cnpm i babel-preset-react -D`，然后再 `.babelrc` 中添加 语法配置；
 
-表单 formik
-
-UI框架material
-
-yup用于值解析和验证的JavaScript模式构建器
+### PropType
 
 PropTypes 进行类型检查,可用于确保组件接收到的props数据类型是有效的
 
-## 根组件APP.jsx
+```react
+UserDisplay.propTypes = {
+    name: PropTypes.string.isRequired,
+    address: PropTypes.objectOf(PropTypes.string),
+    age: PropTypes.number.isRequired
+}
+```
 
-```js
+### CSS-in-JS
+
+CSS-in-JS就是**将应用的CSS样式写在JavaScript文件里面**，而不是独立为一些`.css`，`.scss`或者`less`之类的文件，这样你就可以在CSS中使用一些属于JS的诸如模块声明，变量定义，函数调用和条件判断等语言特性来提供灵活的可扩展的样式定义。
+
+```sh
+// 用 npm 安装
+npm install @material-ui/styles
+```
+
+```jsx
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles({
+  root: {
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    border: 0,
+    borderRadius: 3,
+    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    color: 'white',
+    height: 48,
+    padding: '0 30px',
+  },
+});
+
+export default function Hook() {
+  const classes = useStyles();
+  return <Button className={classes.root}>Hook</Button>;
+}
+```
+
+```jsx
+import React from 'react';
+import { styled } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+const MyButton = styled(Button)({
+  background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+  border: 0,
+  borderRadius: 3,
+  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+  color: 'white',
+  height: 48,
+  padding: '0 30px',
+});
+
+export default function StyledComponents() {
+  return <MyButton>Styled Components</MyButton>;
+}
+```
+
+```jsx
+const useStyles = makeStyles({
+  // style rule
+  foo: props => ({
+    backgroundColor: props.backgroundColor,
+  }),
+  bar: {
+    // CSS property
+    color: props => props.color,
+  },
+});
+
+function MyComponent() {
+  // 为了示例，我们模拟了这个属性
+  const props = { backgroundColor: 'black', color: 'white' };
+  // 将 props 作为 useStyles() 的第一个属性传入
+  const classes = useStyles(props);
+
+  return <div className={`${classes.foo} ${classes.bar}`} />
+}
+```
 
 
+
+## main.js
+
+全局定义将组件App放置在`id='App'`的容器里
+
+```react
+import React from 'react'
+import ReactDom from 'react-dom'
+import App from './app.jsx'
+// ReactDOM.render('要渲染的虚拟DOM元素', '要渲染到页面上的哪个位置中')
+// 注意： ReactDOM.render() 方法的第二个参数，和vue不一样，不接受 "#app" 这样的字符串，而是需要传递一个 原生的 DOM 对象
+ReactDom.render(
+    <App/>,
+    document.getElementById('App')
+)
+```
+
+## APP.jsx   
+
+```react
 // 在 react 中，如要要创建 DOM 元素了，只能使用 React 提供的 JS API 来创建，不能【直接】像 Vue 中那样，手写 HTML 元素
 // React.createElement() 方法，用于创建 虚拟DOM 对象，它接收 3个及以上的参数
 // 参数1： 是个字符串类型的参数，表示要创建的元素类型
 // 参数2： 是一个属性对象，表示 创建的这个元素上，有哪些属性
 // 参数3： 从第三个参数的位置开始，后面可以放好多的虚拟DOM对象，这写参数，表示当前元素的子节点
-// <div title="this is a div" id="mydiv">这是一个div</div>
-// var myDiv = React.createElement('div', { title: 'this is a div', id: 'mydiv' }, '这是一个div', myH1)
-
-// 由于，React官方，发现，如果直接让用户手写 JS 代码创建元素，用户会疯掉的，然后，用户就开始寻找新的前端框架了，于是，
-// React 官方，就提出了一套 JSX 语法规范，能够让我们在 JS 文件中，书写类似于 HTML 那样的代码，快速定义虚拟DOM结构；
-// 问题： JSX（符合 XML 规范的 JS 语法）的原理是什么？？？
-// 注意：JSX内部在运行的时候，也是先把 类似于HTML 这样的标签代码，转换为了 React.createElement 的形式；
-// 也就是说：哪怕我们写了 JSX 这样的标签，也并不是直接把 我们的 HTML 标签渲染到页面上，而是先转换成 React.createElement 这样的JS代码，再渲染到页面中；（JSX是一个对程序员友好的语法糖）
-//在JSX中，如果要为元素添加`class`属性了，那么，必须写成`className`，因为 `class`在ES6中是一个关键字；和`class`类似，label标签的 `for` 属性需要替换为 `htmlFor`.
+ var myDiv = React.createElement('div', { title: 'this is a div', id: 'mydiv' }, '这是一个div', myH1)
+//<div title="this is a div" id="mydiv">这是一个div</div>
+ 
+// 由于，React官方，发现，如果直接让用户手写 JS 代码创建元素，用户会疯掉的，然后，用户就开始寻找新的前端框架了，于是，React 官方，就提出了一套 JSX 语法规范，能够让我们在 JS 文件中，书写类似于 HTML 那样的代码，快速定义虚拟DOM结构；
+// 问题： JSX（符合 XML 规范的 JS 语法）的原理是什么？
+// JSX内部在运行的时候，也是先把 类似于HTML 这样的标签代码，转换为了 React.createElement 的形式；（JSX是一个对程序员友好的语法糖）
 //在JSX创建DOM的时候，所有的节点，必须有唯一的根元素进行包裹；
+```
 
-// 在React中，构造函数，就是一个最基本的组件
+```react
+ // 在React中，构造函数，就是一个最基本的组件
 // 如果想要把组件放到页面中，可以把 构造函数的名称，当作 组件的名称，以 HTML标签形式引入页面中即可
 // 注意：React在解析所有的标签的时候，是以标签的首字母来区分的，如果标签的首字母是小写，那么就按照 普通的 HTML 标签来解析，如果 首字母是大写，则按照 组件的形式去解析渲染
 // 结论：组件的首字母必须是大写
 export default function Hello(props) {
   // 在组件中，如果想要使用外部传递过来的数据，必须，显示的在 构造函数参数列表中，定义 props 属性来接收；
   // 通过 props 得到的任何数据都是只读的，不能从新赋值
-  return <div>
+  return (
+  <div>
     <h1>这是在Hello组件中定义的元素 --- {props.name}</h1>
-  </div>
+  </div>)
 }
-
-
 ```
 
-## main.js
+## 创建组件
 
-```js
-// JS打包入口文件
-// 1. 导入 React包
-import React from 'react'
-import ReactDOM from 'react-dom'
+### 对比
 
-// 导入评论列表样式【注意：这种样式是全局的】
-// import './css/commentList.css'
+使用 function 构造函数创建的组件，内部没有 state 私有数据，只有 一个 props 来接收外界传递过来的数据；
+使用 class 关键字 创建的组件，内部，除了有 this.props 这个只读属性之外，还有一个 专门用于 存放自己私有数据的 this.state 属性，这个 state 是可读可写的！
+基于上面的区别：我们可以为这两种创建组件的方式，下定义了： 使用 function 创建的组件，叫做【无状态组件】；使用 class 创建的组件，叫做【有状态组件】
+有状态组件和无状态组件，最本质的区别，就是有无 state 属性；同时， class 创建的组件，有自己的生命周期函数，但是，function 创建的 组件，没有自己的生命周期函数；
+问题来了：什么时候使用 有状态组件，什么时候使用无状态组件呢？？？
 
-// 导入评论列表组件
-import Hello from './components/APP.js'
-
-//
-var person = {
-  name: 'ls',
-  age: 22,
-  gender: '男',
-  address: '北京'
-}
-// ReactDOM.render('要渲染的虚拟DOM元素', '要渲染到页面上的哪个位置中')
-// 注意： ReactDOM.render() 方法的第二个参数，和vue不一样，不接受 "#app" 这样的字符串，而是需要传递一个 原生的 DOM 对象
-ReactDOM.render(<div>
-  <Hello name={person.name} age={person.age} gender={person.gender} address={person.address}></Hello>
-</div>, document.getElementById('app'))
-```
-
-
-
-## 两种创建组件方式的对比
-
-```js
-// 注意： 以上两种创建组件的方式，有着本质上的区别，其中，
-// 使用 function 构造函数创建的组件，内部没有 state 私有数据，只有 一个 props 来接收外界传递过来的数据；
-// 使用 class 关键字 创建的组件，内部，除了有 this.props 这个只读属性之外，还有一个 专门用于 存放自己私有数据的 this.state 属性，这个 state 是可读可写的！
-// 基于上面的区别：我们可以为这两种创建组件的方式，下定义了： 使用 function 创建的组件，叫做【无状态组件】；使用 class 创建的组件，叫做【有状态组件】
-// 有状态组件和无状态组件，最本质的区别，就是有无 state 属性；同时， class 创建的组件，有自己的生命周期函数，但是，function 创建的 组件，没有自己的生命周期函数；
-// 问题来了：什么时候使用 有状态组件，什么时候使用无状态组件呢？？？
-//  1. 如果一个组件需要存放自己的私有数据，或者需要在组件的不同阶段执行不同的业务逻辑，此时，非常适合用 class 创建出来的有状态组件；
-//  2. 如果一个组件，只需要根据外界传递过来的 props，渲染固定的 页面结构就完事儿了，此时，非常适合使用 function 创建出来的 无状态组件；（使用无状态组件的小小好处： 由于剔除了组件的生命周期，所以，运行速度会相对快一丢丢）
-
-```
-
-
+ 1. 如果一个组件需要存放自己的私有数据，或者需要在组件的不同阶段执行不同的业务逻辑，此时，非常适合用 class 创建出来的有状态组件；
+2. 如果一个组件，只需要根据外界传递过来的 props，渲染固定的 页面结构就完事儿了，此时，非常适合使用 function 创建出来的 无状态组件；（使用无状态组件的小小好处： 由于剔除了组件的生命周期，所以，运行速度会相对快一丢丢）
 
 ### class
 
-用class关键字创建出来的组件：“有状态组件”
+**用class关键字创建出来的组件：“有状态组件”**
 
 ```js
 // 使用 class 创建的类，通过 extends 关键字，继承了 React.Component 之后，这个类，就是一个组件的模板了
@@ -166,10 +274,7 @@ export default class Hello2 extends React.Component {
     //  super() 表示父类的构造函数
     super(props)
     // 在 constructor 中，如果想要访问 props 属性，不能直接使用 this.props， 而是需要在 constructor 的构造器参数列表中，显示的定义 props 参数来接收，才能正常使用；
-    // console.log(props)
-
-    // 注意： 这是固定写法，this.state 表示 当前组件实例的私有数据对象，就好比 vue 中，组件实例身上的 data(){ return {} } 函数
-    // 如果想要使用 组件中 state 上的数据，直接通过 this.state.*** 来访问即可
+    // 注意： 这是固定写法，this.state 表示 当前组件实例的私有数据对象，就好比 vue 中，组件实例身上的 data(){ return {} } 函数  
     this.state = {
       msg: '这是 Hello2 组件的私有msg数据',
       info: '瓦塔西***'
@@ -183,33 +288,23 @@ export default class Hello2 extends React.Component {
 
     // 虽然在 React dev tools 中，并没有显示说 class 组件中的 props 是只读的，但是，经过测试得知，其实 只要是 组件的 props，都是只读的；
     // this.props.address = '123'
-
-    // console.log(this.props)
-
-
     return <div>
       <h1>这是 使用 class 类创建的组件</h1>
       <h3>外界传递过来的数据是： {this.props.address} --- {this.props.info}</h3>
       <h5>{this.state.msg}</h5>
 
-      {/* 1.1 在React中，如果想要为元素绑定事件，不能使用 网页中 传统的 onclick 事件，而是需要 使用 React 提供的  onClick */}
-      {/* 1.2 也就是说：React中，提供的事件绑定机制，使用的 都是驼峰命名，同时，基本上，传统的 JS 事件，都被 React 重新定义了一下，改成了 驼峰命名 onMouseMove  */}
-      {/* 2.1 在 React 提供的事件绑定机制中，事件的处理函数，必须直接给定一个 function，而不是给定一个 function 的名称 */}
-      {/* 2.2 在为 React 事件绑定 处理函数的时候，需要通过 this.函数名， 来把 函数的引用交给 事件 */}
+      //React中，提供的事件绑定机制，使用的 都是驼峰命名
+      //     在为 React 事件绑定 处理函数的时候，需要通过 this.函数名， 来把 函数的引用交给 事件 
       <input type="button" value="修改 msg" id="btnChangeMsg" onClick={this.changeMsg} />
       <br />
     </div>
   }
 
   changeMsg = () => {
-    // console.log('ok')
     // 注意： 这里不是传统网页，所以 React 已经帮我们规定死了，在 方法中，默认this 指向 undefined，并不是指向方法的调用者
-    // console.log(this)
 
     // 直接使用 this.state.msg = '123' 为 state 上的数据重新赋值，可以修改 state 中的数据值，但是，页面不会被更新；
     // 所以这种方式，React 不推荐，以后尽量少用；
-    // this.state.msg = '123'
-
     // 如果要为 this.state 上的数据重新赋值，那么，React 推荐使用 this.setState({配置对象}) 来重新为 state 赋值
     // 注意： this.setState 方法，只会重新覆盖那些 显示定义的属性值，如果没有提供最全的属性，则没有提供的属性值，不会被覆盖；
     /* this.setState({
@@ -220,7 +315,6 @@ export default class Hello2 extends React.Component {
     // 在 function 的参数中，支持传递两个参数，其中，第一个参数是 prevState，表示为修改之前的 老的 state 数据
     // 第二个参数，是 外界传递给当前组件的 props 数据
     this.setState(function (prevState, props) {
-      // console.log(props)
       return {
         msg: '123'
       }
@@ -228,60 +322,13 @@ export default class Hello2 extends React.Component {
       // 由于 this.setState 是异步执行的，所以，如果想要立即拿到最新的修改结果，最保险的方式， 在回调函数中去操作最新的数据
       console.log(this.state.msg)
     })
-    // 经过测试发现， this.setState 在调用的时候，内部是异步执行的，所以，当立即调用完 this.setState 后，输出 state 值可能是旧的
-    // console.log(this.state.msg)
-  }
-}
-```
-
-
-
-```js
-//  class 后面跟上类名， 类名后面，不需要加 () ，直接上 {}
-class Per {
-  // 在每个class类内部，都有一个 constructor 构造器， 如果没有显示定义 构造器，那么类内部默认都有个看不见的 constructor
-  // 每当，使用 new 关键字，创建 class 类实例的时候，必然会优先调用 constructor 构造器
-  // constructor(){}
-  constructor(name, age) {
-    this.name = name
-    this.age = age
-  }
-
-  // 这是实例方法，必须通过 new 出来的对象调用
-  say() {
-    console.log('ok a ')
-  }
-
-  static info = 123
-  static sayHello() {
-    console.log('这是静态方法')
-  }
-}
-
-var p2 = new Per('王多多', 22)
-console.log(p2)
-console.log(Per.info)
-console.log(Per.sayHello())
-```
-
-```js
-
-// 使用 extends 实现继承，extends 前面的是子类，后面的是父类
-class Chinese extends Person {
-  constructor(name, age, color, language) {
-    console.log(1)
-    // 注意： 当使用 extends 关键字实现了继承， 子类的 constructor 构造函数中，必须显示调用 super() 方法，这个   	super 表示父类中 constructor 的引用
-    super(name, age)
-    this.color = color
-    this.language = language
-    console.log(2)
   }
 }
 ```
 
 ### 函数
 
-用构造函数创建出来的组件：无状态组件”
+函数或无状态组件是一个纯函数，它可接受接受参数，并返回react元素。这些都是没有任何副作用的纯函数。这些组件没有状态或生命周期方法
 
 ```js
 
@@ -561,32 +608,29 @@ const Husky = props => {
 
  + ##### 组件生命周期分为三部分：
    
-	+ **组件创建阶段**：组件创建阶段的生命周期函数，有一个显著的特点：创建阶段的生命周期函数，在组件的一辈子中，只执行一次；
+	+ **组件初始化阶段**：组件创建阶段的生命周期函数，有一个显著的特点：创建阶段的生命周期函数，在组件的一辈子中，只执行一次；
 	
-	> componentWillMount: 组件将要被挂载，此时还没有开始渲染虚拟DOM。无法获取到页面上的 任何元素，因为虚拟DOM 和 页面 都还没有开始渲染呢
-	>
-	> render：第一次开始渲染真正的虚拟DOM，当render执行完，内存中就有了完整的虚拟DOM了，但是，页面上尚未真正显示DOM元素
-	> componentDidMount: 组件完成了挂载，此时，组件已经显示到了页面上，当这个方法执行完，组件就进入都了 运行中 的状态
+	  - constructor(props)
+	    React组件的构造函数在挂载之前被调⽤。在实现 React.Component 构造函数时，需要先在添加其他内
+	    容前，调⽤ super(props) ，⽤来将⽗组件传来的 props 绑定到这个类中，使⽤ this.props 将会得
+	    到。
+	  - componentWillMount: 组件将要被挂载，此时还没有开始渲染虚拟DOM。无法获取到页面上的 任何元素，因为虚拟DOM 和 页面 都还没有开始渲染呢。**通常在这⾥进⾏ajax请求**
+	  - render：第一次开始渲染真正的虚拟DOM，当render执行完，内存中就有了完整的虚拟DOM了，但是，页面上尚未真正显示DOM元素
+	  - componentDidMount: 组件完成了挂载，此时，组件已经显示到了页面上，当这个方法执行完，组件就进入都了 运行中 的状态
 	
-	- **组件运行阶段**：也有一个显著的特点，根据组件的state和props的改变，有选择性的触发0次或多次；
+	- **组件更新阶段**：也有一个显著的特点，根据组件的state和props的改变，有选择性的触发0次或多次；
 	
-	```js
-	componentWillReceiveProps: 
-	组件将要接收新属性，此时，只要这个方法被触发，就证明父组件为当前子组件传递了新的属性值；
-	如果我们使用 this.props 来获取属性值，这个属性值，不是最新的，是上一次的旧属性值
-	// 如果想要获取最新的属性值，需要通过 componentWillReceiveProps 的参数列表来获取
-	componentWillReceiveProps(nextProps){    console.log(this.props.pmsg + ' ---- ' + nextProps.pmsg);}
+	  - componentWillReceiveProps: 
+	    组件将要接收新属性，此时，只要这个方法被触发，就证明父组件为当前子组件传递了新的属性值；
+	    如果我们使用 this.props 来获取属性值，这个属性值，不是最新的，是上一次的旧属性值
+	    // 如果想要获取最新的属性值，需要通过 componentWillReceiveProps 的参数列表来获取
+	    componentWillReceiveProps(nextProps){    console.log(this.props.pmsg + ' ---- ' + nextProps.pmsg);}
+	  - shouldComponentUpdate: 组件是否需要被更新，此时，组件尚未被更新，但是，state 和 props 肯定是最新的
+	  - componentWillUpdate: 组件将要被更新，此时，尚未开始更新，内存中的虚拟DOM树还是旧的，页面上的 DOM 元素 也是旧的
+	  - render: 此时，又要重新根据最新的 state 和 props 重新渲染一棵内存中的 虚拟DOM树，当 render 调用完毕，内存中的旧DOM树，已经被新DOM树替换了！此时页面还是旧的
+	  - componentDidUpdate: 此时，页面又被重新渲染了，state 和 虚拟DOM 和 页面已经完全保持同步
 	
-	shouldComponentUpdate: 组件是否需要被更新，此时，组件尚未被更新，但是，state 和 props 肯定是最新的
-	
-	componentWillUpdate: 组件将要被更新，此时，尚未开始更新，内存中的虚拟DOM树还是旧的，页面上的 DOM 元素 也是旧的
-	
-	render: 此时，又要重新根据最新的 state 和 props 重新渲染一棵内存中的 虚拟DOM树，当 render 调用完毕，内存中的旧DOM树，已经被新DOM树替换了！此时页面还是旧的
-	
-	componentDidUpdate: 此时，页面又被重新渲染了，state 和 虚拟DOM 和 页面已经完全保持同步
-	```
-	
-	- **组件销毁阶段**：也有一个显著的特点，一辈子只执行一次；
+	- **组件销毁阶段**：也有一个显著的特点，一辈子只执行一次
 	
 	```
 	componentWillUnmount: 组件将要被卸载，此时组件还可以正常使用；
@@ -1056,7 +1100,7 @@ class需要写成className（因为毕竟是在写类js代码，会收到js规�
 
 **第三种：样式组件（styled-components）**
 
-styled-components是针对React写的一套css-in-js框架，简单来讲就是在js中写css。npm链接
+styled-components是针对React写的一套css-in-js框架，简单来讲就是在js中写css。
 styled-components是一个第三方包，要安装。**Material框架**中的样式也是如此
 
 ```javascript
@@ -1980,6 +2024,8 @@ React-Redux 提供`Provider`组件，可以让容器组件拿到`state`。
 
 https://www.nextjs.cn/
 
+https://juejin.cn/post/6863336367309455373#heading-5
+
 ## 背景
 
 要从头开始使用 React 构建一个完整的 Web 应用程序，需要考虑许多重要的细节：
@@ -2114,12 +2160,43 @@ export async function getStaticProps(context) {
 
 ## mardown解析
 
-https://www.netlify.com/blog/2020/05/04/building-a-markdown-blog-with-next-9.4-and-netlify/
+1. 下载
 
-[react-markdown](https://www.npmjs.com/package/react-markdown)将帮助我们解析和渲染 Markdown 文件
+   https://dev.to/imranib/build-a-next-js-markdown-blog-5777
 
-[gray-matter](https://www.npmjs.com/package/react-markdown) 将解析我们博客的*顶部内容*。（文件顶部的部分`---` ）
+   [react-markdown](https://www.npmjs.com/package/react-markdown)将帮助我们解析和渲染 Markdown 文件
 
-我们需要这样的元数据`title`，`data` 并`description`和`slug`。您可以在此处添加任何您喜欢的内容
+   [gray-matter](https://www.npmjs.com/package/react-markdown) 将解析我们博客的*顶部内容*。（文件顶部的部分`---` ）
 
-[raw-loader](https://www.npmjs.com/package/raw-loader)将帮助我们导入我们的markdown文件。
+   我们需要这样的元数据`title`，`data` 并`description`和`slug`。您可以在此处添加任何您喜欢的内容
+
+   [raw-loader](https://www.npmjs.com/package/raw-loader)将帮助我们导入我们的markdown文件。 
+
+2. `next.config.js`在根目录下创建一个文件。创建此文件后，您必须重新启动开发服务器。
+
+   ```
+   module.exports = {
+     webpack: function(config) {
+       config.module.rules.push({
+         test: /\.md$/,
+         use: 'raw-loader',
+       })
+       return config
+     }
+   }
+   ```
+
+3. 在`content`目录下创建两个markdown文件
+
+4. 在我们`index.js` 更换 `getStaticProps`与功能
+
+5. 动态路由
+
+   我们可能有五十个不同的博客。我们不想为每个博客创建页面。在博客（文件名）周围添加方括号，`[blog].js` 我们就有了一个动态路由。该路线将结束 `localhost:3000/:blog`
+
+### 插件
+
+- 代码格式化：`react-syntax-highlighter`包
+
+
+
