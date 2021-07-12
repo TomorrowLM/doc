@@ -1,8 +1,14 @@
+---
+slug: ES6
+title: ES6
+description: description.
+category: ES6
+date: 25-September-2020
+---
+
 文档来源
 
 http://caibaojian.com/es6/
-
-1.    *// "jstree": "vakata/jstree",*
 
 # **let和const**
 

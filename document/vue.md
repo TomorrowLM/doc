@@ -1,3 +1,12 @@
+---
+slug: Vue
+title: Vue
+description: description.
+category: 框架
+tag: Vue
+date: 25-September-2020
+---
+
 # 项目搭建
 
 ## vue脚手架

@@ -1,3 +1,12 @@
+---
+slug: React
+title: React
+description: description.
+category: 框架
+date: 25-September-2020
+---
+
+
 # 虚拟DOM
 
 ## **背景**
@@ -2136,6 +2145,15 @@ import Head from 'next/head'
 </Head>
 ```
 
+
+
+```
+img统一放在public中，引用直接引用img，不需要添加图像路径
+src="/head.jpg"
+```
+
+
+
 #### css
 
 ```
@@ -2160,17 +2178,31 @@ export async function getStaticProps(context) {
 
 ## mardown解析
 
-1. 下载
+### 插件
 
-   https://dev.to/imranib/build-a-next-js-markdown-blog-5777
+https://dev.to/imranib/build-a-next-js-markdown-blog-5777
 
-   [react-markdown](https://www.npmjs.com/package/react-markdown)将帮助我们解析和渲染 Markdown 文件
+- 代码格式化：`react-syntax-highlighter`包
 
-   [gray-matter](https://www.npmjs.com/package/react-markdown) 将解析我们博客的*顶部内容*。（文件顶部的部分`---` ）
+- [react-markdown](https://www.npmjs.com/package/react-markdown)将帮助我们解析和渲染 Markdown 文件
 
-   我们需要这样的元数据`title`，`data` 并`description`和`slug`。您可以在此处添加任何您喜欢的内容
+- gray-matter](https://www.npmjs.com/package/react-markdown) 将解析我们博客的*顶部内容*。（文件顶部的部分`---` ）
 
-   [raw-loader](https://www.npmjs.com/package/raw-loader)将帮助我们导入我们的markdown文件。 
+  我们需要这样的元数据`title`，`data` 并`description`和`slug`。您可以在此处添加任何您喜欢的内容
+
+| 参数        | 意义         |
+| ----------- | ------------ |
+| slug        | 导航的参数   |
+| title       | 文章名称     |
+| data        | 最新时间     |
+| updated     | 文章更新日期 |
+| tags        | 文章標籤     |
+| category    | 文章分類     |
+| description | 文章描述     |
+
+- [raw-loader](https://www.npmjs.com/package/raw-loader)将帮助我们导入我们的markdown文件。 
+
+### 流程
 
 2. `next.config.js`在根目录下创建一个文件。创建此文件后，您必须重新启动开发服务器。
 
@@ -2194,9 +2226,7 @@ export async function getStaticProps(context) {
 
    我们可能有五十个不同的博客。我们不想为每个博客创建页面。在博客（文件名）周围添加方括号，`[blog].js` 我们就有了一个动态路由。该路线将结束 `localhost:3000/:blog`
 
-### 插件
 
-- 代码格式化：`react-syntax-highlighter`包
 
 
 
