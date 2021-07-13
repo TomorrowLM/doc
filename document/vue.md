@@ -1,9 +1,9 @@
 ---
-slug: Vue
-title: Vue
+slug: vue
+title: vue
 description: description.
 category: 框架
-tag: Vue
+tag: vue
 date: 25-September-2020
 ---
 

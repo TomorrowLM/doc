@@ -1,6 +1,6 @@
 ---
-slug: React
-title: React
+slug: react
+title: react
 description: description.
 category: 框架
 date: 25-September-2020
@@ -2114,6 +2114,14 @@ Read <Link href="/posts/first-post"><a>this page!</a></Link>
 
 如果您使用了`<a href="…">`代替`<Link href="…">`并执行了此操作，则链接点击时背景颜色将被清除，因为浏览器会完全刷新。
 
+### 动态路由
+
+Next.js 支持具有动态路由的 pages（页面）。例如，如果你创建了一个命名为 `pages/posts/[id].js` 的文件，那么就可以通过 `posts/1`、`posts/2` 等类似的路径进行访问。
+
+- `pages/blog/[slug].js` → `/blog/:slug` (`/blog/hello-world`)
+- `pages/[username]/settings.js` → `/:username/settings` (`/foo/settings`)
+- `pages/post/[...all].js` → `/post/*` (`/post/2020/id/title`)
+
 ### 代码拆分和预取
 
 Next.js 会自动进行代码拆分，因此每个页面只加载该页面所需的内容。这意味着在呈现主页时，最初不会提供其他页面的代码。
@@ -2134,8 +2142,6 @@ Next.js 会自动进行代码拆分，因此每个页面只加载该页面所需
 import Head from 'next/head'
 ```
 
-
-
 ```html
 <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -2145,14 +2151,12 @@ import Head from 'next/head'
 </Head>
 ```
 
-
+#### img
 
 ```
 img统一放在public中，引用直接引用img，不需要添加图像路径
 src="/head.jpg"
 ```
-
-
 
 #### css
 
@@ -2164,9 +2168,26 @@ src="/head.jpg"
 
 这是使用一个名为[styled-jsx](https://github.com/vercel/styled-jsx)的库。它是一个“CSS-in-JS”库——它允许你在 React 组件中编写 CSS，并且 CSS 样式将被*限定*（其他组件不会受到影响）。
 
+Next.js 内置了对[styled-jsx 的](https://github.com/vercel/styled-jsx)支持，但您也可以使用其他流行的 CSS-in-JS 库。我用的是materialUI框架中的css-in-js
+
+- 全局样式
+
+  如果你希望**每个页面**都加载一些 CSS，添加pages/_app.js文件
+
+  ```
+  import '../styles/global.css'
+  export default function App({ Component, pageProps }) {
+    return <Component {...pageProps} />
+  }
+  ```
+
+  创建一个顶级styles目录并global.css在里面创建。将其导入pages/_app.js
+
 ## 内置API
 
 ### getStaticProps 
+
+如果您导出从页面`async`调用的函数`getStaticProps`，Next.js 将在构建时使用 .js 返回的道具预渲染此页面`getStaticProps`。
 
 ```jsx
 export async function getStaticProps(context) {

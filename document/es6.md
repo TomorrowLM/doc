@@ -1,8 +1,8 @@
 ---
-slug: ES6
-title: ES6
+slug: es6
+title: es6
 description: description.
-category: ES6
+category: es6
 date: 25-September-2020
 ---
 

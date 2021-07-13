@@ -1,9 +1,9 @@
 ---
-slug: Uniapp
-title: Uniapp
+slug: uniapp
+title: uniapp
 description: description.
 category: 框架
-tag: Uniapp
+tag: uniapp
 date: 25-September-2020
 ---
 
