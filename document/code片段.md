@@ -1,7 +1,7 @@
 # 兼容性
 
 ```js
-    function pauseEvent(e) {
+function pauseEvent(e) {
         if (e.stopPropagation) e.stopPropagation();
         if (e.preventDefault) e.preventDefault();
         e.cancelBubble = true;
@@ -21,52 +21,33 @@ var target = ev.srcElement||ev.target
 ## **async**
 
 ```js
-
-let a = async ()=>{
-    let b =await new Promise((resolve,reject)=>{
-        console.log(1)
-        setTimeout(()=>{ console.log(5); resolve(1)},100)
-    })
-    console.log(2)
-    return 6
-}
-a().then((value)=>{
-console.log(value)
-})
-console.log(3)
-
 //在async中将异步的代码同步执行
-1 ​​​​​at ​quokka.js:5:8​
+var a = async () => {
+  console.log(1);
+  function fn(){
+    setTimeout(()=>{
+        console.log(5)
+    })
+  }
+  await fn()
+  await new Promise((resolved) => {
+    console.log(2);
+    resolved(3);
+  }).then((v) => {
+    console.log(v);
+  });
+  console.log(4);
+};
+a();
+1 ​​​​​at ​quokka.js:2:2​
 
-3 ​​​​​at ​quokka.js:14:0​
+2 ​​​​​at ​quokka.js:10:4​
 
-5 ​​​​​at ​quokka.js:6:8​
+3 ​​​​​at ​​​v​​​ ​quokka.js:13:4​
 
-2 ​​​​​at ​quokka.js:8:4​
+4 ​​​​​at ​quokka.js:16:2​
 
-6 ​​​​​at ​​​value​​​ ​quokka.js:12:0​
-//没有await
-1 ​​​​​at ​quokka.js:5:8​
-
-2 ​​​​​at ​quokka.js:8:4​
-
-3 ​​​​​at ​quokka.js:14:0​
-
-6 ​​​​​at ​​​value​​​ ​quokka.js:12:0​
-
-5 ​​​​​at ​quokka.js:6:8​
-```
-
-```
-1 ​​​​​at ​quokka.js:2:4​
-
-4 ​​​​​at ​quokka.js:12:0​
-
-2 ​​​​​at ​​​b​​​ ​quokka.js:4:4​
-
-3 ​​​​​at ​​​c​​​ ​quokka.js:6:4​
-
-5 ​​​​​at ​​​index​​​ ​quokka.js:10:4​
+5 ​​​​​at ​quokka.js:5:8​
 ```
 
 ## **promise**
