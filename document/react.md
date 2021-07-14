@@ -711,43 +711,44 @@ const Husky = props => {
 
 一种是使用一个 div 标签将其包裹起来，另外一种方式就是使用 React 提供的 `<React.Fragment>` 将其包裹起来，但是其渲染到页面时是不会有 `<React.Fragment>`的
 
-```js
-class Table extends React.Component {
-  render() {
-    return (
-      <table>
-        <tr>
-          <Columns />
-        </tr>
-      </table>
-    );
-  }
-}
-//Columns子组件
-class Columns extends React.Component {
-  render() {
-    return (
-      <div>
-        <td>Hello</td>
-        <td>World</td>
-      </div>
-    );
-  }
-}
-//得到
-<table>
-  <tr>
-    <div>
-      <td>Hello</td>
-      <td>World</td>
-    </div>
-  </tr>
-</table>
-//出现包裹的元素div
-//使用Fragment，则不会出现
-```
+## 事件处理
 
+- eact 事件的命名采用小驼峰式（camelCase），而不是纯小写。
 
+- 使用 JSX 语法时你需要传入一个函数作为事件处理函数，而不是一个字符串。
+
+- 不能通过返回 `false` 的方式阻止默认行为。你必须显式的使用 `preventDefault`
+
+  ```jsx
+  class Toggle extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {isToggleOn: true};
+  
+      // 为了在回调中使用 `this`，这个绑定是必不可少的
+      this.handleClick = this.handleClick.bind(this);
+    }
+  
+    handleClick() {
+      this.setState(state => ({
+        isToggleOn: !state.isToggleOn
+      }));
+    }
+  
+    render() {
+      return (
+        <button onClick={this.handleClick}>
+          {this.state.isToggleOn ? 'ON' : 'OFF'}
+        </button>
+      );
+    }
+  }
+  
+  ReactDOM.render(
+    <Toggle />,
+    document.getElementById('root')
+  );
+  ```
 
 ## 列表 & Key
 
@@ -771,11 +772,27 @@ class Columns extends React.Component {
   );
   ```
 
-  key 帮助 React 识别哪些元素改变了，比如被添加或删除。因此你应当给数组中的每一个元素赋予一个确定的标识。一个元素的 key 最好是这个元素在列表中拥有的一个独一无二的字符串。通常，我们使用数据中的 id 来作为元素的 key;当元素没有确定 id 的时候，万不得已你可以使用元素索引 index 作为 key
+ **在 JSX 中嵌入 map()**
 
-  **key 只是在兄弟节点之间必须唯一**
+  ```js
+function NumberList(props) {
+  const numbers = props.numbers;
+  return (
+    <ul>
+      {numbers.map((number) =>
+        <ListItem key={number.toString()}
+                  value={number} />
+      )}
+    </ul>
+  );
+}
+  ```
 
-  数组元素中使用的 key 在其兄弟节点之间应该是独一无二的。然而，它们不需要是全局唯一的。当我们生成两个不同的数组时，我们可以使用相        同的 key 值：
+key 帮助 React 识别哪些元素改变了，比如被添加或删除。因此你应当给数组中的每一个元素赋予一个确定的标识。一个元素的 key 最好是这个元素在列表中拥有的一个独一无二的字符串。通常，我们使用数据中的 id 来作为元素的 key;当元素没有确定 id 的时候，万不得已你可以使用元素索引 index 作为 key 
+
+**key 只是在兄弟节点之间必须唯一**
+
+ 数组元素中使用的 key 在其兄弟节点之间应该是独一无二的。然而，它们不需要是全局唯一的。当我们生成两个不同的数组时，我们可以使用相同的 key 值：
 
   ```js
   const numbers = [1, 2, 3, 4, 5];
@@ -786,50 +803,7 @@ class Columns extends React.Component {
   );
   ```
 
-  **组件遍历**
-
-  ```js
-  function ListItem(props) {
-    // 正确！这里不需要指定 key：
-    return <li>{props.value}</li>;
-  }
-  
-  function NumberList(props) {
-    const numbers = props.numbers;
-    const listItems = numbers.map((number) =>
-      // 正确！key 应该在数组的上下文中被指定
-      <ListItem key={number.toString()}              value={number} />
-  
-    );
-    return (
-      <ul>
-        {listItems}
-      </ul>
-    );
-  }
-  
-  const numbers = [1, 2, 3, 4, 5];
-  ReactDOM.render(
-    <NumberList numbers={numbers} />,
-    document.getElementById('root')
-  );
-  ```
-
-  **在 JSX 中嵌入 map()**
-
-  ```js
-  function NumberList(props) {
-    const numbers = props.numbers;
-    return (
-      <ul>
-        {numbers.map((number) =>
-          <ListItem key={number.toString()}
-                    value={number} />
-        )}
-      </ul>
-    );
-  }
-  ```
+ 
 
 ## refs
 
@@ -848,63 +822,6 @@ class Columns extends React.Component {
 - 对Dom元素的内容设置及媒体播放
 - 对Dom元素的操作和对组件实例的操作
 - 集成第三方 DOM 库
-
- **`refs` 使用方式**
-
-- [React.createRef()](https://reactjs.org/docs/refs-and-the-dom.html)
-- 回调引用 (Callback refs)
-- String refs（已过时）
-- 转发 `refs` (Forwarding refs)
-
-**访问 Refs**
-
-通过ref挂载在dom节点或组件上，该ref的current属性将能拿到dom节点或组件的实例
-
-```js
-const node = this.myRef.current;
-```
-
-ref 的值根据节点的类型而有所不同：
-
-- 当 ref 属性用于 HTML 元素时，构造函数中使用 React.createRef() 创建的 ref 接收底层 DOM 元素作为其 current 属性。
-- 当 ref 属性用于自定义 class 组件时，ref 对象接收组件的挂载实例作为其 current 属性。
-- **不能再函数组件上使用Ref属性，因为函数组件没有实例。**
-
-```js
-class CustomTextInput extends React.Component {
- constructor(props) {
-   super(props);
-   // 创建一个 ref 来存储 textInput 的 DOM 元素
-   this.textInput = React.createRef();
-   this.focusTextInput = this.focusTextInput.bind(this);
- }
-
- focusTextInput() {
-   // 直接使用原生 API 使 text 输入框获得焦点
-   // 注意：我们通过 "current" 来访问 DOM 节点
-   this.textInput.current.focus();
-     //ref在class组件上
-     this.textInput.current.focusTextInput();
- }
-
- render() {
-   // 告诉 React 我们想把 <input> ref 关联到
-   // 构造器里创建的 `textInput` 上
-   return (
-     <div>
-       <input
-         type="text"
-         ref={this.textInput} />
-       <input
-         type="button"
-         value="Focus the text input"
-         onClick={this.focusTextInput}
-       />
-     </div>
-   );
- }
-}
-```
 
 ### 转发 Refs (Forwarding Refs)
 
@@ -947,6 +864,46 @@ class CustomTextInput extends React.Component {
   - 我们向下转发该 `ref` 参数到 `<button ref={ref}>`，将其指定为 JSX 属性。
   - 当 ref 挂载完成，`ref.current` 将指向 `<button>` DOM 节点。
 
+## 高阶组件
+
+高阶组件（HOC）是 React 中用于复用组件逻辑的一种高级技巧。HOC 自身不是 React API 的一部分，它是一种基于 React 的组合特性而形成的设计模式。
+
+```jsx
+class BlogPost extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      blogPost: DataSource.getBlogPost(props.id)
+    };
+  }
+
+  componentDidMount() {
+    DataSource.addChangeListener(this.handleChange);
+  }
+
+  componentWillUnmount() {
+    DataSource.removeChangeListener(this.handleChange);
+  }
+
+  handleChange() {
+    this.setState({
+      blogPost: DataSource.getBlogPost(this.props.id)
+    });
+  }
+
+  render() {
+    return <TextBlock text={this.state.blogPost} />;
+  }
+}
+```
+
+- 在挂载时，向 `DataSource` 添加一个更改侦听器。
+- 在侦听器内部，当数据源发生变化时，调用 `setState`。
+- 在卸载时，删除侦听器。
+
+你可以想象，在一个大型应用程序中，这种订阅 `DataSource` 和调用 `setState` 的模式将一次又一次地发生。我们需要一个抽象，允许我们在一个地方定义这个逻辑，并在许多组件之间共享它。这正是高阶组件擅长的地方。
+
 ## ReactDOM的三个基本方法
 
 react的核心思想是虚拟DOM，react包含了生成虚拟DOM的函数react.createElement，及Component类。当我们自己封装组件时，就需要继承Component类，才能使用生命周期函数等。而react-dom包的核心功能就是把这些虚拟DOM渲染到文档中变成实际DOM。
@@ -959,7 +916,44 @@ findDOMNode用于获取真正的DOM元素，以便对DOM节点进行操作。
 
 在React中，虚拟DOM真正被添加到HTML中转变为真实DOM是在组件挂载（render()）后，故而我们可以在componentDidMount和componentDidUpdate这两个方法中获取,不能在render方法中使用getDOMNode()方法来拿到原生的DOM元素。示例如下：
 
-## PropTypes类型检查
+## props
+
+```jsx
+function Welcome(props) {  return <h1>Hello, {props.name}</h1>;
+}
+
+const element = <Welcome name="Sara" />;ReactDOM.render(
+  element,
+  document.getElementById('root')
+);
+```
+
+### defaultProps
+
+无论是函数组件还是 class 组件，都拥有 `defaultProps` 属性。可以通过配置特定的 `defaultProps` 属性来定义 `props` 的默认值
+
+```jsx
+class Greeting extends React.Component {
+  render() {
+    return (
+      <h1>Hello, {this.props.name}</h1>
+    );
+  }
+}
+
+// 指定 props 的默认值：
+Greeting.defaultProps = {
+  name: 'Stranger'
+};
+
+// 渲染出 "Hello, Stranger"：
+ReactDOM.render(
+  <Greeting />,
+  document.getElementById('example')
+);
+```
+
+### PropTypes类型检查
 
 ```js
 import PropTypes from 'prop-types';
@@ -1067,30 +1061,7 @@ MyComponent.propTypes = {
 
 ```
 
-### 默认 Prop 值
 
-您可以通过配置特定的 `defaultProps` 属性来定义 `props` 的默认值：
-
-```js
-class Greeting extends React.Component {
-  render() {
-    return (
-      <h1>Hello, {this.props.name}</h1>
-    );
-  }
-}
-
-// 指定 props 的默认值：
-Greeting.defaultProps = {
-  name: 'Stranger'
-};
-
-// 渲染出 "Hello, Stranger"：
-ReactDOM.render(
-  <Greeting />,
-  document.getElementById('example')
-);
-```
 
 ## React组件添加样式的三种方式
 
@@ -1165,9 +1136,7 @@ export default function Button() {
 
 ## useContext():共享状态钩子
 
-如果需要在组件之间共享状态，可以使用`useContext()`。
-
-现在有两个组件 Navbar 和 Messages，我们希望它们之间共享状态。
+如果需要在层层组件之间共享状态，可以使用`useContext()`。
 
 第一步就是使用 React Context API，在组件外部建立一个 Context。
 
@@ -1178,13 +1147,15 @@ export default function Button() {
 组件封装代码如下。
 
 > ```js
+>  // 使用一个 Provider 来将当前的 theme 传递给以下的组件树。
+> // 无论多深，任何组件都能读取这个值。
 > <AppContext.Provider value={{
->   username: 'superawesome'
+> username: 'superawesome'
 > }}>
->   <div className="App">
->     <Navbar/>
->     <Messages/>
->   </div>
+> <div className="App">
+>  <Navbar/>
+>  <Messages/>
+> </div>
 > </AppContext.Provider>
 > ```
 
