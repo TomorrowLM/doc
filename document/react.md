@@ -107,7 +107,7 @@ cd  your-app
 npm i
 ```
 
-## 依赖包
+## 插件
 
 ### react 
 
@@ -207,7 +207,16 @@ function MyComponent() {
 }
 ```
 
+### 样式动画库
 
+https://zhuanlan.zhihu.com/p/361065034
+
+- https://react-spring.io/basics
+- https://reactcommunity.org/react-transition-group/
+- https://motion.ant.design/components/tween-one-cn
+- http://textillate.js.org/
+- http://react-animations.herokuapp.com/
+- https://www.framer.com/docs/
 
 ## main.js
 
@@ -645,7 +654,7 @@ const Husky = props => {
 	componentWillUnmount: 组件将要被卸载，此时组件还可以正常使用；
 	```
 	
-	![React中组件的生命周期](/home/silk/文档/知识点/document/img/react/React中组件的生命周期.png)
+	![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0fb3cd2923f04e4c8dc58243522ff666~tplv-k3u1fbpfcp-zoom-1.image)
 
 # 核心概念
 
@@ -713,7 +722,7 @@ const Husky = props => {
 
 ## 事件处理
 
-- eact 事件的命名采用小驼峰式（camelCase），而不是纯小写。
+- react 事件的命名采用小驼峰式（camelCase），而不是纯小写。
 
 - 使用 JSX 语法时你需要传入一个函数作为事件处理函数，而不是一个字符串。
 
@@ -1063,7 +1072,7 @@ MyComponent.propTypes = {
 
 
 
-## React组件添加样式的三种方式
+## 添加样式的方式
 
 **第一种：行内样式**
 
@@ -1190,55 +1199,45 @@ Redux 的核心概念是，组件发出 action 与状态管理器通信。状态
 上面是`useReducer()`的基本用法，它接受 Reducer 函数和状态的初始值作为参数，返回一个数组。数组的第一个成员是状态的当前值，第二个成员是发送 action 的`dispatch`函数。
 
 ```js
-import React, { useReducer } from "react";
-import ReactDOM from "react-dom";
-import "./styles.css";
+const initialState = {count: 0};
 
-const myReducer = (state, action) => {
-  switch(action.type) {
-    case('countUp'):
-      return {
-        ...state,
-        count: state.count + 1
-      }
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return {count: state.count + 1};
+    case 'decrement':
+      return {count: state.count - 1};
     default:
-      return state
+      throw new Error();
   }
 }
 
-function App() {
-  const [state, dispatch] = useReducer(myReducer, { count: 0 })
-
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
   return (
-    <div className="App">
-      <button onClick={() => dispatch({ type: 'countUp' })}>
-        +1
-      </button>
-      <p>Count: {state.count}</p>
-    </div>
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+    </>
   );
 }
-
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
 
 ```
 
 ## useEffect()：副作用钩子
 
-**副作用**
-
 纯函数只能进行数据计算，那些不涉及计算的操作（比如生成日志、储存数据、改变应用状态等等）应该写在哪里呢？
 
-函数式编程将那些跟数据计算无关的操作，都称为 "副效应" **（side effect）** 。
+函数式编程将那些跟数据计算无关的操作，都称为 "**副效应**" **（side effect）** 。
 
-`useEffect()`用来引入具有副作用的操作，最常见的就是向服务器请求数据。以前，放在`componentDidMount`,`componentDidUpdate`里面的代码，现在可以放在`useEffect()`。
+`useEffect()`用来引入具有副作用的操作，最常见的就是向服务器请求数据。可以把 `useEffect` Hook 看做 `componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount` 这三个函数的组合。
 
-`useEffect()`的用法如下。
+**`useEffect()`的用法如下：**
 
 > ```javascript
 > useEffect(()  =>  {
->   	// Async Action
+>     // Async Action
 >     //return 则是在页面被卸载时调用.
 >     return fn;
 > }, [dependencies])
@@ -1246,14 +1245,16 @@ ReactDOM.render(<App />, rootElement);
 
 上面用法中，`useEffect()`接受两个参数。第一个参数是一个函数，异步操作的代码放在里面。第二个参数是一个数组，用于给出 Effect 的依赖项，只要这个数组发生变化，`useEffect()`就会执行。第二个参数可以省略，这时每次组件渲染时，就会执行`useEffect()`。
 
-只要是副效应，都可以使用`useEffect()`引入。它的常见用途有下面几种。
+**它的常见用途有下面几种：**
 
 - 获取数据（data fetching）
 - 事件监听或订阅（setting up a subscription）
 - 改变 DOM（changing the DOM）
 - 输出日志（logging）
 
-tips
+**tips**
+
+- **它在第一次渲染之后*和*每次更新之后都会执行**
 
 - 使用`useEffect()`时，有一点需要注意。如果有多个副效应，应该调用多个`useEffect()`，而不应该合并写在一起。
 
@@ -1354,7 +1355,11 @@ tips
 
 https://www.xiaye0.com/?p=113
 
+https://www.jianshu.com/p/014ee0ebe959
+
 都会在组件第一次渲染的时候执行，之后会在其依赖的变量发生改变时再次执行；并且这两个hooks都返回缓存的值，useMemo返回缓存的变量，useCallback返回缓存的函数。
+
+**React 中当组件的 props 或 state 变化时，会重新渲染视图**
 
 ### memo
 
@@ -1386,7 +1391,7 @@ const [number,setNumber] = useState(0);
 
 ### useCallback
 
-这个hook主要是针对函数的
+父组件给子组件传递属性（**函数**），父组件重新渲染，会重新创建函数，对应函数地址改变，即传给子组件的属性发生了变化，导致子组件渲染。
 
 ```js
 const TextCell = memo(function(props:any) {
@@ -1414,12 +1419,62 @@ const handleClick = useCallback(()=>{
 }
 ```
 
-这里如果不使用useCallback,哪怕子组件用memo包裹了 也还是会更新子组件,因为子组件的绑定的函数click在父组件更新的时候也会更新引用地址,导致子组件的更新,但是这个其实是没必要的更新,绑定的函数并不需要子组件更新,useCallback就是阻止这类没必要的更新而存在的. 如果是用class的方法的话,需要在constructor里绑定函数,会比较麻烦,不易阅读.
+这里如果不使用useCallback,哪怕子组件用memo包裹了 也还是会更新子组件,因为子组件的绑定的函数click在父组件更新的时候也会更新**引用地址**,导致子组件的更新,但是这个其实是没必要的更新,绑定的函数并不需要子组件更新,useCallback就是阻止这类没必要的更新而存在的. 如果是用class的方法的话,需要在constructor里绑定函数,会比较麻烦,不易阅读.
 
 这里需要注意的是 如果是有参数需要传递,则需要这样写
 
 ```js
 <TextCell click={useCallback(()=>handleClick(‘传递的参数’),[])}/>
+```
+
+### useMemo
+
+**父组件调用子组件时传递对象属性**，useMemo会在页面初始化的时候执行一次,并把执行的结果缓存一份。即使页面刷新了也不会再执行info的赋值操作。
+
+```js
+import React, { useCallback } from 'react'
+
+function ParentComp () {
+  // ...
+  const [ name, setName ] = useState('hi~')
+  const [ age, setAge ] = useState(20)
+  const changeName = useCallback((newName) => setName(newName), [])
+  const info = { name, age }    // 复杂数据类型属性
+
+  return (
+    <div>
+      <button onClick={increment}>点击次数：{count}</button>
+      <ChildComp info={info} onClick={changeName}/>
+    </div>
+  );
+}
+```
+
+- 点击父组件按钮，触发父组件重新渲染；
+- 父组件渲染，`const info = { name, age }` 一行会重新生成一个新对象，导致传递给子组件的 info 属性值变化，进而导致子组件重新渲染。
+
+使用 useMemo 对对象属性包一层。
+
+useMemo 有两个参数：
+
+- 第一个参数是个函数，返回的对象指向同一个引用，不会创建新对象；
+- 第二个参数是个数组，只有数组中的变量改变时，第一个参数的函数才会返回一个新的对象。
+
+```js
+function ParentComp () {
+  // ....
+  const [ name, setName ] = useState('hi~')
+  const [ age, setAge ] = useState(20)
+  const changeName = useCallback((newName) => setName(newName), [])
+  const info = useMemo(() => ({ name, age }), [name, age])   // 包一层
+
+  return (
+    <div>
+      <button onClick={increment}>点击次数：{count}</button>
+      <ChildComp info={info} onClick={changeName}/>
+    </div>
+  );
+}
 ```
 
 # Redux
@@ -2003,8 +2058,6 @@ React-Redux 提供`Provider`组件，可以让容器组件拿到`state`。
 # NEXT
 
 https://www.nextjs.cn/
-
-https://juejin.cn/post/6863336367309455373#heading-5
 
 ## 背景
 
