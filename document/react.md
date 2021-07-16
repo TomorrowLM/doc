@@ -2108,11 +2108,11 @@ npm run dev
 
 **在页面之间导航**
 
-```
+```react
 import Link from 'next/link'
 ```
 
-```
+```react
 Read <Link href="/posts/first-post"><a>this page!</a></Link>
 ```
 
@@ -2227,9 +2227,9 @@ export async function getStaticProps(context) {
 
 https://dev.to/imranib/build-a-next-js-markdown-blog-5777
 
-- 代码格式化：`react-syntax-highlighter`包
-
 - [react-markdown](https://www.npmjs.com/package/react-markdown)将帮助我们解析和渲染 Markdown 文件
+
+- 代码格式化：`react-syntax-highlighter`包
 
 - gray-matter](https://www.npmjs.com/package/react-markdown) 将解析我们博客的*顶部内容*。（文件顶部的部分`---` ）
 
@@ -2249,27 +2249,9 @@ https://dev.to/imranib/build-a-next-js-markdown-blog-5777
 
 ### 流程
 
-2. `next.config.js`在根目录下创建一个文件。创建此文件后，您必须重新启动开发服务器。
+https://dev.to/imranib/build-a-next-js-markdown-blog-5777
 
-   ```
-   module.exports = {
-     webpack: function(config) {
-       config.module.rules.push({
-         test: /\.md$/,
-         use: 'raw-loader',
-       })
-       return config
-     }
-   }
-   ```
-
-3. 在`content`目录下创建两个markdown文件
-
-4. 在我们`index.js` 更换 `getStaticProps`与功能
-
-5. 动态路由
-
-   我们可能有五十个不同的博客。我们不想为每个博客创建页面。在博客（文件名）周围添加方括号，`[blog].js` 我们就有了一个动态路由。该路线将结束 `localhost:3000/:blog`
+https://thetombomb.com/posts/adding-code-snippets-to-static-markdown-in-Next%20js
 
 
 
