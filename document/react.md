@@ -2209,17 +2209,36 @@ Next.js 内置了对[styled-jsx 的](https://github.com/vercel/styled-jsx)支持
 
 ## 内置API
 
-### getStaticProps 
+某些页面需要获取外部数据以进行预渲染。有两种情况，在每种情况下，您都可以使用 Next.js 提供的特殊功能：
 
-如果您导出从页面`async`调用的函数`getStaticProps`，Next.js 将在构建时使用 .js 返回的道具预渲染此页面`getStaticProps`。
+1. 您的页面 **内容** 取决于外部数据：使用 `getStaticProps`。
+2. 你的页面 **paths（路径）** 取决于外部数据：使用 `getStaticPaths` （通常还要同时使用 `getStaticProps`）。
+
+**getStaticProps**函数在**构建时**被调用，并允许你在预渲染时将获取的数据作为 `props` 参数传递给页面。**getStaticProps不会在页面组件中生效**
+
+Next.js 允许你创建具有 **动态路由** 的页面。例如，你可以创建一个名为 `pages/posts/[id].js` 的文件用以展示以 `id` 标识的单篇博客文章。当你访问 `posts/1` 路径时将展示 `id: 1` 的博客文章。但是，在构建 `id` 所对应的内容时可能需要从外部获取数据。**getStaticPaths**函数在构建时被调用，并允许你指定要预渲染的路径。
 
 ```jsx
-export async function getStaticProps(context) {
-  return {
-    props: {}, // 将作为props传递给页面组件
-  }
+// 此函数在构建时被调用
+export async function getStaticPaths() {
+  // 调用外部 API 获取博文列表
+  const res = await fetch('https://.../posts')
+  const posts = await res.json()
+
+  // 据博文列表生成所有需要预渲染的路径
+  const paths = posts.map((post) => ({
+    params: { id: post.id },
+  }))
+
+  // We'll pre-render only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: false }
 }
 ```
+
+为了让页面使用服务端渲染，你需要导出 getServerSideProps 异步函数。这个函数将在**每次请求**时在服务端被调用。例如，假设你的页面需要用最新的数据预渲染（通过外部的 api 获取数据）。你应该写下 getServerSideProps 来获取数据传递给 Page。
+
+getServerSideProps 和 getStaticProps 很像，但是区别的是，getServerSideProps 是每个请求都会调用而不是在构建时。
 
 ## mardown解析
 
@@ -2253,7 +2272,9 @@ https://dev.to/imranib/build-a-next-js-markdown-blog-5777
 
 https://thetombomb.com/posts/adding-code-snippets-to-static-markdown-in-Next%20js
 
+## Tips
 
+- material,classname报错，每次刷新，material失去效果。添加_app.js和__document.js文件
 
 
 
